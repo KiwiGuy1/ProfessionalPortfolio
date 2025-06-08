@@ -1,38 +1,43 @@
 import styles from "./Intro.module.css";
 
 export default function Intro() {
-  console.log("Imported styles:", styles);
-
   return (
     <div className={styles["intro-container"]}>
       <div className={styles["intro-oval"]}>
+        {/* Left links */}
         <div className={`${styles["links-side"]} ${styles.left}`}>
-          <a href="#" className={styles["link-oval"]}>
-            Left 1
+          <a href="#about" className={styles["link-oval"]}>
+            About
           </a>
-          <a href="#" className={styles["link-oval"]}>
-            Left 2
+          <a href="#skills" className={styles["link-oval"]}>
+            Skills
           </a>
-          <a href="#" className={styles["link-oval"]}>
-            Left 3
+          <a href="#projects" className={styles["link-oval"]}>
+            Projects
           </a>
-          <a href="#" className={styles["link-oval"]}>
-            Left 4
+          <a href="#contact" className={styles["link-oval"]}>
+            Contact
           </a>
         </div>
-        <div className={styles["page-title"]}>Kiwi</div>
+        {/* Title and subtitle */}
+        <div className={styles["page-title-wrapper"]}>
+          <div className={styles["page-title"]}>Kiwi</div>
+          <div className={styles.spacer}></div>
+          <div className={styles["page-subtitle"]}>Software Developer</div>
+        </div>
+        {/* Right links */}
         <div className={`${styles["links-side"]} ${styles.right}`}>
-          <a href="#" className={styles["link-oval"]}>
-            Right 1
+          <a href="#resume" className={styles["link-oval"]}>
+            Resume
           </a>
-          <a href="#" className={styles["link-oval"]}>
-            Right 2
+          <a href="#blog" className={styles["link-oval"]}>
+            Blog
           </a>
-          <a href="#" className={styles["link-oval"]}>
-            Right 3
+          <a href="#testimonials" className={styles["link-oval"]}>
+            Testimonials
           </a>
-          <a href="#" className={styles["link-oval"]}>
-            Right 4
+          <a href="#github" className={styles["link-oval"]}>
+            GitHub
           </a>
         </div>
       </div>
