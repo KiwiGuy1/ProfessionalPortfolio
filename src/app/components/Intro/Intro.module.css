@@ -1,0 +1,141 @@
+.intro-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  gap: 2rem;
+  position: relative;
+}
+
+.intro-oval {
+  width: 60vw; /* Wide for oval shape */
+  height: 40vh; /* Height for oval shape */
+  border-radius: 999px; /* Full oval */
+  background: #222e44; /* Add a background so oval is visible */
+  display: flex; /* Enable flex for children alignment */
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  box-shadow: 0 10px 40px #0003;
+  padding: 0 3rem; /* Add horizontal padding */
+}
+
+.links-side {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.links-side.left {
+  align-items: flex-end;
+}
+.links-side.right {
+  align-items: flex-start;
+}
+
+.page-title {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 3rem;
+  color: #fff;
+  letter-spacing: 0.08em;
+  font-weight: bold;
+  z-index: 2;
+  text-shadow: 0 2px 10px #0006;
+}
+
+.link-oval {
+  margin: 16px 0;
+  font-size: 1.18rem;
+  color: #b5c7e3;
+  text-decoration: none;
+  padding: 6px 26px;
+  border-radius: 999px;
+  transition: background 0.15s, color 0.15s;
+  display: inline-block;
+  position: relative;
+  left: 0;
+}
+
+.links-side.left .link-oval:nth-child(1),
+.links-side.right .link-oval:nth-child(4) {
+  margin-top: 0;
+  left: 24px;
+}
+.links-side.left .link-oval:nth-child(4),
+.links-side.right .link-oval:nth-child(1) {
+  margin-bottom: 0;
+  left: -24px;
+}
+.links-side.left .link-oval:nth-child(2),
+.links-side.right .link-oval:nth-child(3) {
+  left: 10px;
+}
+.links-side.left .link-oval:nth-child(3),
+.links-side.right .link-oval:nth-child(2) {
+  left: -10px;
+}
+
+.link-oval:hover {
+  background: #2e3950;
+  color: #fff;
+}
+
+@media (max-width: 750px) {
+  .intro-container {
+    width: 99vw;
+  }
+  .intro-oval {
+    width: 95vw;
+    height: 32vh;
+    padding: 0 1rem;
+  }
+  .page-title {
+    font-size: 2rem;
+  }
+  .links-side {
+    height: 220px;
+  }
+  .link-oval {
+    font-size: 1rem;
+    padding: 4px 12px;
+  }
+}
+
+@media (max-width: 500px) {
+  .intro-container {
+    flex-direction: column;
+    width: 100vw;
+    height: 90vh;
+  }
+  .intro-oval {
+    flex-direction: column;
+    width: 98vw;
+    height: auto;
+    padding: 2rem 0;
+    border-radius: 40px;
+    box-shadow: 0 4px 14px #0003;
+    margin: 0 auto;
+  }
+  .links-side {
+    position: static;
+    flex-direction: row;
+    height: auto;
+    margin: 0 0 12px 0;
+    gap: 0.5rem;
+  }
+  .links-side.left,
+  .links-side.right {
+    align-items: center;
+  }
+  .page-title {
+    position: static;
+    transform: none;
+    margin-bottom: 20px;
+    font-size: 1.3rem;
+    text-align: center;
+  }
+}
