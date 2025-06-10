@@ -19,7 +19,7 @@
   justify-content: space-between;
   position: relative;
   padding: 0 3rem;
-  box-shadow: 0 0 20px 10px rgba(34, 46, 68, 0.5); /* x y blur spread color */
+  /* box-shadow: 0 0 20px 10px rgba(34, 46, 68, 0.5); x y blur spread color */
   overflow: hidden;
 }
 
@@ -115,7 +115,8 @@ f .spacer {
 }
 
 .link-oval:hover {
-  background: #2e3950;
+  background: #6eec6e;
+
   color: #fff;
 }
 
