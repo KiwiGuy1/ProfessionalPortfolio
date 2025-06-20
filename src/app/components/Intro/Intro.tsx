@@ -1,4 +1,5 @@
 import styles from "./Intro.module.css";
+import Link from "next/link";
 
 export default function Intro() {
   return (
@@ -6,18 +7,18 @@ export default function Intro() {
       <div className={styles["intro-oval"]}>
         {/* Left links */}
         <div className={`${styles["links-side"]} ${styles.left}`}>
-          <a href="#about" className={styles["link-oval"]}>
+          <Link href="/about" className={styles["link-oval"]}>
             About
-          </a>
-          <a href="#skills" className={styles["link-oval"]}>
+          </Link>
+          <Link href="#skills" className={styles["link-oval"]}>
             Skills
-          </a>
-          <a href="#projects" className={styles["link-oval"]}>
+          </Link>
+          <Link href="#projects" className={styles["link-oval"]}>
             Projects
-          </a>
-          <a href="#contact" className={styles["link-oval"]}>
+          </Link>
+          <Link href="#contact" className={styles["link-oval"]}>
             Contact
-          </a>
+          </Link>
         </div>
         {/* Title and subtitle */}
         <div className={styles["page-title-wrapper"]}>
