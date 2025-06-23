@@ -75,7 +75,6 @@ const MatterDemo: React.FC = () => {
       Matter.Runner.stop(runner);
       Matter.Engine.clear(engine);
       if (render.canvas) render.canvas.remove();
-      // @ts-ignore
       render.textures = {};
       window.removeEventListener("resize", handleResize);
     };
