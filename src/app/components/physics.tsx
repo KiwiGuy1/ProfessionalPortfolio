@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Matter from "matter-js";
 
 const MatterDemo: React.FC = () => {
   const sceneRef = useRef<HTMLDivElement>(null);
+  const [showKiwi, setShowKiwi] = useState(false);
 
   useEffect(() => {
     if (!sceneRef.current) return;
@@ -12,7 +13,6 @@ const MatterDemo: React.FC = () => {
     const width = window.innerWidth;
     const height = window.innerHeight;
 
-    // Create engine and renderer
     const engine = Matter.Engine.create();
     const render = Matter.Render.create({
       element: sceneRef.current,
@@ -25,17 +25,21 @@ const MatterDemo: React.FC = () => {
       },
     });
 
-    // Create a ball and a ground
-    const ball = Matter.Bodies.circle(width / 2, height / 4, 50, {
-      render: { fillStyle: "#e91e63" },
-    });
+    const balls = Array.from({ length: 10 }).map((_, i) =>
+      Matter.Bodies.circle(
+        Math.random() * (width - 100) + 50,
+        height / 4 - i * 60,
+        70,
+        { render: { fillStyle: "#8EE53F" } }
+      )
+    );
+
     const ground = Matter.Bodies.rectangle(width / 2, height - 30, width, 60, {
       isStatic: true,
       render: { fillStyle: "#4caf50" },
     });
-    Matter.Composite.add(engine.world, [ball, ground]);
+    Matter.Composite.add(engine.world, [...balls, ground]);
 
-    // Mouse control
     const mouse = Matter.Mouse.create(render.canvas);
     const mouseConstraint = Matter.MouseConstraint.create(engine, {
       mouse: mouse,
@@ -51,7 +55,6 @@ const MatterDemo: React.FC = () => {
     Matter.Runner.run(runner, engine);
     Matter.Render.run(render);
 
-    // Handle window resize
     const handleResize = () => {
       const width = window.innerWidth;
       const height = window.innerHeight;
@@ -69,7 +72,9 @@ const MatterDemo: React.FC = () => {
     };
     window.addEventListener("resize", handleResize);
 
-    // Cleanup
+    // Show the word "Kiwi" with a transition after 1 second
+    const timeout = setTimeout(() => setShowKiwi(true), 1000);
+
     return () => {
       Matter.Render.stop(render);
       Matter.Runner.stop(runner);
@@ -77,13 +82,12 @@ const MatterDemo: React.FC = () => {
       if (render.canvas) render.canvas.remove();
       render.textures = {};
       window.removeEventListener("resize", handleResize);
+      clearTimeout(timeout);
     };
   }, []);
 
-  // Style: Fill the viewport completely, no scrollbars, no margins
   return (
     <div
-      ref={sceneRef}
       style={{
         width: "100vw",
         height: "100vh",
@@ -94,7 +98,34 @@ const MatterDemo: React.FC = () => {
         top: 0,
         left: 0,
       }}
-    />
+    >
+      <div
+        ref={sceneRef}
+        style={{
+          width: "100vw",
+          height: "100vh",
+        }}
+      />
+      {/* Overlayed word "Kiwi" */}
+      <span
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          fontSize: "4rem",
+          fontWeight: "bold",
+          color: "#8EE53F",
+          opacity: showKiwi ? 1 : 0,
+          transition: "opacity 2s ease",
+          pointerEvents: "none",
+          userSelect: "none",
+          zIndex: 10, // ensure it's above the canvas
+        }}
+      >
+        Kiwi
+      </span>
+    </div>
   );
 };
 
