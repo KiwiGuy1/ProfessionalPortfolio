@@ -26,7 +26,7 @@ const MatterDemo: React.FC = () => {
         width,
         height,
         wireframes: false,
-        background: "#116530",
+        background: "#edf8e9",
       },
     });
 
