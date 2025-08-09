@@ -162,7 +162,7 @@ const MatterDemo: React.FC = () => {
               zIndex: 9,
               display: "flex",
               gap: "2rem",
-              color: "white",
+              color: "green",
               fontSize: "1.2rem",
             }}
           >

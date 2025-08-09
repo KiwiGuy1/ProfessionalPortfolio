@@ -1,29 +1,11 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import localFont from "next/font/local";
-
+import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 
-const satoshi = localFont({
-  src: [
-    {
-      path: "Satoshi_Complete/Fonts/WEB/fonts/Satoshi-Regular.woff2",
-      weight: "400",
-      style: "normal",
-    },
-    // {
-    //   path: "../public/fonts/satoshi/Satoshi-Bold.woff2",
-    //   weight: "700",
-    //   style: "normal",
-    // },
-    // {
-    //   path: "../public/fonts/satoshi/Satoshi-Light.woff2",
-    //   weight: "300",
-    //   style: "normal",
-    // },
-  ],
-  variable: "--font-satoshi", // This will become a CSS variable you can use
-  display: "swap", // Font loads after fallback, reducing layout shift
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  display: "swap",
 });
 
 const geistSans = Geist({
@@ -47,12 +29,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={satoshi.variable}>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
+    <html
+      lang="en"
+      className={`${inter.className} ${geistSans.variable} ${geistMono.variable}`}
+    >
+      <body>{children}</body>
     </html>
   );
 }
