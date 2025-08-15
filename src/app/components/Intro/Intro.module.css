@@ -9,20 +9,6 @@
   background-color: rgb(110, 236, 110);
 }
 
-.intro-oval {
-  width: 60vw;
-  height: 40vh;
-  border-radius: 999px;
-  background: #964b00;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: relative;
-  padding: 0 3rem;
-  /* box-shadow: 0 0 20px 10px rgba(34, 46, 68, 0.5); x y blur spread color */
-  overflow: hidden;
-}
-
 .links-side {
   display: flex;
   flex-direction: column;
@@ -64,60 +50,6 @@ f .spacer {
   margin-bottom: 1.5rem;
   font-weight: 500;
   text-shadow: 0 1px 6px #0004;
-}
-
-/* Base link style */
-.link-oval {
-  margin: 16px 0;
-  font-size: 1.18rem;
-  color: #b5c7e3;
-  text-decoration: none;
-  padding: 6px 26px;
-  border-radius: 999px;
-  transition: background 0.15s, color 0.15s;
-  display: inline-block;
-  position: relative;
-  left: 0;
-  text-align: center;
-  min-width: 120px;
-}
-
-/* LEFT: Outward curve (positive left offset) */
-.links-side.left .link-oval:nth-child(1) {
-  margin-top: 0;
-  left: 32px;
-}
-.links-side.left .link-oval:nth-child(2) {
-  left: 18px;
-}
-.links-side.left .link-oval:nth-child(3) {
-  left: 10px;
-}
-.links-side.left .link-oval:nth-child(4) {
-  margin-bottom: 0;
-  left: 24px;
-}
-
-/* RIGHT: Outward curve (negative left offset) */
-.links-side.right .link-oval:nth-child(1) {
-  margin-top: 0;
-  left: -32px;
-}
-.links-side.right .link-oval:nth-child(2) {
-  left: -18px;
-}
-.links-side.right .link-oval:nth-child(3) {
-  left: -10px;
-}
-.links-side.right .link-oval:nth-child(4) {
-  margin-bottom: 0;
-  left: -24px;
-}
-
-.link-oval:hover {
-  background: #6eec6e;
-
-  color: #fff;
 }
 
 /* Responsive Styles */
