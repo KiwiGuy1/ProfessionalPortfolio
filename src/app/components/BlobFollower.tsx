@@ -43,7 +43,6 @@ const BlobFollower: React.FC = () => {
         // Stretch toward nav item
         const dx = targetX - lastX;
         const dy = targetY - lastY;
-        const dist = Math.sqrt(dx * dx + dy * dy);
         stretchX = 1 + Math.min(Math.abs(dx) / 80, 0.7);
         stretchY = 1 + Math.min(Math.abs(dy) / 80, 0.7);
         lastX += dx * 0.18;
