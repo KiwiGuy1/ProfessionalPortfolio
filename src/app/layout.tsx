@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import BlobFollower from "./components/BlobFollower";
+import { BlobHoverProvider } from "./components/BlobHoverContext";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 
@@ -33,7 +35,12 @@ export default function RootLayout({
       lang="en"
       className={`${inter.className} ${geistSans.variable} ${geistMono.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        <BlobHoverProvider>
+          {children}
+          <BlobFollower />
+        </BlobHoverProvider>
+      </body>
     </html>
   );
 }

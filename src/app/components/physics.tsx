@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, useMemo } from "react";
+import { useBlobHover } from "./BlobHoverContext";
 import Matter from "matter-js";
 import { motion, AnimatePresence } from "framer-motion";
 import "./physics.css";
@@ -19,6 +20,78 @@ const MatterDemo: React.FC = () => {
 
   // Dimensions set once on mount
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+
+  // Blob hover context
+  const { setHovered } = useBlobHover();
+
+  // Magnetic nav items
+  const navItems = useMemo(
+    () => [{ text: "Home" }, { text: "Projects" }, { text: "Contact" }],
+    []
+  );
+  const homeRef = useRef<HTMLAnchorElement>(null);
+  const projectsRef = useRef<HTMLAnchorElement>(null);
+  const contactRef = useRef<HTMLAnchorElement>(null);
+  const navRefs = [homeRef, projectsRef, contactRef];
+
+  // Track latched nav index
+  // ...existing code...
+
+  const [latchedIndex, setLatchedIndex] = useState<number | null>(null);
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      let found = false;
+      navRefs.forEach((ref, i) => {
+        const el = ref.current;
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        const center = {
+          x: rect.left + rect.width / 2,
+          y: rect.top + rect.height / 2,
+        };
+        const dx = e.clientX - center.x;
+        const dy = e.clientY - center.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 80 && !found) {
+          setHovered(true, navItems[i].text, center);
+          setLatchedIndex(i);
+          found = true;
+        }
+      });
+      if (!found) {
+        setHovered(false);
+        setLatchedIndex(null);
+      }
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+
+    // Global click handler for latched nav
+    const handleGlobalClick = (e: MouseEvent) => {
+      if (latchedIndex !== null) {
+        const el = navRefs[latchedIndex].current;
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        const center = {
+          x: rect.left + rect.width / 2,
+          y: rect.top + rect.height / 2,
+        };
+        const dx = e.clientX - center.x;
+        const dy = e.clientY - center.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 80) {
+          el.click();
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }
+    };
+    window.addEventListener("click", handleGlobalClick, true);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("click", handleGlobalClick, true);
+    };
+  }, [navRefs, navItems, setHovered, latchedIndex]);
 
   // Keep showPageRef updated so Matter event always has latest
   useEffect(() => {
@@ -269,15 +342,17 @@ const MatterDemo: React.FC = () => {
             exit={{ opacity: 0, x: 20 }}
             transition={{ duration: 1 }}
           >
-            <a href="#" onClick={handleNavClick}>
-              Home
-            </a>
-            <a href="#" onClick={handleNavClick}>
-              Projects
-            </a>
-            <a href="#" onClick={handleNavClick}>
-              Contact
-            </a>
+            {navItems.map((item, i) => (
+              <a
+                key={item.text}
+                href="#"
+                ref={navRefs[i]}
+                onClick={handleNavClick}
+                onMouseLeave={() => setHovered(false)}
+              >
+                {item.text}
+              </a>
+            ))}
           </motion.nav>
         </motion.div>
       </AnimatePresence>
