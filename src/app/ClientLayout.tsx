@@ -4,14 +4,14 @@ import { AnimatePresence, motion } from "framer-motion";
 import { BlobHoverProvider } from "./components/BlobHoverContext";
 import BlobFollower from "./components/BlobFollower";
 import GlobalNav from "./components/GlobalNav";
-import { usePathname } from "next/navigation";
+// import { usePathname } from "next/navigation";
 
 export default function ClientLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const pathname = usePathname(); // deterministic key
+  // const pathname = usePathname(); // deterministic key
 
   return (
     <BlobHoverProvider>
