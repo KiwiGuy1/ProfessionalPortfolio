@@ -55,10 +55,12 @@ const PhysicsNav: React.FC = () => {
       { isStatic: true, render: { visible: false } }
     );
 
+    const isMobile = typeof window !== "undefined" && window.innerWidth < 600;
+    const ballYOffset = isMobile ? 30 : 60;
     const balls = Array.from({ length: BALL_COUNT }, (_, i) =>
       Matter.Bodies.circle(
         Math.random() * (width - 2 * BALL_RADIUS) + BALL_RADIUS,
-        height / 4 - i * 60,
+        height / 4 - i * ballYOffset,
         BALL_RADIUS,
         { render: { fillStyle: "#8EE53F" } }
       )
