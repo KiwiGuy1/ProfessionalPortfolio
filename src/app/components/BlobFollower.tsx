@@ -93,8 +93,8 @@ const BlobFollower: React.FC = () => {
           pointerEvents: "none",
           zIndex: 9999,
           transition:
-            "background 0.2s, width 0.2s, height 0.2s, box-shadow 0.2s",
-          display: "flex",
+            "background 0.2s, width 0.2s, height 0.2s, box-shadow 0.2s, opacity 0.2s",
+          display: hovered ? "flex" : "none", // <-- Only show when hovered
           alignItems: "center",
           justifyContent: "center",
           fontSize: hovered ? 15 : 0,
@@ -103,7 +103,7 @@ const BlobFollower: React.FC = () => {
           letterSpacing: 2,
           textShadow: hovered ? "0 2px 8px #6a9c00" : "none",
           userSelect: "none",
-          opacity: 1,
+          opacity: hovered ? 1 : 0, // <-- Only visible when hovered
         }}
       >
         {hovered && hoveredText}
