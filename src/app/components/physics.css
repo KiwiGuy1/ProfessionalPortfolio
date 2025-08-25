@@ -1,6 +1,5 @@
-.kiwi-text {
-  font-size: 2rem;
-}
+/* ...existing code... */
+
 .nav-bar {
   position: absolute;
   top: 5%;
@@ -14,12 +13,14 @@
   width: 60vw;
   max-width: 1000px;
   color: #8ee53f;
-  font-size: 10rem;
+  font-size: 4rem; /* Use a more reasonable default for desktop */
   font-weight: bold;
   z-index: 10;
   pointer-events: auto;
   user-select: none;
+  transform: translateX(-50%);
 }
+
 .nav {
   display: flex;
   gap: 2rem;
@@ -27,7 +28,27 @@
   font-weight: normal;
   color: #8ee53f;
 }
-.nav > a {
-  color: inherit;
-  text-decoration: none;
+
+.kiwi-text {
+  font-size: 2rem;
 }
+
+/* Responsive adjustments for mobile */
+@media (max-width: 600px) {
+  .nav-bar {
+    width: 95vw;
+    max-width: 100vw;
+    padding: 0.4rem 1rem;
+    font-size: 2rem; /* Smaller, but not too small */
+    top: 2%;
+  }
+  .nav {
+    gap: 1rem;
+    font-size: 1rem;
+  }
+  .kiwi-text {
+    font-size: 1.2rem;
+  }
+}
+
+/* ...existing code... */

@@ -4,9 +4,15 @@ import { useEffect, useRef, useCallback } from "react";
 import Matter from "matter-js";
 import "./physics.css";
 
+// Responsive values
+const getBallConfig = () => {
+  if (typeof window !== "undefined" && window.innerWidth < 600) {
+    return { BALL_RADIUS: 35, BALL_COUNT: 5 };
+  }
+  return { BALL_RADIUS: 70, BALL_COUNT: 10 };
+};
+
 const WALL_THICKNESS = 2;
-const BALL_COUNT = 10;
-const BALL_RADIUS = 70;
 
 const PhysicsNav: React.FC = () => {
   const ballsRef = useRef<Matter.Body[]>([]);
@@ -17,6 +23,7 @@ const PhysicsNav: React.FC = () => {
 
     const width = window.innerWidth;
     const height = window.innerHeight;
+    const { BALL_RADIUS, BALL_COUNT } = getBallConfig();
 
     const engine = Matter.Engine.create();
     const render = Matter.Render.create({
@@ -29,6 +36,8 @@ const PhysicsNav: React.FC = () => {
         background: "transparent",
       },
     });
+
+    // ...rest of your code, using BALL_RADIUS and BALL_COUNT...
 
     const leftWall = Matter.Bodies.rectangle(
       WALL_THICKNESS / 2,
