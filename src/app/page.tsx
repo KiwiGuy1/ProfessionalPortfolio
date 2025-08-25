@@ -1,11 +1,5 @@
-//import Intro from "./components/Intro/Intro";
-import MatterDemo from "./components/physics";
+import PhysicsNav from "./components/PhysicsNav";
 
 export default function Home() {
-  return (
-    <>
-      {/* <Intro /> */}
-      <MatterDemo />
-    </>
-  );
+  return <PhysicsNav />; // Only the Matter.js scene
 }
