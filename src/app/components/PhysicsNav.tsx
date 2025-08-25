@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useState } from "react";
 import Matter from "matter-js";
 import "./physics.css";
 
@@ -17,6 +17,14 @@ const WALL_THICKNESS = 2;
 const PhysicsNav: React.FC = () => {
   const ballsRef = useRef<Matter.Body[]>([]);
   const sceneRef = useRef<HTMLDivElement>(null);
+  const [cursorStyle, setCursorStyle] = useState<string>("none");
+
+  useEffect(() => {
+    const isTouchDevice =
+      typeof window !== "undefined" &&
+      ("ontouchstart" in window || navigator.maxTouchPoints > 0);
+    setCursorStyle(isTouchDevice ? "default" : "none");
+  }, []);
 
   const setupMatterScene = useCallback(() => {
     if (!sceneRef.current) return () => {};
@@ -105,7 +113,16 @@ const PhysicsNav: React.FC = () => {
     return () => cleanup();
   }, [setupMatterScene]);
 
-  return <div ref={sceneRef} style={{ width: "100vw", height: "100vh" }} />;
+  return (
+    <div
+      ref={sceneRef}
+      style={{
+        width: "100vw",
+        height: "100vh",
+        cursor: cursorStyle,
+      }}
+    />
+  );
 };
 
 export default PhysicsNav;
