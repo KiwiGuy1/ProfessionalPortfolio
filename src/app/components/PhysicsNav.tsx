@@ -1,16 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useCallback, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Matter from "matter-js";
 import "./physics.css";
-
-// Responsive values
-const getBallConfig = () => {
-  if (typeof window !== "undefined" && window.innerWidth < 600) {
-    return { BALL_RADIUS: 35, BALL_COUNT: 5 };
-  }
-  return { BALL_RADIUS: 70, BALL_COUNT: 10 };
-};
 
 const WALL_THICKNESS = 2;
 
@@ -18,20 +10,25 @@ const PhysicsNav: React.FC = () => {
   const ballsRef = useRef<Matter.Body[]>([]);
   const sceneRef = useRef<HTMLDivElement>(null);
   const [cursorStyle, setCursorStyle] = useState<string>("none");
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const isTouchDevice =
       typeof window !== "undefined" &&
       ("ontouchstart" in window || navigator.maxTouchPoints > 0);
     setCursorStyle(isTouchDevice ? "default" : "none");
   }, []);
 
-  const setupMatterScene = useCallback(() => {
-    if (!sceneRef.current) return () => {};
+  useEffect(() => {
+    if (!mounted || !sceneRef.current) return;
 
     const width = window.innerWidth;
     const height = window.innerHeight;
-    const { BALL_RADIUS, BALL_COUNT } = getBallConfig();
+    const isMobile = width < 600;
+    const BALL_RADIUS = isMobile ? 35 : 70;
+    const BALL_COUNT = isMobile ? 5 : 10;
+    const ballYOffset = isMobile ? 30 : 60;
 
     const engine = Matter.Engine.create();
     const render = Matter.Render.create({
@@ -44,8 +41,6 @@ const PhysicsNav: React.FC = () => {
         background: "transparent",
       },
     });
-
-    // ...rest of your code, using BALL_RADIUS and BALL_COUNT...
 
     const leftWall = Matter.Bodies.rectangle(
       WALL_THICKNESS / 2,
@@ -63,8 +58,7 @@ const PhysicsNav: React.FC = () => {
       { isStatic: true, render: { visible: false } }
     );
 
-    const isMobile = typeof window !== "undefined" && window.innerWidth < 600;
-    const ballYOffset = isMobile ? 30 : 60;
+    // Only run Math.random() on client
     const balls = Array.from({ length: BALL_COUNT }, (_, i) =>
       Matter.Bodies.circle(
         Math.random() * (width - 2 * BALL_RADIUS) + BALL_RADIUS,
@@ -106,12 +100,7 @@ const PhysicsNav: React.FC = () => {
       if (render.canvas) render.canvas.remove();
       render.textures = {};
     };
-  }, []);
-
-  useEffect(() => {
-    const cleanup = setupMatterScene();
-    return () => cleanup();
-  }, [setupMatterScene]);
+  }, [mounted]);
 
   return (
     <div

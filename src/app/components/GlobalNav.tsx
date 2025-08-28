@@ -1,5 +1,3 @@
-"use client";
-
 import { motion } from "framer-motion";
 import { useBlobHover } from "./BlobHoverContext";
 import { useRef } from "react";
@@ -24,24 +22,9 @@ export default function GlobalNav() {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 10 }}
       transition={{ duration: 1 }}
-      style={{ translateX: "-50%" }}
     >
-      <motion.span
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: -20 }}
-        transition={{ duration: 1 }}
-      >
-        <p className="kiwi-text">KIWI</p>
-      </motion.span>
-
-      <motion.nav
-        className="nav"
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: 20 }}
-        transition={{ duration: 1 }}
-      >
+      <span className="kiwi-text">KIWI</span>
+      <nav className="nav">
         {navItems.map((item, i) => (
           <Link
             key={item.text}
@@ -59,19 +42,11 @@ export default function GlobalNav() {
               }
             }}
             onMouseLeave={() => setHovered(false)}
-            style={{
-              cursor: "none",
-              display: "inline-block",
-              margin: "0 12px",
-              textDecoration: "none",
-              color: "inherit",
-              fontWeight: 500,
-            }}
           >
             {item.text}
           </Link>
         ))}
-      </motion.nav>
+      </nav>
     </motion.div>
   );
 }

@@ -1,5 +1,4 @@
-"use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useBlobHover } from "./BlobHoverContext";
 
 const KIWI_GREEN = "#8ee000";
@@ -10,8 +9,11 @@ const BlobFollower: React.FC = () => {
   const mouse = useRef({ x: 0, y: 0 });
   const blob = useRef({ x: 0, y: 0, scale: 1 });
   const { hovered, hoveredText, targetPos } = useBlobHover();
+  const [mouseActive, setMouseActive] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     mouse.current.x = window.innerWidth / 2;
     mouse.current.y = window.innerHeight / 2;
     blob.current.x = window.innerWidth / 2;
@@ -22,9 +24,16 @@ const BlobFollower: React.FC = () => {
     const handleMouseMove = (e: MouseEvent) => {
       mouse.current.x = e.clientX;
       mouse.current.y = e.clientY;
+      setMouseActive(true);
     };
+    const handleMouseLeave = () => setMouseActive(false);
+
     window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseleave", handleMouseLeave);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseleave", handleMouseLeave);
+    };
   }, []);
 
   useEffect(() => {
@@ -67,13 +76,17 @@ const BlobFollower: React.FC = () => {
       if (blobRef.current) {
         blobRef.current.style.transform = `translate(-50%, -50%) translate(${lastX}px, ${lastY}px) scale(${stretchX}, ${stretchY})`;
         blobRef.current.style.transition =
-          "background 0.2s, width 0.2s, height 0.2s, box-shadow 0.2s";
-        blobRef.current.style.opacity = "1";
+          "background 0.2s, width 0.2s, height 0.2s, box-shadow 0.2s, opacity 0.2s";
+        blobRef.current.style.opacity = hovered || mouseActive ? "1" : "0";
+        blobRef.current.style.display =
+          hovered || mouseActive ? "flex" : "none";
       }
       requestAnimationFrame(animate);
     }
     animate();
-  }, [hovered, targetPos]);
+  }, [hovered, targetPos, mouseActive]);
+
+  const isMobile = mounted && window.innerWidth < 600;
 
   return (
     <>
@@ -83,8 +96,8 @@ const BlobFollower: React.FC = () => {
           position: "fixed",
           left: 0,
           top: 0,
-          width: hovered ? 100 : 80,
-          height: hovered ? 100 : 80,
+          width: hovered ? (isMobile ? 100 : 140) : isMobile ? 80 : 100,
+          height: hovered ? (isMobile ? 100 : 140) : isMobile ? 80 : 100,
           borderRadius: "50%",
           background: KIWI_GREEN,
           boxShadow: hovered
@@ -94,7 +107,7 @@ const BlobFollower: React.FC = () => {
           zIndex: 9999,
           transition:
             "background 0.2s, width 0.2s, height 0.2s, box-shadow 0.2s, opacity 0.2s",
-          display: hovered ? "flex" : "none", // <-- Only show when hovered
+          display: hovered || mouseActive ? "flex" : "none",
           alignItems: "center",
           justifyContent: "center",
           fontSize: hovered ? 15 : 0,
@@ -103,7 +116,7 @@ const BlobFollower: React.FC = () => {
           letterSpacing: 2,
           textShadow: hovered ? "0 2px 8px #6a9c00" : "none",
           userSelect: "none",
-          opacity: hovered ? 1 : 0, // <-- Only visible when hovered
+          opacity: hovered || mouseActive ? 1 : 0,
         }}
       >
         {hovered && hoveredText}
