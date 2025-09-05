@@ -5,9 +5,13 @@ const KIWI_GREEN = "#8ee000";
 
 const BlobFollower: React.FC = () => {
   const blobRef = useRef<HTMLDivElement>(null);
+  const blobRef2 = useRef<HTMLDivElement>(null);
+  const blobRef3 = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const mouse = useRef({ x: 0, y: 0 });
   const blob = useRef({ x: 0, y: 0, scale: 1 });
+  const blob2 = useRef({ x: 0, y: 0 });
+  const blob3 = useRef({ x: 0, y: 0 });
   const { hovered, hoveredText, targetPos } = useBlobHover();
   const [mouseActive, setMouseActive] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -18,6 +22,10 @@ const BlobFollower: React.FC = () => {
     mouse.current.y = window.innerHeight / 2;
     blob.current.x = window.innerWidth / 2;
     blob.current.y = window.innerHeight / 2;
+    blob2.current.x = window.innerWidth / 2;
+    blob2.current.y = window.innerHeight / 2;
+    blob3.current.x = window.innerWidth / 2;
+    blob3.current.y = window.innerHeight / 2;
   }, []);
 
   useEffect(() => {
@@ -40,6 +48,10 @@ const BlobFollower: React.FC = () => {
     let lastX = blob.current.x;
     let lastY = blob.current.y;
     let lastScale = blob.current.scale;
+    let lastX2 = blob2.current.x;
+    let lastY2 = blob2.current.y;
+    let lastX3 = blob3.current.x;
+    let lastY3 = blob3.current.y;
     function animate() {
       let targetX = mouse.current.x;
       let targetY = mouse.current.y;
@@ -70,15 +82,40 @@ const BlobFollower: React.FC = () => {
           overlayRef.current.style.opacity = "0";
         }
       }
+      // Trailing blobs follow the previous blob with a delay
+      lastX2 += (lastX - lastX2) * 0.15;
+      lastY2 += (lastY - lastY2) * 0.15;
+      lastX3 += (lastX2 - lastX3) * 0.15;
+      lastY3 += (lastY2 - lastY3) * 0.15;
       blob.current.x = lastX;
       blob.current.y = lastY;
       blob.current.scale = lastScale;
+      blob2.current.x = lastX2;
+      blob2.current.y = lastY2;
+      blob3.current.x = lastX3;
+      blob3.current.y = lastY3;
       if (blobRef.current) {
         blobRef.current.style.transform = `translate(-50%, -50%) translate(${lastX}px, ${lastY}px) scale(${stretchX}, ${stretchY})`;
         blobRef.current.style.transition =
           "background 0.2s, width 0.2s, height 0.2s, box-shadow 0.2s, opacity 0.2s";
         blobRef.current.style.opacity = hovered || mouseActive ? "1" : "0";
         blobRef.current.style.display =
+          hovered || mouseActive ? "flex" : "none";
+      }
+      if (blobRef2.current) {
+        blobRef2.current.style.transform = `translate(-50%, -50%) translate(${lastX2}px, ${lastY2}px) scale(0.7, 0.7)`;
+        blobRef2.current.style.transition =
+          "background 0.2s, width 0.2s, height 0.2s, box-shadow 0.2s, opacity 0.2s";
+        blobRef2.current.style.opacity = hovered || mouseActive ? "0.7" : "0";
+        blobRef2.current.style.display =
+          hovered || mouseActive ? "flex" : "none";
+      }
+      if (blobRef3.current) {
+        blobRef3.current.style.transform = `translate(-50%, -50%) translate(${lastX3}px, ${lastY3}px) scale(0.5, 0.5)`;
+        blobRef3.current.style.transition =
+          "background 0.2s, width 0.2s, height 0.2s, box-shadow 0.2s, opacity 0.2s";
+        blobRef3.current.style.opacity = hovered || mouseActive ? "0.5" : "0";
+        blobRef3.current.style.display =
           hovered || mouseActive ? "flex" : "none";
       }
       requestAnimationFrame(animate);
@@ -90,14 +127,15 @@ const BlobFollower: React.FC = () => {
 
   return (
     <>
+      {/* Main Blob */}
       <div
         ref={blobRef}
         style={{
           position: "fixed",
           left: 0,
           top: 0,
-          width: hovered ? (isMobile ? 100 : 140) : isMobile ? 80 : 100,
-          height: hovered ? (isMobile ? 100 : 140) : isMobile ? 80 : 100,
+          width: hovered ? (isMobile ? 100 : 140) : isMobile ? 60 : 50,
+          height: hovered ? (isMobile ? 100 : 140) : isMobile ? 60 : 50,
           borderRadius: "50%",
           background: KIWI_GREEN,
           boxShadow: hovered
@@ -121,6 +159,51 @@ const BlobFollower: React.FC = () => {
       >
         {hovered && hoveredText}
       </div>
+      {/* Trailing Blob 2 */}
+      <div
+        ref={blobRef2}
+        style={{
+          position: "fixed",
+          left: 0,
+          top: 0,
+          width: hovered ? (isMobile ? 60 : 80) : isMobile ? 40 : 60,
+          height: hovered ? (isMobile ? 60 : 80) : isMobile ? 40 : 60,
+          borderRadius: "50%",
+          background: KIWI_GREEN,
+          boxShadow: "0 4px 16px 0 rgba(140, 220, 0, 0.2)",
+          pointerEvents: "none",
+          zIndex: 9998,
+          transition:
+            "background 0.2s, width 0.2s, height 0.2s, box-shadow 0.2s, opacity 0.2s",
+          display: hovered || mouseActive ? "flex" : "none",
+          alignItems: "center",
+          justifyContent: "center",
+          opacity: hovered || mouseActive ? 0.7 : 0,
+        }}
+      />
+      {/* Trailing Blob 3 */}
+      <div
+        ref={blobRef3}
+        style={{
+          position: "fixed",
+          left: 0,
+          top: 0,
+          width: hovered ? (isMobile ? 30 : 40) : isMobile ? 20 : 30,
+          height: hovered ? (isMobile ? 30 : 40) : isMobile ? 20 : 30,
+          borderRadius: "50%",
+          background: KIWI_GREEN,
+          boxShadow: "0 2px 8px 0 rgba(140, 220, 0, 0.1)",
+          pointerEvents: "none",
+          zIndex: 9997,
+          transition:
+            "background 0.2s, width 0.2s, height 0.2s, box-shadow 0.2s, opacity 0.2s",
+          display: hovered || mouseActive ? "flex" : "none",
+          alignItems: "center",
+          justifyContent: "center",
+          opacity: hovered || mouseActive ? 0.5 : 0,
+        }}
+      />
+      {/* Overlay */}
       <div
         ref={overlayRef}
         style={{
@@ -132,7 +215,7 @@ const BlobFollower: React.FC = () => {
           background: KIWI_GREEN,
           opacity: 0,
           pointerEvents: "none",
-          zIndex: 9998,
+          zIndex: 9996,
           transition: "opacity 0.5s",
         }}
       />
