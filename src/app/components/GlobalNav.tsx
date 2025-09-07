@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { useBlobHover } from "./BlobHoverContext";
 import { useRef } from "react";
-import Link from "next/link";
 import "./physics.css";
 
 const navItems = [
@@ -11,7 +10,12 @@ const navItems = [
   { text: "Contact", link: "/contact" },
 ];
 
-export default function GlobalNav() {
+// Add the onNavigate prop type
+interface GlobalNavProps {
+  onNavigate: (href: string) => void;
+}
+
+export default function GlobalNav({ onNavigate }: GlobalNavProps) {
   const { setHovered } = useBlobHover();
   const navRefs = useRef<HTMLAnchorElement[]>([]);
 
@@ -26,11 +30,15 @@ export default function GlobalNav() {
       <span className="kiwi-text">KIWI</span>
       <nav className="nav">
         {navItems.map((item, i) => (
-          <Link
+          <a
             key={item.text}
             href={item.link}
             ref={(el) => {
               if (el) navRefs.current[i] = el;
+            }}
+            onClick={(e) => {
+              e.preventDefault();
+              onNavigate(item.link);
             }}
             onMouseEnter={() => {
               const rect = navRefs.current[i]?.getBoundingClientRect();
@@ -42,9 +50,10 @@ export default function GlobalNav() {
               }
             }}
             onMouseLeave={() => setHovered(false)}
+            className="nav-link"
           >
             {item.text}
-          </Link>
+          </a>
         ))}
       </nav>
     </motion.div>
