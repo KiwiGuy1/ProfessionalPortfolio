@@ -4,38 +4,67 @@ import { useBlobHover } from "./BlobHoverContext";
 const KIWI_GREEN = "#8ee000";
 
 const BlobFollower: React.FC<{ className?: string }> = ({ className = "" }) => {
+  // Refs for blobs and overlay
   const blobRef = useRef<HTMLDivElement>(null);
   const blobRef2 = useRef<HTMLDivElement>(null);
   const blobRef3 = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
+
+  // Mouse and blob positions
   const mouse = useRef({ x: 0, y: 0 });
   const blob = useRef({ x: 0, y: 0, scale: 1 });
   const blob2 = useRef({ x: 0, y: 0 });
   const blob3 = useRef({ x: 0, y: 0 });
+
+  // Context and state
   const { hovered, hoveredText, targetPos } = useBlobHover();
   const [mouseActive, setMouseActive] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
+  // Blob position and size for PhysicsNav
+  const [blobState, setBlobState] = useState({
+    x: typeof window !== "undefined" ? window.innerWidth / 2 : 0,
+    y: typeof window !== "undefined" ? window.innerHeight / 2 : 0,
+    width: 100,
+    height: 100,
+  });
+
+  // Initial positions
   useEffect(() => {
     setMounted(true);
-    mouse.current.x = window.innerWidth / 2;
-    mouse.current.y = window.innerHeight / 2;
-    blob.current.x = window.innerWidth / 2;
-    blob.current.y = window.innerHeight / 2;
-    blob2.current.x = window.innerWidth / 2;
-    blob2.current.y = window.innerHeight / 2;
-    blob3.current.x = window.innerWidth / 2;
-    blob3.current.y = window.innerHeight / 2;
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+    mouse.current.x = centerX;
+    mouse.current.y = centerY;
+    blob.current.x = centerX;
+    blob.current.y = centerY;
+    blob2.current.x = centerX;
+    blob2.current.y = centerY;
+    blob3.current.x = centerX;
+    blob3.current.y = centerY;
   }, []);
 
+  // Mobile detection
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
+    function handleResize() {
+      setIsMobile(window.innerWidth < 600);
+    }
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Mouse movement tracking
+  useEffect(() => {
+    function handleMouseMove(e: MouseEvent) {
       mouse.current.x = e.clientX;
       mouse.current.y = e.clientY;
       setMouseActive(true);
-    };
-    const handleMouseLeave = () => setMouseActive(false);
-
+    }
+    function handleMouseLeave() {
+      setMouseActive(false);
+    }
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("mouseleave", handleMouseLeave);
     return () => {
@@ -44,6 +73,7 @@ const BlobFollower: React.FC<{ className?: string }> = ({ className = "" }) => {
     };
   }, []);
 
+  // Animation loop for blob and trailing blobs
   useEffect(() => {
     let lastX = blob.current.x;
     let lastY = blob.current.y;
@@ -52,11 +82,14 @@ const BlobFollower: React.FC<{ className?: string }> = ({ className = "" }) => {
     let lastY2 = blob2.current.y;
     let lastX3 = blob3.current.x;
     let lastY3 = blob3.current.y;
+
     function animate() {
+      // Main blob follows mouse or hovered target
       let targetX = mouse.current.x;
       let targetY = mouse.current.y;
       let stretchX = 1,
         stretchY = 1;
+
       if (hovered && targetPos) {
         targetX = targetPos.x;
         targetY = targetPos.y;
@@ -66,9 +99,7 @@ const BlobFollower: React.FC<{ className?: string }> = ({ className = "" }) => {
         stretchY = 1 + Math.min(Math.abs(dy) / 80, 0.7);
         lastX += dx * 0.18;
         lastY += dy * 0.18;
-        if (overlayRef.current) {
-          overlayRef.current.style.opacity = "0";
-        }
+        if (overlayRef.current) overlayRef.current.style.opacity = "0";
       } else {
         const dx = mouse.current.x - lastX;
         const dy = mouse.current.y - lastY;
@@ -78,15 +109,16 @@ const BlobFollower: React.FC<{ className?: string }> = ({ className = "" }) => {
         lastScale = 1 + Math.min(speed / 100, 0.5);
         stretchX = 1 + (lastScale - 1) * 0.7;
         stretchY = 2 - lastScale;
-        if (overlayRef.current) {
-          overlayRef.current.style.opacity = "0";
-        }
+        if (overlayRef.current) overlayRef.current.style.opacity = "0";
       }
-      // Trailing blobs follow the previous blob with a delay
+
+      // Trailing blobs follow with delay
       lastX2 += (lastX - lastX2) * 0.15;
       lastY2 += (lastY - lastY2) * 0.15;
       lastX3 += (lastX2 - lastX3) * 0.15;
       lastY3 += (lastY2 - lastY3) * 0.15;
+
+      // Update refs
       blob.current.x = lastX;
       blob.current.y = lastY;
       blob.current.scale = lastScale;
@@ -94,46 +126,57 @@ const BlobFollower: React.FC<{ className?: string }> = ({ className = "" }) => {
       blob2.current.y = lastY2;
       blob3.current.x = lastX3;
       blob3.current.y = lastY3;
+
+      // Update blobState for PhysicsNav
+      setBlobState({
+        x: lastX,
+        y: lastY,
+        width: hovered ? (isMobile ? 100 : 140) : isMobile ? 60 : 50,
+        height: hovered ? (isMobile ? 100 : 140) : isMobile ? 60 : 50,
+      });
+
+      // Dispatch custom event for PhysicsNav
+      window.dispatchEvent(
+        new CustomEvent("blobmove", {
+          detail: {
+            x: lastX,
+            y: lastY,
+            width: hovered ? (isMobile ? 100 : 140) : isMobile ? 60 : 50,
+            height: hovered ? (isMobile ? 100 : 140) : isMobile ? 60 : 50,
+          },
+        })
+      );
+
+      // Main blob style
       if (blobRef.current) {
         blobRef.current.style.transform = `translate(-50%, -50%) translate(${lastX}px, ${lastY}px) scale(${stretchX}, ${stretchY})`;
         blobRef.current.style.transition =
           "background 0.2s, width 0.2s, height 0.2s, box-shadow 0.2s, opacity 0.2s";
-        blobRef.current.style.opacity = hovered || mouseActive ? "1" : "0";
-        blobRef.current.style.display =
-          hovered || mouseActive ? "flex" : "none";
+        blobRef.current.style.opacity = "1";
+        blobRef.current.style.display = "flex";
       }
+      // Trailing blob 2 style
       if (blobRef2.current) {
         blobRef2.current.style.transform = `translate(-50%, -50%) translate(${lastX2}px, ${lastY2}px) scale(0.7, 0.7)`;
         blobRef2.current.style.transition =
           "background 0.2s, width 0.2s, height 0.2s, box-shadow 0.2s, opacity 0.2s";
-        blobRef2.current.style.opacity = hovered || mouseActive ? "0.7" : "0";
-        blobRef2.current.style.display =
-          hovered || mouseActive ? "flex" : "none";
+        blobRef2.current.style.opacity = "0.7";
+        blobRef2.current.style.display = "flex";
       }
+      // Trailing blob 3 style
       if (blobRef3.current) {
         blobRef3.current.style.transform = `translate(-50%, -50%) translate(${lastX3}px, ${lastY3}px) scale(0.5, 0.5)`;
         blobRef3.current.style.transition =
           "background 0.2s, width 0.2s, height 0.2s, box-shadow 0.2s, opacity 0.2s";
-        blobRef3.current.style.opacity = hovered || mouseActive ? "0.5" : "0";
-        blobRef3.current.style.display =
-          hovered || mouseActive ? "flex" : "none";
+        blobRef3.current.style.opacity = "0.5";
+        blobRef3.current.style.display = "flex";
       }
       requestAnimationFrame(animate);
     }
     animate();
-  }, [hovered, targetPos, mouseActive]);
+  }, [hovered, targetPos, mouseActive, isMobile]);
 
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    function handleResize() {
-      setIsMobile(window.innerWidth < 600);
-    }
-    handleResize(); // Set initial value
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
+  // --- Render ---
   return (
     <>
       {/* Main Blob */}
@@ -141,8 +184,8 @@ const BlobFollower: React.FC<{ className?: string }> = ({ className = "" }) => {
         ref={blobRef}
         className={`fixed top-0 left-0 pointer-events-none ${className}`}
         style={{
-          width: hovered ? (isMobile ? 100 : 140) : isMobile ? 60 : 50,
-          height: hovered ? (isMobile ? 100 : 140) : isMobile ? 60 : 50,
+          width: blobState.width,
+          height: blobState.height,
           borderRadius: "50%",
           background: KIWI_GREEN,
           boxShadow: hovered
@@ -151,7 +194,7 @@ const BlobFollower: React.FC<{ className?: string }> = ({ className = "" }) => {
           zIndex: 9999,
           transition:
             "background 0.2s, width 0.2s, height 0.2s, box-shadow 0.2s, opacity 0.2s",
-          display: hovered || mouseActive ? "flex" : "none",
+          display: "flex",
           alignItems: "center",
           justifyContent: "center",
           fontSize: hovered ? 15 : 0,
@@ -160,7 +203,7 @@ const BlobFollower: React.FC<{ className?: string }> = ({ className = "" }) => {
           letterSpacing: 2,
           textShadow: hovered ? "0 2px 8px #6a9c00" : "none",
           userSelect: "none",
-          opacity: hovered || mouseActive ? 1 : 0,
+          opacity: 1,
         }}
       >
         {hovered && hoveredText}
@@ -178,10 +221,10 @@ const BlobFollower: React.FC<{ className?: string }> = ({ className = "" }) => {
           zIndex: 9998,
           transition:
             "background 0.2s, width 0.2s, height 0.2s, box-shadow 0.2s, opacity 0.2s",
-          display: hovered || mouseActive ? "flex" : "none",
+          display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          opacity: hovered || mouseActive ? 0.7 : 0,
+          opacity: 0.7,
         }}
       />
       {/* Trailing Blob 3 */}
@@ -197,13 +240,13 @@ const BlobFollower: React.FC<{ className?: string }> = ({ className = "" }) => {
           zIndex: 9997,
           transition:
             "background 0.2s, width 0.2s, height 0.2s, box-shadow 0.2s, opacity 0.2s",
-          display: hovered || mouseActive ? "flex" : "none",
+          display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          opacity: hovered || mouseActive ? 0.5 : 0,
+          opacity: 0.5,
         }}
       />
-      {/* Overlay */}
+      {/* Overlay (not used, but kept for completeness) */}
       <div
         ref={overlayRef}
         style={{
