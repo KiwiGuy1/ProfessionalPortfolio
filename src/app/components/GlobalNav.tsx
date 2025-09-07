@@ -10,7 +10,6 @@ const navItems = [
   { text: "Contact", link: "/contact" },
 ];
 
-// Add the onNavigate prop type
 interface GlobalNavProps {
   onNavigate: (href: string) => void;
 }
@@ -21,11 +20,12 @@ export default function GlobalNav({ onNavigate }: GlobalNavProps) {
 
   return (
     <motion.div
-      className="nav-bar"
+      className="nav-bar fixed top-0 left-0 w-full z-50 bg-white shadow"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 10 }}
       transition={{ duration: 1 }}
+      style={{ zIndex: 50, position: "fixed", width: "100%" }}
     >
       <span className="kiwi-text">KIWI</span>
       <nav className="nav">
@@ -51,6 +51,8 @@ export default function GlobalNav({ onNavigate }: GlobalNavProps) {
             }}
             onMouseLeave={() => setHovered(false)}
             className="nav-link"
+            // Remove zIndex from individual links, let the parent handle stacking
+            style={{}}
           >
             {item.text}
           </a>

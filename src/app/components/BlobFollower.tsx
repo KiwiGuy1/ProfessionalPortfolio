@@ -3,7 +3,7 @@ import { useBlobHover } from "./BlobHoverContext";
 
 const KIWI_GREEN = "#8ee000";
 
-const BlobFollower: React.FC = () => {
+const BlobFollower: React.FC<{ className?: string }> = ({ className = "" }) => {
   const blobRef = useRef<HTMLDivElement>(null);
   const blobRef2 = useRef<HTMLDivElement>(null);
   const blobRef3 = useRef<HTMLDivElement>(null);
@@ -130,10 +130,8 @@ const BlobFollower: React.FC = () => {
       {/* Main Blob */}
       <div
         ref={blobRef}
+        className={`fixed top-0 left-0 pointer-events-none ${className}`}
         style={{
-          position: "fixed",
-          left: 0,
-          top: 0,
           width: hovered ? (isMobile ? 100 : 140) : isMobile ? 60 : 50,
           height: hovered ? (isMobile ? 100 : 140) : isMobile ? 60 : 50,
           borderRadius: "50%",
@@ -141,7 +139,6 @@ const BlobFollower: React.FC = () => {
           boxShadow: hovered
             ? "0 16px 64px 0 rgba(140, 220, 0, 0.5)"
             : "0 8px 32px 0 rgba(140, 220, 0, 0.3)",
-          pointerEvents: "none",
           zIndex: 9999,
           transition:
             "background 0.2s, width 0.2s, height 0.2s, box-shadow 0.2s, opacity 0.2s",
@@ -162,16 +159,13 @@ const BlobFollower: React.FC = () => {
       {/* Trailing Blob 2 */}
       <div
         ref={blobRef2}
+        className={`fixed top-0 left-0 pointer-events-none ${className}`}
         style={{
-          position: "fixed",
-          left: 0,
-          top: 0,
           width: hovered ? (isMobile ? 60 : 80) : isMobile ? 40 : 60,
           height: hovered ? (isMobile ? 60 : 80) : isMobile ? 40 : 60,
           borderRadius: "50%",
           background: KIWI_GREEN,
           boxShadow: "0 4px 16px 0 rgba(140, 220, 0, 0.2)",
-          pointerEvents: "none",
           zIndex: 9998,
           transition:
             "background 0.2s, width 0.2s, height 0.2s, box-shadow 0.2s, opacity 0.2s",
@@ -184,16 +178,13 @@ const BlobFollower: React.FC = () => {
       {/* Trailing Blob 3 */}
       <div
         ref={blobRef3}
+        className={`fixed top-0 left-0 pointer-events-none ${className}`}
         style={{
-          position: "fixed",
-          left: 0,
-          top: 0,
           width: hovered ? (isMobile ? 30 : 40) : isMobile ? 20 : 30,
           height: hovered ? (isMobile ? 30 : 40) : isMobile ? 20 : 30,
           borderRadius: "50%",
           background: KIWI_GREEN,
           boxShadow: "0 2px 8px 0 rgba(140, 220, 0, 0.1)",
-          pointerEvents: "none",
           zIndex: 9997,
           transition:
             "background 0.2s, width 0.2s, height 0.2s, box-shadow 0.2s, opacity 0.2s",

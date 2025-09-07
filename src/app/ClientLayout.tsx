@@ -49,20 +49,21 @@ export default function ClientLayout({
 
   return (
     <BlobHoverProvider>
+      {/* Overlay first, lower z-index */}
+      <motion.div
+        initial={false}
+        animate={{ opacity: overlayVisible ? 1 : 0 }}
+        transition={{ duration: ANIMATION_DURATION, ease: "easeInOut" }}
+        style={{
+          pointerEvents: "none", // Overlay doesn't block nav
+        }}
+        className="fixed inset-0 z-40 bg-black"
+      />
+      {/* Nav above overlay */}
+      <GlobalNav onNavigate={handleNavigate} />
+      <BlobFollower className="z-60" />
       <div className="relative min-h-screen w-full">
-        <GlobalNav onNavigate={handleNavigate} />
         <div>{children}</div>
-        <BlobFollower />
-        {/* Black overlay for fade transition */}
-        <motion.div
-          initial={false}
-          animate={{ opacity: overlayVisible ? 1 : 0 }}
-          transition={{ duration: ANIMATION_DURATION, ease: "easeInOut" }}
-          style={{
-            pointerEvents: overlayVisible ? "auto" : "none",
-          }}
-          className="fixed inset-0 z-50 bg-black"
-        />
       </div>
     </BlobHoverProvider>
   );
