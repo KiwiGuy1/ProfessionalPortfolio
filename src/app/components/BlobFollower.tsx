@@ -123,7 +123,16 @@ const BlobFollower: React.FC<{ className?: string }> = ({ className = "" }) => {
     animate();
   }, [hovered, targetPos, mouseActive]);
 
-  const isMobile = mounted && window.innerWidth < 600;
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    function handleResize() {
+      setIsMobile(window.innerWidth < 600);
+    }
+    handleResize(); // Set initial value
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <>
