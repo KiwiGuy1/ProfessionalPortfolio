@@ -1,28 +1,38 @@
 import { useEffect, useRef, useState } from "react";
 import { useBlobHover } from "./BlobHoverContext";
 
+// --- Constants ---
 const KIWI_GREEN = "#8ee000";
 
+// --- Helper ---
+function getBlobSize(hovered: boolean, isMobile: boolean) {
+  return hovered ? (isMobile ? 100 : 140) : isMobile ? 60 : 50;
+}
+function getBlob2Size(hovered: boolean, isMobile: boolean) {
+  return hovered ? (isMobile ? 60 : 80) : isMobile ? 40 : 60;
+}
+function getBlob3Size(hovered: boolean, isMobile: boolean) {
+  return hovered ? (isMobile ? 30 : 40) : isMobile ? 20 : 30;
+}
+
+// --- Main Component ---
 const BlobFollower: React.FC<{ className?: string }> = ({ className = "" }) => {
-  // Refs for blobs and overlay
+  // --- Refs ---
   const blobRef = useRef<HTMLDivElement>(null);
   const blobRef2 = useRef<HTMLDivElement>(null);
   const blobRef3 = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
 
-  // Mouse and blob positions
   const mouse = useRef({ x: 0, y: 0 });
   const blob = useRef({ x: 0, y: 0, scale: 1 });
   const blob2 = useRef({ x: 0, y: 0 });
   const blob3 = useRef({ x: 0, y: 0 });
 
-  // Context and state
+  // --- Context ---
   const { hovered, hoveredText, targetPos } = useBlobHover();
-  const [mouseActive, setMouseActive] = useState(false);
-  const [mounted, setMounted] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
 
-  // Blob position and size for PhysicsNav
+  // --- State ---
+  const [isMobile, setIsMobile] = useState(false);
   const [blobState, setBlobState] = useState({
     x: typeof window !== "undefined" ? window.innerWidth / 2 : 0,
     y: typeof window !== "undefined" ? window.innerHeight / 2 : 0,
@@ -30,9 +40,9 @@ const BlobFollower: React.FC<{ className?: string }> = ({ className = "" }) => {
     height: 100,
   });
 
-  // Initial positions
+  // --- Effects ---
+  // Set initial positions
   useEffect(() => {
-    setMounted(true);
     const centerX = window.innerWidth / 2;
     const centerY = window.innerHeight / 2;
     mouse.current.x = centerX;
@@ -60,16 +70,10 @@ const BlobFollower: React.FC<{ className?: string }> = ({ className = "" }) => {
     function handleMouseMove(e: MouseEvent) {
       mouse.current.x = e.clientX;
       mouse.current.y = e.clientY;
-      setMouseActive(true);
-    }
-    function handleMouseLeave() {
-      setMouseActive(false);
     }
     window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("mouseleave", handleMouseLeave);
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseleave", handleMouseLeave);
     };
   }, []);
 
@@ -84,7 +88,7 @@ const BlobFollower: React.FC<{ className?: string }> = ({ className = "" }) => {
     let lastY3 = blob3.current.y;
 
     function animate() {
-      // Main blob follows mouse or hovered target
+      // --- Main blob follows mouse or hovered target ---
       let targetX = mouse.current.x;
       let targetY = mouse.current.y;
       let stretchX = 1,
@@ -112,13 +116,13 @@ const BlobFollower: React.FC<{ className?: string }> = ({ className = "" }) => {
         if (overlayRef.current) overlayRef.current.style.opacity = "0";
       }
 
-      // Trailing blobs follow with delay
+      // --- Trailing blobs follow with delay ---
       lastX2 += (lastX - lastX2) * 0.15;
       lastY2 += (lastY - lastY2) * 0.15;
       lastX3 += (lastX2 - lastX3) * 0.15;
       lastY3 += (lastY2 - lastY3) * 0.15;
 
-      // Update refs
+      // --- Update refs ---
       blob.current.x = lastX;
       blob.current.y = lastY;
       blob.current.scale = lastScale;
@@ -127,27 +131,28 @@ const BlobFollower: React.FC<{ className?: string }> = ({ className = "" }) => {
       blob3.current.x = lastX3;
       blob3.current.y = lastY3;
 
-      // Update blobState for PhysicsNav
-      setBlobState({
+      // --- Update blobState for PhysicsNav ---
+      const newBlobState = {
         x: lastX,
         y: lastY,
-        width: hovered ? (isMobile ? 100 : 140) : isMobile ? 60 : 50,
-        height: hovered ? (isMobile ? 100 : 140) : isMobile ? 60 : 50,
-      });
-
-      // Dispatch custom event for PhysicsNav
-      window.dispatchEvent(
-        new CustomEvent("blobmove", {
-          detail: {
-            x: lastX,
-            y: lastY,
-            width: hovered ? (isMobile ? 100 : 140) : isMobile ? 60 : 50,
-            height: hovered ? (isMobile ? 100 : 140) : isMobile ? 60 : 50,
-          },
-        })
+        width: getBlobSize(hovered, isMobile),
+        height: getBlobSize(hovered, isMobile),
+      };
+      setBlobState((prev) =>
+        prev.x !== newBlobState.x ||
+        prev.y !== newBlobState.y ||
+        prev.width !== newBlobState.width ||
+        prev.height !== newBlobState.height
+          ? newBlobState
+          : prev
       );
 
-      // Main blob style
+      // --- Dispatch custom event for PhysicsNav ---
+      window.dispatchEvent(
+        new CustomEvent("blobmove", { detail: newBlobState })
+      );
+
+      // --- Main blob style ---
       if (blobRef.current) {
         blobRef.current.style.transform = `translate(-50%, -50%) translate(${lastX}px, ${lastY}px) scale(${stretchX}, ${stretchY})`;
         blobRef.current.style.transition =
@@ -155,7 +160,7 @@ const BlobFollower: React.FC<{ className?: string }> = ({ className = "" }) => {
         blobRef.current.style.opacity = "1";
         blobRef.current.style.display = "flex";
       }
-      // Trailing blob 2 style
+      // --- Trailing blob 2 style ---
       if (blobRef2.current) {
         blobRef2.current.style.transform = `translate(-50%, -50%) translate(${lastX2}px, ${lastY2}px) scale(0.7, 0.7)`;
         blobRef2.current.style.transition =
@@ -163,7 +168,7 @@ const BlobFollower: React.FC<{ className?: string }> = ({ className = "" }) => {
         blobRef2.current.style.opacity = "0.7";
         blobRef2.current.style.display = "flex";
       }
-      // Trailing blob 3 style
+      // --- Trailing blob 3 style ---
       if (blobRef3.current) {
         blobRef3.current.style.transform = `translate(-50%, -50%) translate(${lastX3}px, ${lastY3}px) scale(0.5, 0.5)`;
         blobRef3.current.style.transition =
@@ -174,7 +179,7 @@ const BlobFollower: React.FC<{ className?: string }> = ({ className = "" }) => {
       requestAnimationFrame(animate);
     }
     animate();
-  }, [hovered, targetPos, mouseActive, isMobile]);
+  }, [hovered, targetPos, isMobile]);
 
   // --- Render ---
   return (
@@ -213,8 +218,8 @@ const BlobFollower: React.FC<{ className?: string }> = ({ className = "" }) => {
         ref={blobRef2}
         className={`fixed top-0 left-0 pointer-events-none ${className}`}
         style={{
-          width: hovered ? (isMobile ? 60 : 80) : isMobile ? 40 : 60,
-          height: hovered ? (isMobile ? 60 : 80) : isMobile ? 40 : 60,
+          width: getBlob2Size(hovered, isMobile),
+          height: getBlob2Size(hovered, isMobile),
           borderRadius: "50%",
           background: KIWI_GREEN,
           boxShadow: "0 4px 16px 0 rgba(140, 220, 0, 0.2)",
@@ -232,8 +237,8 @@ const BlobFollower: React.FC<{ className?: string }> = ({ className = "" }) => {
         ref={blobRef3}
         className={`fixed top-0 left-0 pointer-events-none ${className}`}
         style={{
-          width: hovered ? (isMobile ? 30 : 40) : isMobile ? 20 : 30,
-          height: hovered ? (isMobile ? 30 : 40) : isMobile ? 20 : 30,
+          width: getBlob3Size(hovered, isMobile),
+          height: getBlob3Size(hovered, isMobile),
           borderRadius: "50%",
           background: KIWI_GREEN,
           boxShadow: "0 2px 8px 0 rgba(140, 220, 0, 0.1)",

@@ -1,6 +1,6 @@
-import PhysicsNav from "./components/PhysicsNav";
+import Physics from "./components/Physics";
 
 export default function Home() {
-  return <PhysicsNav />;
+  return <Physics />;
   // Only the Matter.js scene
 }

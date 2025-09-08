@@ -1,7 +1,8 @@
 "use client";
-import { useEffect } from "react";
-import { createContext, useContext, useState } from "react";
 
+import { createContext, useContext, useState, useEffect } from "react";
+
+// --- Types ---
 interface BlobHoverContextType {
   hovered: boolean;
   hoveredText: string;
@@ -14,23 +15,28 @@ interface BlobHoverContextType {
   ) => void;
   startTransition: () => void;
   endTransition: () => void;
-  navigate: (link: string) => void; // <- add this
+  navigate: (link: string) => void;
 }
 
+// --- Context ---
 const BlobHoverContext = createContext<BlobHoverContextType | undefined>(
   undefined
 );
 
+// --- Hook ---
 export const useBlobHover = () => {
   const context = useContext(BlobHoverContext);
-  if (!context)
+  if (!context) {
     throw new Error("useBlobHover must be used within BlobHoverProvider");
+  }
   return context;
 };
 
+// --- Provider ---
 export const BlobHoverProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  // --- State ---
   const [hovered, setHoveredState] = useState(false);
   const [hoveredText, setHoveredText] = useState("");
   const [targetPos, setTargetPos] = useState<{ x: number; y: number } | null>(
@@ -41,6 +47,7 @@ export const BlobHoverProvider: React.FC<{ children: React.ReactNode }> = ({
     null
   );
 
+  // --- Navigation ---
   const navigate = (link: string) => setPendingNavigation(link);
 
   useEffect(() => {
@@ -53,6 +60,7 @@ export const BlobHoverProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [pendingNavigation]);
 
+  // --- Handlers ---
   const setHovered = (
     h: boolean,
     text?: string,
@@ -66,19 +74,21 @@ export const BlobHoverProvider: React.FC<{ children: React.ReactNode }> = ({
   const startTransition = () => setIsTransitioning(true);
   const endTransition = () => setIsTransitioning(false);
 
+  // --- Context Value ---
+  const value: BlobHoverContextType = {
+    hovered,
+    hoveredText,
+    targetPos,
+    isTransitioning,
+    setHovered,
+    startTransition,
+    endTransition,
+    navigate,
+  };
+
+  // --- Render ---
   return (
-    <BlobHoverContext.Provider
-      value={{
-        hovered,
-        hoveredText,
-        targetPos,
-        isTransitioning,
-        setHovered,
-        startTransition,
-        endTransition,
-        navigate, // <- provide here
-      }}
-    >
+    <BlobHoverContext.Provider value={value}>
       {children}
     </BlobHoverContext.Provider>
   );
