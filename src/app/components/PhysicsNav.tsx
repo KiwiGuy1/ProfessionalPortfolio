@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Matter from "matter-js";
 import "./physics.css";
 
+// --- Constants ---
 const NAME = "Joseph Gutierrez";
 const BALL_COUNT = 8;
 const BALL_RADIUS = 40;
@@ -11,9 +12,113 @@ const LETTER_WIDTH = 32;
 const LETTER_HEIGHT = 48;
 const LETTER_SPACING = 32;
 
+// --- Types ---
 type FallenLetter = { index: number; x: number; y: number };
 
+// --- Helpers ---
+function calculateLetterPositions(letters: string[]) {
+  if (typeof window === "undefined") return [];
+  const width = window.innerWidth;
+  const totalWidth = letters.length * (LETTER_WIDTH + LETTER_SPACING);
+  const startX = width / 2 - totalWidth / 2;
+  const y = window.innerHeight / 3;
+  return letters.map((_, i) => ({
+    x: startX + i * (LETTER_WIDTH + LETTER_SPACING) + LETTER_WIDTH / 2,
+    y,
+  }));
+}
+
+// --- Subcomponents ---
+function LettersOverlay({
+  letters,
+  letterPositions,
+  fallenLetters,
+  returningLetters,
+  onHover,
+}: {
+  letters: string[];
+  letterPositions: { x: number; y: number }[];
+  fallenLetters: FallenLetter[];
+  returningLetters: number[];
+  onHover: (index: number) => void;
+}) {
+  return (
+    <>
+      {letterPositions.length > 0 &&
+        letters.map((char, i) => {
+          const isFallen = fallenLetters.some((l) => l.index === i);
+          const isReturning = returningLetters.includes(i);
+          const { x, y } = letterPositions[i];
+          return (
+            <span
+              key={i}
+              className={`text-8xl font-extrabold mx-1 cursor-pointer ${
+                isReturning ? "text-blue-500" : "text-gray-400"
+              }`}
+              style={{
+                position: "absolute",
+                left: `${x}px`,
+                top: `${y}px`,
+                transform: isReturning
+                  ? "translate(-50%, -50%) scale(1.2)"
+                  : "translate(-50%, -50%) scale(1)",
+                opacity: isFallen && !isReturning ? 0 : 1,
+                pointerEvents: isFallen && !isReturning ? "none" : "auto",
+                transition: isReturning
+                  ? "transform 0.7s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s"
+                  : "none",
+                userSelect: "none",
+                zIndex: 20,
+              }}
+              onMouseEnter={() => onHover(i)}
+            >
+              {char === " " ? "\u00A0" : char}
+            </span>
+          );
+        })}
+    </>
+  );
+}
+
+function FallenLetters({
+  fallenLetters,
+  returningLetters,
+  letters,
+}: {
+  fallenLetters: FallenLetter[];
+  returningLetters: number[];
+  letters: string[];
+}) {
+  return (
+    <>
+      {fallenLetters.map(
+        ({ index, x, y }) =>
+          !returningLetters.includes(index) && (
+            <span
+              key={index}
+              id={`falling-letter-${index}`}
+              className="text-8xl font-extrabold text-gray-900 mx-1 pointer-events-none"
+              style={{
+                position: "absolute",
+                left: `${x}px`,
+                top: `${y}px`,
+                transform: "translate(-50%, -50%)",
+                zIndex: 30,
+                transition: "none",
+                userSelect: "none",
+              }}
+            >
+              {letters[index] === " " ? "\u00A0" : letters[index]}
+            </span>
+          )
+      )}
+    </>
+  );
+}
+
+// --- Main Component ---
 const PhysicsNav: React.FC = () => {
+  // --- State ---
   const sceneRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
   const [fallenLetters, setFallenLetters] = useState<FallenLetter[]>([]);
@@ -23,33 +128,21 @@ const PhysicsNav: React.FC = () => {
   const [returningLetters, setReturningLetters] = useState<number[]>([]);
   const letterBodiesRef = useRef<{ [key: number]: Matter.Body }>({});
   const engineRef = useRef<Matter.Engine | null>(null);
-
   const letters = NAME.split("");
 
-  // Calculate letter positions based on viewport size
-  const calculateLetterPositions = () => {
-    if (typeof window === "undefined") return [];
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-    const totalWidth = letters.length * (LETTER_WIDTH + LETTER_SPACING);
-    const startX = width / 2 - totalWidth / 2;
-    const y = height / 3;
-    return letters.map((_, i) => ({
-      x: startX + i * (LETTER_WIDTH + LETTER_SPACING) + LETTER_WIDTH / 2,
-      y,
-    }));
-  };
-
+  // --- Effects ---
   // Set letter positions on mount and resize
   useEffect(() => {
     setMounted(true);
-    const updatePositions = () =>
-      setLetterPositions(calculateLetterPositions());
+    function updatePositions() {
+      setLetterPositions(calculateLetterPositions(letters));
+    }
     updatePositions();
     window.addEventListener("resize", updatePositions);
     return () => window.removeEventListener("resize", updatePositions);
   }, []);
 
+  // Physics setup
   useEffect(() => {
     if (!mounted || !sceneRef.current || letterPositions.length === 0) return;
 
@@ -117,7 +210,7 @@ const PhysicsNav: React.FC = () => {
     function handleMouseMove(e: MouseEvent) {
       const mouseX = e.clientX;
       const mouseY = e.clientY;
-      Object.entries(letterBodiesRef.current).forEach(([key, body]) => {
+      Object.entries(letterBodiesRef.current).forEach(([, body]) => {
         if (
           mouseX > body.position.x - LETTER_WIDTH / 2 &&
           mouseX < body.position.x + LETTER_WIDTH / 2 &&
@@ -168,11 +261,10 @@ const PhysicsNav: React.FC = () => {
     };
   }, [mounted, letterPositions.length]);
 
-  // Only spawn physics bodies for fallen letters that are not returning
+  // Spawn and remove physics bodies for fallen/returning letters
   useEffect(() => {
     if (!engineRef.current) return;
 
-    // Only add physics bodies for newly fallen letters that are not returning
     fallenLetters.forEach(({ index, x, y }) => {
       if (
         !returningLetters.includes(index) &&
@@ -192,15 +284,16 @@ const PhysicsNav: React.FC = () => {
           }
         );
         letterBodiesRef.current[index] = body;
-        Matter.Composite.add(engineRef.current.world, body);
+        if (engineRef.current) {
+          Matter.Composite.add(engineRef.current.world, body);
+        }
       }
     });
 
-    // Remove physics bodies for letters that are now returning
     returningLetters.forEach((index) => {
       if (letterBodiesRef.current[index]) {
         Matter.Composite.remove(
-          engineRef.current.world,
+          engineRef.current!.world,
           letterBodiesRef.current[index]
         );
         delete letterBodiesRef.current[index];
@@ -208,17 +301,16 @@ const PhysicsNav: React.FC = () => {
     });
   }, [fallenLetters, returningLetters, letterPositions]);
 
-  // Scroll logic for returning/flying/falling letters
+  // Wheel/touch scroll logic for returning/flying/falling letters
   useEffect(() => {
     let wheelTimeout: NodeJS.Timeout | null = null;
 
     function handleWheel() {
       if (fallenLetters.length > 0) {
-        // Remove physics bodies for all fallen letters
         fallenLetters.forEach(({ index }) => {
           if (letterBodiesRef.current[index]) {
             Matter.Composite.remove(
-              engineRef.current?.world,
+              engineRef.current!.world,
               letterBodiesRef.current[index]
             );
             delete letterBodiesRef.current[index];
@@ -226,12 +318,11 @@ const PhysicsNav: React.FC = () => {
         });
         setReturningLetters(fallenLetters.map((l) => l.index));
 
-        // After animation, reset fallen/returning state
         if (wheelTimeout) clearTimeout(wheelTimeout);
         wheelTimeout = setTimeout(() => {
           setFallenLetters([]);
           setReturningLetters([]);
-        }, 700); // Match your transition duration
+        }, 700);
       }
     }
 
@@ -250,7 +341,7 @@ const PhysicsNav: React.FC = () => {
     };
   }, [fallenLetters]);
 
-  // Handler for when a letter is hovered
+  // --- Handlers ---
   const handleLetterHover = (index: number) => {
     if (
       !fallenLetters.some((l) => l.index === index) &&
@@ -262,6 +353,7 @@ const PhysicsNav: React.FC = () => {
     }
   };
 
+  // --- Render ---
   return (
     <div
       ref={sceneRef}
@@ -272,62 +364,18 @@ const PhysicsNav: React.FC = () => {
         overflow: "hidden",
       }}
     >
-      {/* Overlay letters that haven't fallen yet or are returning */}
-      {letterPositions.length > 0 &&
-        letters.map((char, i) => {
-          const isFallen = fallenLetters.some((l) => l.index === i);
-          const isReturning = returningLetters.includes(i);
-          const { x, y } = letterPositions[i];
-          // Animate fly-back with transform
-          return (
-            <span
-              key={i}
-              className={`text-8xl font-extrabold mx-1 cursor-pointer ${
-                isReturning ? "text-blue-500" : "text-gray-400"
-              }`}
-              style={{
-                position: "absolute",
-                left: `${x}px`,
-                top: `${y}px`,
-                transform: isReturning
-                  ? "translate(-50%, -50%) scale(1.2)"
-                  : "translate(-50%, -50%) scale(1)",
-                opacity: isFallen && !isReturning ? 0 : 1,
-                pointerEvents: isFallen && !isReturning ? "none" : "auto",
-                transition: isReturning
-                  ? "transform 0.7s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s"
-                  : "none",
-                userSelect: "none",
-                zIndex: 20,
-              }}
-              onMouseEnter={() => handleLetterHover(i)}
-            >
-              {char === " " ? "\u00A0" : char}
-            </span>
-          );
-        })}
-      {/* Render fallen letters as absolutely positioned HTML */}
-      {fallenLetters.map(
-        ({ index, x, y }) =>
-          !returningLetters.includes(index) && (
-            <span
-              key={index}
-              id={`falling-letter-${index}`}
-              className="text-8xl font-extrabold text-gray-900 mx-1 pointer-events-none"
-              style={{
-                position: "absolute",
-                left: `${x}px`,
-                top: `${y}px`,
-                transform: "translate(-50%, -50%)",
-                zIndex: 30,
-                transition: "none",
-                userSelect: "none",
-              }}
-            >
-              {letters[index] === " " ? "\u00A0" : letters[index]}
-            </span>
-          )
-      )}
+      <LettersOverlay
+        letters={letters}
+        letterPositions={letterPositions}
+        fallenLetters={fallenLetters}
+        returningLetters={returningLetters}
+        onHover={handleLetterHover}
+      />
+      <FallenLetters
+        fallenLetters={fallenLetters}
+        returningLetters={returningLetters}
+        letters={letters}
+      />
     </div>
   );
 };

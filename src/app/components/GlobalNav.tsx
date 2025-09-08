@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useBlobHover } from "./BlobHoverContext";
 import { useRef } from "react";
+import Link from "next/link";
 import "./physics.css";
 
 const navItems = [
@@ -30,7 +31,7 @@ export default function GlobalNav({ onNavigate }: GlobalNavProps) {
       <span className="kiwi-text">KIWI</span>
       <nav className="nav">
         {navItems.map((item, i) => (
-          <a
+          <Link
             key={item.text}
             href={item.link}
             ref={(el) => {
@@ -51,11 +52,9 @@ export default function GlobalNav({ onNavigate }: GlobalNavProps) {
             }}
             onMouseLeave={() => setHovered(false)}
             className="nav-link"
-            // Remove zIndex from individual links, let the parent handle stacking
-            style={{}}
           >
             {item.text}
-          </a>
+          </Link>
         ))}
       </nav>
     </motion.div>
