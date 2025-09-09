@@ -9,6 +9,10 @@ import GlobalNav from "./components/GlobalNav";
 
 const ANIMATION_DURATION = 0.5; // seconds
 
+function wait(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export default function ClientLayout({
   children,
 }: {
@@ -18,10 +22,40 @@ export default function ClientLayout({
   const pathname = usePathname();
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [pendingRoute, setPendingRoute] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+  const [bgReady, setBgReady] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  // --- Loading state for preloading ---
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function preload() {
+      const bgUrl = "/img/green.jpeg";
+      await new Promise((resolve) => {
+        const img = new window.Image();
+        img.src = bgUrl;
+        img.onload = () => {
+          setBgReady(true); // Mark background as ready
+          resolve();
+        };
+        img.onerror = resolve;
+      });
+
+      await wait(2000); // 2 seconds
+
+      setLoading(false);
+    }
+    preload();
+  }, []);
 
   // Custom navigation handler
-  const handleNavigate = (href: string) => {
+  const handleNavigate = async (href: string) => {
+    if (loading) return; // Block navigation until loaded
     if (href === pathname) return;
+    await router.prefetch(href); // Preload the route!
     setOverlayVisible(true);
     setPendingRoute(href);
   };
@@ -49,22 +83,45 @@ export default function ClientLayout({
 
   return (
     <BlobHoverProvider>
-      {/* Overlay first, lower z-index */}
-      <motion.div
-        initial={false}
-        animate={{ opacity: overlayVisible ? 1 : 0 }}
-        transition={{ duration: ANIMATION_DURATION, ease: "easeInOut" }}
-        style={{
-          pointerEvents: "none", // Overlay doesn't block nav
-        }}
-        className="fixed inset-0 z-40 bg-black"
-      />
-      {/* Nav above overlay */}
-      <GlobalNav onNavigate={handleNavigate} />
-      <BlobFollower className="z-60" />
-      <div className="relative min-h-screen w-full">
-        <div>{children}</div>
-      </div>
+      {mounted ? (
+        <>
+          {loading && (
+            <motion.div
+              initial={{ opacity: 1 }}
+              animate={{ opacity: loading ? 1 : 0 }}
+              transition={{ duration: 0.5 }}
+              className="fixed inset-0 z-[100] bg-black flex items-center justify-center"
+            >
+              <span className="text-4xl text-white font-bold">Loading...</span>
+            </motion.div>
+          )}
+          <motion.div
+            initial={false}
+            animate={{ opacity: overlayVisible ? 1 : 0 }}
+            transition={{ duration: ANIMATION_DURATION, ease: "easeInOut" }}
+            style={{
+              pointerEvents: "none",
+            }}
+            className="fixed inset-0 z-40 bg-black"
+          />
+          <GlobalNav onNavigate={handleNavigate} />
+          <BlobFollower className="z-60" />
+          <div
+            className="relative min-h-screen w-full"
+            style={
+              bgReady
+                ? {
+                    backgroundImage: 'url("/img/green.jpeg")',
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }
+                : {}
+            }
+          >
+            {!loading && <div>{children}</div>}
+          </div>
+        </>
+      ) : null}
     </BlobHoverProvider>
   );
 }
