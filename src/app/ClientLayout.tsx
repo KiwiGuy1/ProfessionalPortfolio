@@ -6,9 +6,14 @@ import { motion } from "framer-motion";
 import { BlobHoverProvider } from "./components/BlobHoverContext";
 import BlobFollower from "./components/BlobFollower";
 import GlobalNav from "./components/GlobalNav";
+import { Bebas_Neue } from "next/font/google";
 
 const ANIMATION_DURATION = 0.5; // seconds
-
+const bebas = Bebas_Neue({
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
+});
 function wait(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -39,9 +44,9 @@ export default function ClientLayout({
         img.src = bgUrl;
         img.onload = () => {
           setBgReady(true); // Mark background as ready
-          resolve();
+          resolve(undefined);
         };
-        img.onerror = resolve;
+        img.onerror = () => resolve(undefined);
       });
 
       await wait(2000); // 2 seconds
@@ -109,16 +114,18 @@ export default function ClientLayout({
           <div
             className="relative min-h-screen w-full"
             style={
-              bgReady
-                ? {
-                    backgroundImage: 'url("/img/green.jpeg")',
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                  }
-                : {}
+              {
+                // Background image and related styles removed
+              }
             }
           >
-            {!loading && <div>{children}</div>}
+            {!loading && (
+              <div>
+                <span className={bebas.className + " text-8xl font-extrabold"}>
+                  {children}
+                </span>
+              </div>
+            )}
           </div>
         </>
       ) : null}
