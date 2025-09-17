@@ -38,10 +38,10 @@ const Physics: React.FC = () => {
   const [currentPositions, setCurrentPositions] = useState<
     { x: number; y: number }[]
   >([]);
-  const [isDragging, setIsDragging] = useState(false);
-  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [isDragging] = useState(false);
+  // Removed unused draggedIndex state
   const letters = NAME.split("");
-  const { setHovered, hovered, hoveredText, targetPos } = useBlobHover();
+  const { setHovered } = useBlobHover();
 
   useEffect(() => {
     if (!sceneRef.current) return;
@@ -125,18 +125,6 @@ const Physics: React.FC = () => {
     Matter.Composite.add(engine.world, mouseConstraint);
     mouseConstraintRef.current = mouseConstraint;
     render.mouse = mouse;
-
-    // Listen for drag start/end
-    Matter.Events.on(mouseConstraint, "startdrag", (event) => {
-      setIsDragging(true);
-      const body = event.source.body;
-      const index = letterBodiesRef.current.findIndex((b) => b === body);
-      setDraggedIndex(index);
-    });
-    Matter.Events.on(mouseConstraint, "enddrag", () => {
-      setIsDragging(false);
-      setDraggedIndex(null);
-    });
 
     // Use Matter.js mousemove for hover detection
     Matter.Events.on(mouseConstraint, "mousemove", (event) => {
@@ -222,17 +210,6 @@ const Physics: React.FC = () => {
   // --- RENDER HTML ---
   const totalNameWidth = letters.length * (LETTER_WIDTH + LETTER_SPACING);
 
-  // Blob position: show on hover or while dragging
-  let blobPos = null;
-  let blobText = "";
-  if (isDragging && draggedIndex !== null && currentPositions[draggedIndex]) {
-    blobPos = currentPositions[draggedIndex];
-    blobText = letters[draggedIndex];
-  } else if (hovered && targetPos) {
-    blobPos = targetPos;
-    blobText = hoveredText;
-  }
-
   return (
     <div
       ref={sceneRef}
@@ -273,56 +250,23 @@ const Physics: React.FC = () => {
               top: `${pos.y}px`,
               color: COLORS.letter,
               textShadow: `
-                0 0 8px ${COLORS.letterShadow},
-                0 0 16px ${COLORS.letterShadow},
-                0 0 24px ${COLORS.letterShadow}
-              `,
+              0 0 8px ${COLORS.letterShadow},
+              0 0 16px ${COLORS.letterShadow},
+              0 0 24px ${COLORS.letterShadow}
+            `,
               transform: "translate(-50%, -50%)",
               userSelect: "none",
               zIndex: 2,
               cursor: "pointer",
-              pointerEvents: "none", // overlays never block pointer events!
+              pointerEvents: "none",
             }}
           >
             {char === " " ? "\u00A0" : char}
           </span>
         );
       })}
-      {/* Blob hover effect or drag effect */}
-      {blobPos && (
-        <div
-          style={{
-            position: "absolute",
-            left: `${blobPos.x}px`,
-            top: `${blobPos.y}px`,
-            width: "120px",
-            height: "120px",
-            background: "rgba(140,229,63,0.2)",
-            borderRadius: "50%",
-            transform: "translate(-50%, -50%)",
-            pointerEvents: "none",
-            zIndex: 10,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            transition: "background 0.2s",
-          }}
-        >
-          <span
-            style={{
-              color: "#222",
-              fontWeight: "bold",
-              fontSize: "2rem",
-              textAlign: "center",
-              width: "100%",
-            }}
-          >
-            {blobText}
-          </span>
-        </div>
-      )}
+      {/* No blob follower/cursor here */}
     </div>
   );
 };
-
 export default Physics;

@@ -3,12 +3,12 @@ import { useBlobHover } from "./BlobHoverContext";
 
 // --- Default Config ---
 const DEFAULT_COLORS = {
-  main: "#000",
+  main: "#FFF",
   shadowMain: "#000",
-  shadow2: "rgba(140, 220, 0, 0.2)",
-  shadow3: "rgba(140, 220, 0, 0.1)",
-  text: "#fff",
-  textShadow: "#6a9c00",
+  shadow2: "#FFF",
+  shadow3: "FFF",
+  text: "#000",
+  textShadow: "#FFF",
 };
 const DEFAULT_SIZES = {
   main: { base: 50, hover: 140, mobileBase: 60, mobileHover: 100 },
@@ -43,6 +43,7 @@ interface BlobFollowerProps {
   sizes?: Partial<typeof DEFAULT_SIZES>;
   showText?: boolean;
   trailingBlobs?: number; // 0, 1, 2
+  onSingleLetterHover?: (isSingle: boolean) => void;
 }
 
 const BlobFollower: React.FC<BlobFollowerProps> = ({
@@ -51,6 +52,7 @@ const BlobFollower: React.FC<BlobFollowerProps> = ({
   sizes = {},
   showText = true,
   trailingBlobs = 2,
+  onSingleLetterHover,
 }) => {
   // --- Merge configs ---
   const mergedColors = { ...DEFAULT_COLORS, ...colors };
@@ -78,6 +80,7 @@ const BlobFollower: React.FC<BlobFollowerProps> = ({
 
   // --- State ---
   const [isMobile, setIsMobile] = useState(false);
+  const [isSingleLetterHovered, setIsSingleLetterHovered] = useState(false);
 
   // --- Effects ---
   useEffect(() => {
@@ -112,6 +115,14 @@ const BlobFollower: React.FC<BlobFollowerProps> = ({
       window.removeEventListener("mousemove", handleMouseMove);
     };
   }, []);
+
+  useEffect(() => {
+    const isSingle = !!(hovered && hoveredText && hoveredText.length === 1);
+    setIsSingleLetterHovered(isSingle);
+    if (onSingleLetterHover) {
+      onSingleLetterHover(isSingle);
+    }
+  }, [hovered, hoveredText, onSingleLetterHover]);
 
   // --- Animation loop (no setState inside loop, so no rerender) ---
   useEffect(() => {
@@ -215,16 +226,50 @@ const BlobFollower: React.FC<BlobFollowerProps> = ({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          fontSize: hovered && showText ? 15 : 0,
-          color: mergedColors.text,
-          fontWeight: 700,
-          letterSpacing: 2,
-          textShadow: hovered ? `0 2px 8px ${mergedColors.textShadow}` : "none",
           userSelect: "none",
           opacity: 1,
         }}
       >
-        {hovered && showText && hoveredText}
+        {hovered && showText && (
+          <span
+            style={
+              isSingleLetterHovered
+                ? {
+                    color: "#222",
+                    fontWeight: 800,
+                    fontSize: "4.5rem",
+                    fontFamily: "Inter, Arial, sans-serif",
+                    textTransform: "uppercase",
+                    textShadow: `
+            0 0 8px #000,
+            0 0 16px #000,
+            0 0 24px #000
+          `,
+                    userSelect: "none",
+                    zIndex: 2,
+                    cursor: "pointer",
+                    pointerEvents: "none",
+                    transition: "font-size 0.2s, color 0.2s, text-shadow 0.2s",
+                    // REMOVE transform: "translate(-50%, -50%)"
+                  }
+                : {
+                    color: mergedColors.text,
+                    fontWeight: 700,
+                    fontSize: 15,
+                    letterSpacing: 2,
+                    textTransform: "none",
+                    fontFamily: "Inter, Arial, sans-serif",
+                    textShadow: hovered
+                      ? `0 2px 8px ${mergedColors.textShadow}`
+                      : "none",
+                    userSelect: "none",
+                    transition: "font-size 0.2s",
+                  }
+            }
+          >
+            {hoveredText}
+          </span>
+        )}
       </div>
       {/* Trailing Blob 2 */}
       {trailingBlobs > 0 && (
