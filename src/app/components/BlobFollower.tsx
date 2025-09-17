@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { useBlobHover } from "./BlobHoverContext";
 
 // --- Default Config ---
@@ -17,7 +17,16 @@ const DEFAULT_SIZES = {
 };
 
 // --- Helper ---
-function getBlobSize(hovered: boolean, isMobile: boolean, config: any) {
+function getBlobSize(
+  hovered: boolean,
+  isMobile: boolean,
+  config: {
+    base: number;
+    hover: number;
+    mobileBase: number;
+    mobileHover: number;
+  }
+) {
   return hovered
     ? isMobile
       ? config.mobileHover
@@ -45,11 +54,14 @@ const BlobFollower: React.FC<BlobFollowerProps> = ({
 }) => {
   // --- Merge configs ---
   const mergedColors = { ...DEFAULT_COLORS, ...colors };
-  const mergedSizes = {
-    main: { ...DEFAULT_SIZES.main, ...(sizes.main || {}) },
-    blob2: { ...DEFAULT_SIZES.blob2, ...(sizes.blob2 || {}) },
-    blob3: { ...DEFAULT_SIZES.blob3, ...(sizes.blob3 || {}) },
-  };
+  const mergedSizes = useMemo(
+    () => ({
+      main: { ...DEFAULT_SIZES.main, ...(sizes.main || {}) },
+      blob2: { ...DEFAULT_SIZES.blob2, ...(sizes.blob2 || {}) },
+      blob3: { ...DEFAULT_SIZES.blob3, ...(sizes.blob3 || {}) },
+    }),
+    [sizes]
+  );
 
   // --- Refs ---
   const blobRef = useRef<HTMLDivElement>(null);
