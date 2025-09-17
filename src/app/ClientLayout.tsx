@@ -28,7 +28,6 @@ export default function ClientLayout({
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [pendingRoute, setPendingRoute] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
-  const [bgReady, setBgReady] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -38,17 +37,6 @@ export default function ClientLayout({
 
   useEffect(() => {
     async function preload() {
-      const bgUrl = "/img/green.jpeg";
-      await new Promise((resolve) => {
-        const img = new window.Image();
-        img.src = bgUrl;
-        img.onload = () => {
-          setBgReady(true); // Mark background as ready
-          resolve(undefined);
-        };
-        img.onerror = () => resolve(undefined);
-      });
-
       await wait(2000); // 2 seconds
 
       setLoading(false);
