@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { BlobHoverProvider } from "./components/BlobHoverContext";
-import BlobFollower from "./components/BlobFollower";
+// import BlobFollower from "./components/BlobFollower";
 import GlobalNav from "./components/GlobalNav";
 import { Bebas_Neue } from "next/font/google";
 
