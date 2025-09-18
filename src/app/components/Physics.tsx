@@ -6,9 +6,9 @@ import { useBlobHover } from "./BlobHoverContext";
 
 const COLORS = {
   line: "#FFF",
-  letter: "#222",
-  letterShadow: "#000",
-  background: "#171717",
+  letter: "#141414",
+  letterShadow: "none",
+  background: "#EAE8FF",
 };
 
 const NAME = "Joseph Gutierrez";
@@ -85,8 +85,6 @@ const Physics: React.FC = () => {
     letterBodiesRef.current = letters.map((_, i) => {
       const { x, y } = letterPositions[i];
       return Matter.Bodies.rectangle(x, y, LETTER_WIDTH, LETTER_HEIGHT, {
-        restitution: 0.4,
-        friction: 0.2,
         render: {
           fillStyle: "rgba(0,0,0,0)",
           strokeStyle: "rgba(0,0,0,0)",
@@ -143,6 +141,7 @@ const Physics: React.FC = () => {
 
     // Runner & Render
     const runner = Matter.Runner.create();
+    runner.delta = 1000 / 120; // 120 FPS for smoother animation
     Matter.Runner.run(runner, engine);
     Matter.Render.run(render);
 
@@ -249,6 +248,7 @@ const Physics: React.FC = () => {
               left: `${pos.x}px`,
               top: `${pos.y}px`,
               color: COLORS.letter,
+              willChange: "transform",
               textShadow: `
               0 0 8px ${COLORS.letterShadow},
               0 0 16px ${COLORS.letterShadow},

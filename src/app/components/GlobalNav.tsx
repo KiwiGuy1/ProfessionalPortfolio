@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import { useBlobHover } from "./BlobHoverContext";
 import { useRef } from "react";
 import Link from "next/link";
 import "./physics.css";
@@ -16,7 +15,6 @@ interface GlobalNavProps {
 }
 
 export default function GlobalNav({ onNavigate }: GlobalNavProps) {
-  const { setHovered } = useBlobHover();
   const navRefs = useRef<HTMLAnchorElement[]>([]);
 
   return (
@@ -41,16 +39,6 @@ export default function GlobalNav({ onNavigate }: GlobalNavProps) {
               e.preventDefault();
               onNavigate(item.link);
             }}
-            onMouseEnter={() => {
-              const rect = navRefs.current[i]?.getBoundingClientRect();
-              if (rect) {
-                setHovered(true, item.text, {
-                  x: rect.left + rect.width / 2,
-                  y: rect.top + rect.height / 2,
-                });
-              }
-            }}
-            onMouseLeave={() => setHovered(false)}
             className="nav-link"
           >
             {item.text}

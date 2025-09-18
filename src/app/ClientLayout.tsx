@@ -28,6 +28,7 @@ export default function ClientLayout({
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [pendingRoute, setPendingRoute] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
+  const [showNav, setShowNav] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -64,6 +65,11 @@ export default function ClientLayout({
     }
   }, [overlayVisible, pendingRoute, router]);
 
+  useEffect(() => {
+    // Delay showing the nav by 2 seconds (adjust as needed)
+    const navTimer = setTimeout(() => setShowNav(true), 2500);
+    return () => clearTimeout(navTimer);
+  }, []);
   // When route changes, fade overlay out
   useEffect(() => {
     if (overlayVisible) {
@@ -97,8 +103,8 @@ export default function ClientLayout({
             }}
             className="fixed inset-0 z-40 bg-black"
           />
-          <GlobalNav onNavigate={handleNavigate} />
-          <BlobFollower className="z-60" />
+          {showNav && <GlobalNav onNavigate={handleNavigate} />}
+          {/* <Blob Follower className="z-60" /> */}
           <div
             className="relative min-h-screen w-full"
             style={

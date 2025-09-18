@@ -22,16 +22,8 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  cursor: none;
   scrollbar-width: none; /* Firefox */
   overflow-x: hidden;
-}
-
-body::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Edge */
-}
-.nav a {
-  cursor: none;
 }
 
 canvas {

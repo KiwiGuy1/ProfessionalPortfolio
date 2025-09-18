@@ -11,7 +11,7 @@ const DEFAULT_COLORS = {
   textShadow: "#FFF",
 };
 const DEFAULT_SIZES = {
-  main: { base: 50, hover: 140, mobileBase: 60, mobileHover: 100 },
+  main: { base: 50, hover: 100, mobileBase: 60, mobileHover: 100 },
   blob2: { base: 60, hover: 80, mobileBase: 40, mobileHover: 60 },
   blob3: { base: 30, hover: 40, mobileBase: 20, mobileHover: 30 },
 };
@@ -241,9 +241,9 @@ const BlobFollower: React.FC<BlobFollowerProps> = ({
                     fontFamily: "Inter, Arial, sans-serif",
                     textTransform: "uppercase",
                     textShadow: `
-            0 0 8px #000,
-            0 0 16px #000,
-            0 0 24px #000
+            0 0 2px #000,
+            0 0 2px #000,
+            0 0 4px #000
           `,
                     userSelect: "none",
                     zIndex: 2,
