@@ -65,7 +65,7 @@ const Physics: React.FC = () => {
 
     // Giant ball
     let ball: Matter.Body | null = null;
-    const ballDelay = setTimeout(() => {
+    setTimeout(() => {
       ball = Matter.Bodies.circle(
         width / 2 - 160, // center horizontally
         -BALL_RADIUS * 2, // start well above the screen
@@ -243,8 +243,6 @@ const Physics: React.FC = () => {
   }, [letters.length]);
 
   // --- RENDER HTML ---
-  const totalNameWidth = letters.length * (LETTER_WIDTH + LETTER_SPACING);
-
   return (
     <div
       ref={sceneRef}
