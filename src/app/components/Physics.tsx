@@ -96,7 +96,7 @@ const Physics: React.FC = () => {
       letters.length * LETTER_WIDTH + (letters.length - 1) * LETTER_SPACING;
     const ground = Matter.Bodies.rectangle(
       width / 2,
-      height - LINE_HEIGHT / 300,
+      height - LINE_HEIGHT / 2, // <-- always at the bottom
       totalNameWidth,
       LINE_HEIGHT,
       {
@@ -108,6 +108,7 @@ const Physics: React.FC = () => {
         label: "ground",
       }
     );
+
     groundRef.current = ground;
     Matter.Composite.add(engine.world, ground);
 
@@ -190,11 +191,10 @@ const Physics: React.FC = () => {
       const height = window.innerHeight;
       const totalNameWidth =
         letters.length * LETTER_WIDTH + (letters.length - 1) * LETTER_SPACING;
-      const lineY = Math.floor(height / 2);
-
+      const groundY = height - LINE_HEIGHT / 2;
       Matter.Body.setPosition(groundRef.current!, {
         x: width / 2,
-        y: lineY,
+        y: groundY,
       });
       Matter.Body.setVertices(
         groundRef.current!,
