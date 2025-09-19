@@ -67,11 +67,11 @@ const Physics: React.FC = () => {
     let ball: Matter.Body | null = null;
     const ballDelay = setTimeout(() => {
       ball = Matter.Bodies.circle(
-        width / 2 - 150, // center horizontally
+        width / 2 - 160, // center horizontally
         -BALL_RADIUS * 2, // start well above the screen
         BALL_RADIUS,
         {
-          restitution: 0.8,
+          restitution: 0.5,
           friction: 0.05,
           render: {
             fillStyle: "#FFF",
@@ -88,7 +88,7 @@ const Physics: React.FC = () => {
     const totalNameWidth = letters.length * (LETTER_WIDTH + LETTER_SPACING);
     const ground = Matter.Bodies.rectangle(
       width / 2, // center horizontally
-      height - LINE_HEIGHT / 3, // position so bottom edge touches the bottom
+      height - LINE_HEIGHT / 300, // position so bottom edge touches the bottom
       totalNameWidth, // width of the rectangle
       LINE_HEIGHT, // thickness (height) of the rectangle
       {
@@ -105,9 +105,22 @@ const Physics: React.FC = () => {
 
     // Letter bodies
     const letterPositions = calculateLetterPositions(letters);
-    letterBodiesRef.current = letters.map((_, i) => {
+    letterBodiesRef.current = letters.map((char, i) => {
       const { x, y } = letterPositions[i];
+      if (char === " ") {
+        // Space: create a sensor body (does not collide)
+        return Matter.Bodies.rectangle(x, y, LETTER_WIDTH, LETTER_HEIGHT, {
+          isSensor: true, // disables physical collision
+          render: {
+            fillStyle: "rgba(0,0,0,0)",
+            strokeStyle: "rgba(0,0,0,0)",
+          },
+        });
+      }
+      // Normal letter: regular body
       return Matter.Bodies.rectangle(x, y, LETTER_WIDTH, LETTER_HEIGHT, {
+        restitution: 0.4,
+        friction: 0.2,
         render: {
           fillStyle: "rgba(0,0,0,0)",
           strokeStyle: "rgba(0,0,0,0)",
