@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import Matter from "matter-js";
-import { useBlobHover } from "./BlobHoverContext";
 
 const COLORS = {
   line: "#FFF",
@@ -12,19 +11,29 @@ const COLORS = {
 };
 
 const NAME = "Joseph Gutierrez";
-const LETTER_WIDTH = 48;
-const LETTER_HEIGHT = 90;
-const LETTER_SPACING = 60;
+
+// Responsive sizes for mobile (except font)
+const isMobile = typeof window !== "undefined" && window.innerWidth < 600;
+const LETTER_WIDTH = isMobile ? 12 : 36;
+const LETTER_HEIGHT = isMobile ? 32 : 70;
+const LETTER_SPACING = isMobile
+  ? Math.max((window.innerWidth - 16 * NAME.length) / (NAME.length + 1), 6)
+  : 40;
 const LINE_HEIGHT =
-  typeof window !== "undefined" ? window.innerHeight / 2 : 400;
-const BALL_RADIUS = 80; // Giant ball radius
+  typeof window !== "undefined"
+    ? isMobile
+      ? window.innerHeight / 2.5
+      : window.innerHeight / 2
+    : 400;
+const BALL_RADIUS = isMobile ? 30 : 80;
 
 function calculateLetterPositions(letters: string[]) {
   if (typeof window === "undefined") return [];
   const width = window.innerWidth;
-  const totalWidth = letters.length * (LETTER_WIDTH + LETTER_SPACING);
-  const startX = width / 2 - totalWidth / 2;
-  const y = window.innerHeight / 3;
+  const totalWidth =
+    letters.length * LETTER_WIDTH + (letters.length - 1) * LETTER_SPACING;
+  const startX = Math.max(width / 2 - totalWidth / 2, 8);
+  const y = Math.max(window.innerHeight / 3, 40);
   return letters.map((_, i) => ({
     x: startX + i * (LETTER_WIDTH + LETTER_SPACING) + LETTER_WIDTH / 2,
     y,
@@ -40,10 +49,7 @@ const Physics: React.FC = () => {
   const [currentPositions, setCurrentPositions] = useState<
     { x: number; y: number }[]
   >([]);
-  const [isDragging] = useState(false);
-  // Removed unused draggedIndex state
   const letters = NAME.split("");
-  const { setHovered } = useBlobHover();
 
   useEffect(() => {
     if (!sceneRef.current) return;
@@ -56,10 +62,11 @@ const Physics: React.FC = () => {
       element: sceneRef.current,
       engine,
       options: {
-        width,
-        height,
+        width: window.innerWidth,
+        height: window.innerHeight,
         wireframes: false,
         background: "transparent",
+        pixelRatio: 1, // <-- Force pixel ratio to 1 for alignment
       },
     });
 
@@ -67,8 +74,8 @@ const Physics: React.FC = () => {
     let ball: Matter.Body | null = null;
     setTimeout(() => {
       ball = Matter.Bodies.circle(
-        width / 2 - 160, // center horizontally
-        -BALL_RADIUS * 2, // start well above the screen
+        width / 2 - (isMobile ? 80 : 160),
+        -BALL_RADIUS * 2,
         BALL_RADIUS,
         {
           restitution: 0.5,
@@ -80,17 +87,18 @@ const Physics: React.FC = () => {
           label: "giant-ball",
         }
       );
-      Matter.Body.setVelocity(ball, { x: 0, y: 25 }); // Fast downward velocity
+      Matter.Body.setVelocity(ball, { x: 0, y: isMobile ? 18 : 25 });
       Matter.Composite.add(engine.world, ball);
-    }, 1200); // Delay in ms (1.2 seconds)
+    }, 1200);
 
     // Ground line
-    const totalNameWidth = letters.length * (LETTER_WIDTH + LETTER_SPACING);
+    const totalNameWidth =
+      letters.length * LETTER_WIDTH + (letters.length - 1) * LETTER_SPACING;
     const ground = Matter.Bodies.rectangle(
-      width / 2, // center horizontally
-      height - LINE_HEIGHT / 300, // position so bottom edge touches the bottom
-      totalNameWidth, // width of the rectangle
-      LINE_HEIGHT, // thickness (height) of the rectangle
+      width / 2,
+      height - LINE_HEIGHT / 300,
+      totalNameWidth,
+      LINE_HEIGHT,
       {
         isStatic: true,
         render: {
@@ -108,16 +116,14 @@ const Physics: React.FC = () => {
     letterBodiesRef.current = letters.map((char, i) => {
       const { x, y } = letterPositions[i];
       if (char === " ") {
-        // Space: create a sensor body (does not collide)
         return Matter.Bodies.rectangle(x, y, LETTER_WIDTH, LETTER_HEIGHT, {
-          isSensor: true, // disables physical collision
+          isSensor: true,
           render: {
             fillStyle: "rgba(0,0,0,0)",
             strokeStyle: "rgba(0,0,0,0)",
           },
         });
       }
-      // Normal letter: regular body
       return Matter.Bodies.rectangle(x, y, LETTER_WIDTH, LETTER_HEIGHT, {
         restitution: 0.4,
         friction: 0.2,
@@ -130,7 +136,7 @@ const Physics: React.FC = () => {
     Matter.Composite.add(engine.world, letterBodiesRef.current);
 
     // Walls
-    const wallThickness = 20;
+    const wallThickness = isMobile ? 10 : 20;
     const leftWall = Matter.Bodies.rectangle(
       wallThickness / 2,
       height / 2,
@@ -147,7 +153,7 @@ const Physics: React.FC = () => {
     );
     Matter.Composite.add(engine.world, [leftWall, rightWall]);
 
-    // Mouse constraint for dragging
+    // Mouse/touch constraint for dragging (works for mobile and desktop)
     const mouse = Matter.Mouse.create(render.canvas);
     const mouseConstraint = Matter.MouseConstraint.create(engine, {
       mouse,
@@ -159,25 +165,9 @@ const Physics: React.FC = () => {
     Matter.Composite.add(engine.world, mouseConstraint);
     mouseConstraintRef.current = mouseConstraint;
     render.mouse = mouse;
-
-    // Use Matter.js mousemove for hover detection
-    Matter.Events.on(mouseConstraint, "mousemove", (event) => {
-      if (isDragging) return; // Don't show blob while dragging
-      const mousePosition = event.mouse.position;
-      const foundIndex = letterBodiesRef.current.findIndex((body) =>
-        Matter.Bounds.contains(body.bounds, mousePosition)
-      );
-      if (foundIndex !== -1) {
-        const pos = letterBodiesRef.current[foundIndex].position;
-        setHovered(true, letters[foundIndex], { x: pos.x, y: pos.y });
-      } else {
-        setHovered(false);
-      }
-    });
-
     // Runner & Render
     const runner = Matter.Runner.create();
-    runner.delta = 1000 / 120; // 120 FPS for smoother animation
+    runner.delta = 1000 / 120;
     Matter.Runner.run(runner, engine);
     Matter.Render.run(render);
 
@@ -198,10 +188,10 @@ const Physics: React.FC = () => {
     function handleResize() {
       const width = window.innerWidth;
       const height = window.innerHeight;
-      const totalNameWidth = letters.length * (LETTER_WIDTH + LETTER_SPACING);
+      const totalNameWidth =
+        letters.length * LETTER_WIDTH + (letters.length - 1) * LETTER_SPACING;
       const lineY = Math.floor(height / 2);
 
-      // Move ground
       Matter.Body.setPosition(groundRef.current!, {
         x: width / 2,
         y: lineY,
@@ -219,7 +209,6 @@ const Physics: React.FC = () => {
         )
       );
 
-      // Move letters to new positions
       const newPositions = calculateLetterPositions(letters);
       letterBodiesRef.current.forEach((body, i) => {
         Matter.Body.setPosition(body, {
@@ -253,6 +242,9 @@ const Physics: React.FC = () => {
         overflow: "hidden",
         background: COLORS.background,
         boxSizing: "border-box",
+        touchAction: "manipulation",
+        width: "100vw", // Ensure canvas fills horizontally
+        height: "100vh", // Ensure canvas fills vertically
       }}
     >
       {/* Letters */}
@@ -262,7 +254,7 @@ const Physics: React.FC = () => {
         return (
           <span
             key={i}
-            className="text-10xl font-extrabold"
+            className="font-extrabold"
             style={{
               position: "absolute",
               left: `${pos.x}px`,
@@ -270,15 +262,17 @@ const Physics: React.FC = () => {
               color: COLORS.letter,
               willChange: "transform",
               textShadow: `
-              0 0 8px ${COLORS.letterShadow},
-              0 0 16px ${COLORS.letterShadow},
-              0 0 24px ${COLORS.letterShadow}
-            `,
+      0 0 8px ${COLORS.letterShadow},
+      0 0 16px ${COLORS.letterShadow},
+      0 0 24px ${COLORS.letterShadow}
+    `,
               transform: "translate(-50%, -50%)",
               userSelect: "none",
               zIndex: 2,
               cursor: "pointer",
               pointerEvents: "none",
+              fontSize: `${LETTER_HEIGHT}px`, // font scales with body height
+              lineHeight: 1,
             }}
           >
             {char === " " ? "\u00A0" : char}
@@ -289,4 +283,5 @@ const Physics: React.FC = () => {
     </div>
   );
 };
+
 export default Physics;
