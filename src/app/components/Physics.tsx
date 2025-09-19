@@ -13,9 +13,11 @@ const COLORS = {
 
 const NAME = "Joseph Gutierrez";
 const LETTER_WIDTH = 48;
-const LETTER_HEIGHT = 64;
+const LETTER_HEIGHT = 90;
 const LETTER_SPACING = 60;
-const LINE_HEIGHT = 12;
+const LINE_HEIGHT =
+  typeof window !== "undefined" ? window.innerHeight / 2 : 400;
+const BALL_RADIUS = 80; // Giant ball radius
 
 function calculateLetterPositions(letters: string[]) {
   if (typeof window === "undefined") return [];
@@ -61,20 +63,41 @@ const Physics: React.FC = () => {
       },
     });
 
+    // Giant ball
+    let ball: Matter.Body | null = null;
+    const ballDelay = setTimeout(() => {
+      ball = Matter.Bodies.circle(
+        width / 2 - 150, // center horizontally
+        -BALL_RADIUS * 2, // start well above the screen
+        BALL_RADIUS,
+        {
+          restitution: 0.8,
+          friction: 0.05,
+          render: {
+            fillStyle: "#FFF",
+            strokeStyle: "#222",
+          },
+          label: "giant-ball",
+        }
+      );
+      Matter.Body.setVelocity(ball, { x: 0, y: 25 }); // Fast downward velocity
+      Matter.Composite.add(engine.world, ball);
+    }, 1200); // Delay in ms (1.2 seconds)
+
     // Ground line
     const totalNameWidth = letters.length * (LETTER_WIDTH + LETTER_SPACING);
-    const lineY = Math.floor(height / 2);
     const ground = Matter.Bodies.rectangle(
-      width / 2,
-      lineY,
-      totalNameWidth,
-      LINE_HEIGHT,
+      width / 2, // center horizontally
+      height - LINE_HEIGHT / 3, // position so bottom edge touches the bottom
+      totalNameWidth, // width of the rectangle
+      LINE_HEIGHT, // thickness (height) of the rectangle
       {
         isStatic: true,
         render: {
           fillStyle: COLORS.line,
           strokeStyle: COLORS.line,
         },
+        label: "ground",
       }
     );
     groundRef.current = ground;
@@ -221,20 +244,6 @@ const Physics: React.FC = () => {
         boxSizing: "border-box",
       }}
     >
-      {/* White line */}
-      <div
-        style={{
-          position: "absolute",
-          left: `calc(50% - ${totalNameWidth / 2}px)`,
-          width: `${totalNameWidth}px`,
-          height: `${LINE_HEIGHT}px`,
-          top: `${Math.floor(window.innerHeight / 2) - LINE_HEIGHT / 2}px`,
-          background: COLORS.line,
-          borderRadius: "6px",
-          zIndex: 1,
-          pointerEvents: "none",
-        }}
-      />
       {/* Letters */}
       {letters.map((char, i) => {
         const pos = currentPositions[i];
@@ -242,7 +251,7 @@ const Physics: React.FC = () => {
         return (
           <span
             key={i}
-            className="text-7xl font-extrabold"
+            className="text-10xl font-extrabold"
             style={{
               position: "absolute",
               left: `${pos.x}px`,
