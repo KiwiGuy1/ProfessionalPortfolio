@@ -24,7 +24,12 @@ export default function GlobalNav({ onNavigate }: GlobalNavProps) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 10 }}
       transition={{ duration: 1 }}
-      style={{ zIndex: 50, position: "fixed", width: "100%" }}
+      style={{
+        zIndex: 50,
+        touchAction: "none",
+        position: "fixed",
+        width: "100%",
+      }}
     >
       <span className="kiwi-text">KIWI</span>
       <nav className="nav">
