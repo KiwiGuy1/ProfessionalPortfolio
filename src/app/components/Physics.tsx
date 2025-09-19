@@ -242,9 +242,9 @@ const Physics: React.FC = () => {
         overflow: "hidden",
         background: COLORS.background,
         boxSizing: "border-box",
-        touchAction: "manipulation",
-        width: "100vw", // Ensure canvas fills horizontally
-        height: "100vh", // Ensure canvas fills vertically
+        touchAction: "none", // <-- Prevents scrolling on touch!
+        width: "100vw",
+        height: "100vh",
       }}
     >
       {/* Letters */}
