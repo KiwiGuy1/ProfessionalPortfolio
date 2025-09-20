@@ -3,8 +3,6 @@
 import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { BlobHoverProvider } from "./components/BlobHoverContext";
-// import BlobFollower from "./components/BlobFollower";
 import GlobalNav from "./components/GlobalNav";
 import { Bebas_Neue } from "next/font/google";
 
@@ -14,6 +12,7 @@ const bebas = Bebas_Neue({
   weight: "400",
   display: "swap",
 });
+
 function wait(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -26,20 +25,21 @@ export default function ClientLayout({
   const router = useRouter();
   const pathname = usePathname();
   const [overlayVisible, setOverlayVisible] = useState(false);
+  const [overlayShouldHide, setOverlayShouldHide] = useState(false);
   const [pendingRoute, setPendingRoute] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
   const [showNav, setShowNav] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-  // --- Loading state for preloading ---
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function preload() {
-      await wait(2000); // 2 seconds
+    setMounted(true);
+    const navTimer = setTimeout(() => setShowNav(true), 2000);
+    return () => clearTimeout(navTimer);
+  }, []);
 
+  useEffect(() => {
+    async function preload() {
+      await wait(2000); // Simulate loading
       setLoading(false);
     }
     preload();
@@ -47,42 +47,37 @@ export default function ClientLayout({
 
   // Custom navigation handler
   const handleNavigate = async (href: string) => {
-    if (loading) return; // Block navigation until loaded
-    if (href === pathname) return;
-    await router.prefetch(href); // Preload the route!
+    if (loading || href === pathname) return;
+    await router.prefetch(href);
     setOverlayVisible(true);
+    setOverlayShouldHide(false);
     setPendingRoute(href);
   };
 
-  // When overlay is fully opaque, route to new page
-  useEffect(() => {
+  // Use Framer Motion's animation complete for route change
+  const handleOverlayAnimationComplete = () => {
     if (overlayVisible && pendingRoute) {
-      const timer = setTimeout(() => {
-        router.push(pendingRoute);
-        setPendingRoute(null);
-      }, ANIMATION_DURATION * 1000);
-      return () => clearTimeout(timer);
+      router.push(pendingRoute);
+      setPendingRoute(null);
+      // Wait for new content to be ready, then fade out overlay
+      setTimeout(() => setOverlayShouldHide(true), 100); // Small delay for React to render new content
     }
-  }, [overlayVisible, pendingRoute, router]);
+  };
 
+  // Hide overlay after fade out
   useEffect(() => {
-    // Delay showing the nav by 2 seconds (adjust as needed)
-    const navTimer = setTimeout(() => setShowNav(true), 2500);
-    return () => clearTimeout(navTimer);
-  }, []);
-  // When route changes, fade overlay out
-  useEffect(() => {
-    if (overlayVisible) {
+    if (overlayShouldHide) {
       const timer = setTimeout(() => {
         setOverlayVisible(false);
+        setOverlayShouldHide(false);
       }, ANIMATION_DURATION * 1000);
       return () => clearTimeout(timer);
     }
-  }, [pathname, overlayVisible]);
+  }, [overlayShouldHide]);
 
   return (
-    <BlobHoverProvider>
-      {mounted ? (
+    <div>
+      {mounted && (
         <>
           {loading && (
             <motion.div
@@ -96,33 +91,24 @@ export default function ClientLayout({
           )}
           <motion.div
             initial={false}
-            animate={{ opacity: overlayVisible ? 1 : 0 }}
-            transition={{ duration: ANIMATION_DURATION, ease: "easeInOut" }}
-            style={{
-              pointerEvents: "none",
+            animate={{
+              opacity: overlayVisible ? (overlayShouldHide ? 0 : 1) : 0,
             }}
+            transition={{ duration: ANIMATION_DURATION, ease: "easeInOut" }}
+            style={{ pointerEvents: "none" }}
             className="fixed inset-0 z-40 bg-black"
+            onAnimationComplete={handleOverlayAnimationComplete}
           />
           {showNav && <GlobalNav onNavigate={handleNavigate} />}
-          {/* <Blob Follower className="z-60" /> */}
-          <div
-            className="relative min-h-screen w-full"
-            style={
-              {
-                // Background image and related styles removed
-              }
-            }
-          >
+          <div className="relative min-h-screen w-full">
             {!loading && (
-              <div>
-                <span className={bebas.className + " text-8xl font-extrabold"}>
-                  {children}
-                </span>
-              </div>
+              <span className={bebas.className + " text-8xl font-extrabold"}>
+                {children}
+              </span>
             )}
           </div>
         </>
-      ) : null}
-    </BlobHoverProvider>
+      )}
+    </div>
   );
 }
