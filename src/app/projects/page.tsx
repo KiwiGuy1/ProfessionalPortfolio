@@ -2,6 +2,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Inter } from "next/font/google";
+import ProjectsPhysics from "../components/projectsPhysics";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -39,8 +40,8 @@ const ProjectsPage: React.FC = () => {
             left: "40px",
             color: COLORS.letter,
             fontWeight: 400,
-            fontSize: "3.5rem",
-            minWidth: "220px",
+            fontSize: "2.5rem",
+            minWidth: "260px",
           }}
         >
           Portfolio
@@ -54,8 +55,8 @@ const ProjectsPage: React.FC = () => {
           className="absolute"
           style={{
             top: "200px",
-            right: "800px",
-            textAlign: "right",
+            right: "500px",
+            textAlign: "left",
           }}
         >
           <div
@@ -72,76 +73,50 @@ const ProjectsPage: React.FC = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 1.2, delay: 1.2 }}
             style={{
-              color: "#38405F",
+              color: "gray",
               fontWeight: 400,
-              fontSize: "1.25rem",
+              fontSize: "2.25rem",
               marginTop: "1rem",
             }}
           >
             An E-Commerce Analytics Dashboard
           </motion.div>
-        </motion.div>
-        {/* Info Box 1 */}
-        <motion.div
-          initial={{ x: 20, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 1.2, delay: 0.3 }}
-          className="absolute p-4 rounded"
-          style={{
-            top: "140px",
-            right: "40px",
-            background: COLORS.line,
-            color: COLORS.letter,
-            fontWeight: 700,
-            fontSize: "1rem",
-            boxShadow: `0 2px 16px ${COLORS.accent}22`,
-            minWidth: "180px",
-            textAlign: "right",
-          }}
-        >
-          <strong>Info Box 1</strong>
-          <br />
-          Add your own content here.
-        </motion.div>
-
-        {/* Info Box 2 */}
-        <motion.div
-          initial={{ x: 20, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 1.2, delay: 0.2 }}
-          className="absolute p-4 rounded"
-          style={{
-            top: "220px",
-            right: "40px",
-            background: COLORS.line,
-            color: COLORS.letter,
-            fontWeight: 700,
-            fontSize: "1rem",
-            boxShadow: `0 2px 16px ${COLORS.accent}22`,
-            minWidth: "180px",
-            textAlign: "right",
-          }}
-        >
-          <strong>Info Box 2</strong>
-          <br />
-          Add your own content here.
-        </motion.div>
-
-        {/* Description */}
-        <motion.div
-          initial={{ x: 20, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 1.2, delay: 0.1 }}
-          className="absolute"
-          style={{
-            top: "320px",
-            right: "40px",
-            color: COLORS.letter,
-            fontSize: "1rem",
-            textAlign: "right",
-          }}
-        >
-          Add a description or summary here.
+          <div className="relative pt-5 flex">
+            <motion.div
+              initial={{ x: 20, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 1.2, delay: 0.3 }}
+              className="rounded"
+              style={{
+                color: "#38405F",
+                fontWeight: 400,
+                fontSize: "1.75rem",
+                marginTop: "1rem",
+                textAlign: "left",
+              }}
+            >
+              <strong>Role</strong>
+              <br />
+              full-stack developer
+            </motion.div>
+            {/* <motion.div
+              initial={{ x: 20, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 1.2, delay: 0.2 }}
+              className="p-4 rounded"
+              style={{
+                color: "#38405F",
+                fontWeight: 400,
+                fontSize: "1.75rem",
+                marginTop: "1rem",
+                textAlign: "left",
+              }}
+            >
+              <strong>Strength</strong>
+              <br />
+              Add your own content here.
+            </motion.div> */}
+          </div>
         </motion.div>
 
         {/* Arrow Icon */}
@@ -162,22 +137,8 @@ const ProjectsPage: React.FC = () => {
         />
       </div>
 
-      {/* Video Embed Placeholder */}
-      <motion.div
-        initial={{ y: 40, scale: 0.8, opacity: 0 }}
-        animate={{ y: 0, scale: 1, opacity: 1 }}
-        transition={{ duration: 1.2, delay: 0.5 }}
-        className="mx-auto mt-16 w-[690px] h-[374px] rounded-lg overflow-hidden shadow-lg flex items-center justify-center"
-        style={{
-          background: COLORS.line,
-          boxShadow: `0 4px 32px ${COLORS.accent}22`,
-        }}
-      >
-        {/* Replace with your own video or image */}
-        <span style={{ color: COLORS.letter, fontSize: "1.25rem" }}>
-          Your media or embed here
-        </span>
-      </motion.div>
+      {/* Content above blur */}
+      <ProjectsPhysics />
     </div>
   );
 };
