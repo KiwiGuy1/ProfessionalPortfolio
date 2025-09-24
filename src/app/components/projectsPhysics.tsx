@@ -51,7 +51,6 @@ export default function ProjectPhysics() {
   const appRef = useRef<HTMLDivElement>(null);
   const [appKey, setAppKey] = useState(() => Date.now());
   const [texture, setTexture] = useState<Texture | null>(null); // <-- Texture state
-  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     Assets.load("/img/green.jpeg").then((loaded) => {
@@ -109,8 +108,8 @@ export default function ProjectPhysics() {
     update();
 
     // Mark as ready so canvas fades in
-    setReady(true);
-
+    // Mark as ready so canvas fades in
+    // setReady(true);
     // Cleanup
     return () => {
       if (animationFrameRef.current)
@@ -131,19 +130,19 @@ export default function ProjectPhysics() {
   // Attach MouseConstraint and scroll workaround
   useEffect(() => {
     let mouseConstraint: Matter.MouseConstraint | null = null;
-    let scrollTimeout: NodeJS.Timeout | null = null;
+    let scrollTimeout: NodeJS.Timeout | undefined = undefined;
     const appDiv = appRef.current; // Copy ref value at effect start
 
     function handleScroll() {
       const canvas = appDiv?.querySelector("canvas");
       if (!canvas) return;
-      canvas.style.pointerEvents = "none";
-      if (scrollTimeout !== null) {
+      if (canvas) {
+        canvas.style.pointerEvents = "none";
         clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+          canvas.style.pointerEvents = "auto";
+        }, 500);
       }
-      scrollTimeout = setTimeout(() => {
-        canvas.style.pointerEvents = "auto";
-      }, 500);
     }
 
     function attachMouse() {
