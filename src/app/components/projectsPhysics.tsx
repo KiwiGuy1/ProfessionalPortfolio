@@ -128,13 +128,15 @@ export default function ProjectPhysics() {
   // Attach MouseConstraint and scroll workaround
   useEffect(() => {
     let mouseConstraint: Matter.MouseConstraint | null = null;
-    let scrollTimeout: any = null;
+    let scrollTimeout: NodeJS.Timeout | null = null;
 
     function handleScroll() {
       const canvas = appRef.current?.querySelector("canvas");
       if (!canvas) return;
       canvas.style.pointerEvents = "none";
-      clearTimeout(scrollTimeout);
+      if (scrollTimeout !== null) {
+        clearTimeout(scrollTimeout);
+      }
       scrollTimeout = setTimeout(() => {
         canvas.style.pointerEvents = "auto";
       }, 500);
