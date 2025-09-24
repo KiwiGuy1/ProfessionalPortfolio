@@ -133,7 +133,7 @@ export default function ProjectPhysics() {
   useEffect(() => {
     let mouseConstraint: Matter.MouseConstraint | null = null;
     let scrollTimeout: NodeJS.Timeout | null = null;
-    const canvas = appRef.current?.querySelector("canvas");
+    const canvas = appRef.current?.querySelector("canvas"); // <--- assign once
 
     function handleScroll() {
       if (!canvas) return;
