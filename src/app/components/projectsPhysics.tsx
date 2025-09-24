@@ -2,8 +2,15 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import Matter from "matter-js";
-import { Application, extend } from "@pixi/react";
-import { Graphics, Container, Sprite, Texture, Assets } from "pixi.js";
+import { Application as PixiApplication, extend } from "@pixi/react";
+import {
+  Graphics,
+  Container,
+  Sprite,
+  Texture,
+  Assets,
+  Application,
+} from "pixi.js";
 
 extend({ Graphics, Container, Sprite, Texture });
 
@@ -31,7 +38,7 @@ function getSceneSize() {
 
 export default function ProjectPhysics() {
   const { width: SCENE_WIDTH, height: SCENE_HEIGHT } = getSceneSize();
-  const pixiAppRef = useRef<any>(null); // PixiJS Application ref
+  const pixiAppRef = useRef<Application | null>(null); // PixiJS Application ref
 
   const [rectPos, setRectPos] = useState<{
     x: number;
@@ -212,7 +219,7 @@ export default function ProjectPhysics() {
           overflow: "auto",
         }}
       >
-        <Application
+        <PixiApplication
           key={appKey}
           width={SCENE_WIDTH}
           height={SCENE_HEIGHT}
@@ -266,7 +273,7 @@ export default function ProjectPhysics() {
           >
             <pixiGraphics draw={drawStand} />
           </pixiContainer>
-        </Application>
+        </PixiApplication>
       </div>
     </div>
   );
