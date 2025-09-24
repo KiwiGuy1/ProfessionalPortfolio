@@ -18,16 +18,24 @@ const COLORS = {
   topBarBG: "#EAE8FF",
 };
 
+const isMobile =
+  typeof window !== "undefined" ? window.innerWidth < 600 : false;
+
 const ProjectsPage: React.FC = () => {
   return (
     <div
-      className={`relative w-full min-h-screen flex flex-col items-center overflow-hidden ${inter.className}`}
+      className={`relative w-full min-h-screen flex flex-col items-center overflow-x-hidden ${inter.className}`}
       style={{ background: COLORS.background }}
     >
-      {/* Top Section: Portfolio title left, content right (absolute for fine tuning) */}
+      {/* Top Section */}
       <div
-        className="w-full  bg-white rounded-lg shadow-lg py-12 px-8 relative min-h-[500px]"
-        style={{ background: COLORS.topBarBG }}
+        className="w-full bg-white rounded-lg shadow-lg py-8 px-4 relative"
+        style={{
+          background: COLORS.topBarBG,
+          minHeight: isMobile ? "320px" : "500px",
+          maxWidth: "100vw",
+          boxSizing: "border-box",
+        }}
       >
         {/* Portfolio Title */}
         <motion.div
@@ -36,34 +44,37 @@ const ProjectsPage: React.FC = () => {
           transition={{ duration: 1.2, delay: 0.1 }}
           className="absolute"
           style={{
-            top: "40px",
-            left: "40px",
+            top: isMobile ? "16px" : "40px",
+            left: isMobile ? "12px" : "40px",
             color: COLORS.letter,
             fontWeight: 400,
-            fontSize: "2.5rem",
-            minWidth: "260px",
+            fontSize: isMobile ? "1.5rem" : "2.5rem",
+            minWidth: isMobile ? "120px" : "260px",
           }}
         >
           Portfolio
         </motion.div>
 
-        {/* E-Commerce Analytic Dashboard */}
+        {/* ShopSight Title & Description */}
         <motion.div
           initial={{ x: 20, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 1.2, delay: 0.8 }}
           className="absolute"
           style={{
-            top: "200px",
-            right: "500px",
+            top: isMobile ? "60px" : "200px",
+            left: isMobile ? "12px" : undefined,
+            right: isMobile ? undefined : "500px",
             textAlign: "left",
+            width: isMobile ? "90vw" : undefined,
           }}
         >
           <div
             style={{
               color: COLORS.letter,
               fontWeight: 400,
-              fontSize: "6.25rem",
+              fontSize: isMobile ? "2.2rem" : "6.25rem",
+              wordBreak: "break-word",
             }}
           >
             ShopSight
@@ -75,13 +86,13 @@ const ProjectsPage: React.FC = () => {
             style={{
               color: "gray",
               fontWeight: 400,
-              fontSize: "2.25rem",
-              marginTop: "1rem",
+              fontSize: isMobile ? "1rem" : "2.25rem",
+              marginTop: "0.5rem",
             }}
           >
             An E-Commerce Analytics Dashboard
           </motion.div>
-          <div className="relative pt-5 flex">
+          <div className="relative pt-3 flex flex-col gap-2">
             <motion.div
               initial={{ x: 20, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
@@ -90,8 +101,8 @@ const ProjectsPage: React.FC = () => {
               style={{
                 color: "#38405F",
                 fontWeight: 400,
-                fontSize: "1.75rem",
-                marginTop: "1rem",
+                fontSize: isMobile ? "1rem" : "1.75rem",
+                marginTop: "0.5rem",
                 textAlign: "left",
               }}
             >
@@ -99,23 +110,6 @@ const ProjectsPage: React.FC = () => {
               <br />
               full-stack developer
             </motion.div>
-            {/* <motion.div
-              initial={{ x: 20, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ duration: 1.2, delay: 0.2 }}
-              className="p-4 rounded"
-              style={{
-                color: "#38405F",
-                fontWeight: 400,
-                fontSize: "1.75rem",
-                marginTop: "1rem",
-                textAlign: "left",
-              }}
-            >
-              <strong>Strength</strong>
-              <br />
-              Add your own content here.
-            </motion.div> */}
           </div>
         </motion.div>
 
@@ -128,17 +122,19 @@ const ProjectsPage: React.FC = () => {
           transition={{ duration: 0.2, delay: 0.8 }}
           className="absolute"
           style={{
-            top: "400px",
-            right: "40px",
-            width: "1.5rem",
-            height: "1.5rem",
+            top: isMobile ? "180px" : "400px",
+            right: isMobile ? "16px" : "40px",
+            width: isMobile ? "1rem" : "1.5rem",
+            height: isMobile ? "1rem" : "1.5rem",
             filter: `drop-shadow(0 0 4px ${COLORS.accent})`,
           }}
         />
       </div>
 
-      {/* Content above blur */}
-      <ProjectsPhysics />
+      {/* Content below */}
+      <div>
+        <ProjectsPhysics />
+      </div>
     </div>
   );
 };

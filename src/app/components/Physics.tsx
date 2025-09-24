@@ -253,7 +253,7 @@ const Physics: React.FC = () => {
         x: window.innerWidth / 2 - (isMobile ? 80 : 160),
         y: -BALL_RADIUS * 2,
       });
-      Matter.Body.setVelocity(ballRef.current, { x: 0, y: isMobile ? 18 : 25 });
+      Matter.Body.setVelocity(ballRef.current, { x: 0, y: isMobile ? 5 : 10 });
       Matter.Body.setAngularVelocity(ballRef.current, 0);
       Matter.Body.setAngle(ballRef.current, 0);
     }
