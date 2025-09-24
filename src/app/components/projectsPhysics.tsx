@@ -36,7 +36,6 @@ function getSceneSize() {
 export default function ProjectPhysics() {
   const { width: SCENE_WIDTH, height: SCENE_HEIGHT } = getSceneSize();
   const pixiAppRef = useRef<ApplicationRef | null>(null); // PixiJS ApplicationRef from @pixi/react
-
   const [rectPos, setRectPos] = useState<{
     x: number;
     y: number;
@@ -133,9 +132,10 @@ export default function ProjectPhysics() {
   useEffect(() => {
     let mouseConstraint: Matter.MouseConstraint | null = null;
     let scrollTimeout: NodeJS.Timeout | null = null;
-    const canvas = appRef.current?.querySelector("canvas"); // <--- assign once
+    const appDiv = appRef.current; // Copy ref value at effect start
 
     function handleScroll() {
+      const canvas = appDiv?.querySelector("canvas");
       if (!canvas) return;
       canvas.style.pointerEvents = "none";
       if (scrollTimeout !== null) {
@@ -147,7 +147,9 @@ export default function ProjectPhysics() {
     }
 
     function attachMouse() {
-      if (!engineRef.current || !canvas) return;
+      if (!engineRef.current || !appDiv) return;
+      const canvas = appDiv.querySelector("canvas");
+      if (!canvas) return;
       canvas.style.touchAction = "auto";
       canvas.style.userSelect = "none";
       canvas.style.pointerEvents = "auto";
@@ -174,6 +176,7 @@ export default function ProjectPhysics() {
       if (mouseConstraint && engineRef.current) {
         Matter.World.remove(engineRef.current.world, mouseConstraint);
       }
+      const canvas = appDiv?.querySelector("canvas");
       if (canvas) {
         canvas.removeEventListener("wheel", handleScroll);
         canvas.removeEventListener("touchmove", handleScroll);
