@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Matter from "matter-js";
+import { motion, AnimatePresence } from "framer-motion";
 
 const COLORS = {
   line: "#FFF",
@@ -50,6 +51,8 @@ const Physics: React.FC = () => {
     { x: number; y: number }[]
   >([]);
   const letters = NAME.split("");
+  const ballRef = useRef<Matter.Body | null>(null); // <-- Add this
+  const [showWave, setShowWave] = useState(false);
 
   useEffect(() => {
     if (!sceneRef.current) return;
@@ -89,6 +92,7 @@ const Physics: React.FC = () => {
       );
       Matter.Body.setVelocity(ball, { x: 0, y: isMobile ? 18 : 25 });
       Matter.Composite.add(engine.world, ball);
+      ballRef.current = ball; // <-- Save reference
     }, 1200);
 
     // Ground line
@@ -229,8 +233,37 @@ const Physics: React.FC = () => {
       render.textures = {};
       cancelAnimationFrame(animationFrame);
     };
-  }, [letters.length]);
+  }, []);
 
+  const handleReset = () => {
+    const letterPositions = calculateLetterPositions(letters);
+    letterBodiesRef.current.forEach((body, i) => {
+      Matter.Body.setPosition(body, {
+        x: letterPositions[i].x,
+        y: letterPositions[i].y,
+      });
+      Matter.Body.setVelocity(body, { x: 0, y: 0 });
+      Matter.Body.setAngularVelocity(body, 0);
+      Matter.Body.setAngle(body, 0);
+    });
+
+    // Reset the ball as well
+    if (ballRef.current) {
+      Matter.Body.setPosition(ballRef.current, {
+        x: window.innerWidth / 2 - (isMobile ? 80 : 160),
+        y: -BALL_RADIUS * 2,
+      });
+      Matter.Body.setVelocity(ballRef.current, { x: 0, y: isMobile ? 18 : 25 });
+      Matter.Body.setAngularVelocity(ballRef.current, 0);
+      Matter.Body.setAngle(ballRef.current, 0);
+    }
+  };
+
+  const handleResetWithWave = () => {
+    handleReset();
+    setShowWave(true);
+    setTimeout(() => setShowWave(false), 700); // duration matches animation
+  };
   // --- RENDER HTML ---
   return (
     <div
@@ -242,11 +275,78 @@ const Physics: React.FC = () => {
         overflow: "hidden",
         background: COLORS.background,
         boxSizing: "border-box",
-        touchAction: "none", // <-- Prevents scrolling on touch!
+        touchAction: "none",
         width: "100vw",
         height: "100vh",
       }}
     >
+      {/* Reset Button */}
+      <div
+        style={{
+          position: "absolute",
+          left: "50%",
+          bottom: `${LINE_HEIGHT - 200}px`,
+          transform: "translateX(-50%)",
+          zIndex: 10,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <button
+          onClick={handleResetWithWave}
+          style={{
+            minWidth: 120,
+            minHeight: 48,
+            padding: "12px 32px",
+            fontSize: "1.2rem",
+            fontWeight: "bold",
+            background: "#fff",
+            color: "#222",
+            cursor: "pointer",
+            opacity: 0.95,
+            outline: "none",
+            position: "relative", // Needed for absolute SVG
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            overflow: "visible",
+          }}
+        >
+          Reset
+          <AnimatePresence>
+            {showWave && (
+              <motion.svg
+                key="ripple"
+                width="100%"
+                height="100%"
+                viewBox="0 0 200 200"
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  top: 0,
+                  pointerEvents: "none",
+                  zIndex: 1,
+                }}
+                initial={{ opacity: 0.5, scale: 0.7 }}
+                animate={{ opacity: 0, scale: 2.5 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.7, ease: "easeOut" }}
+              >
+                <circle
+                  cx="100"
+                  cy="100"
+                  r="80 "
+                  fill="none"
+                  stroke="#000"
+                  strokeWidth="6"
+                  strokeOpacity="0.7"
+                />
+              </motion.svg>
+            )}
+          </AnimatePresence>
+        </button>
+      </div>
       {/* Letters */}
       {letters.map((char, i) => {
         const pos = currentPositions[i];
@@ -271,7 +371,7 @@ const Physics: React.FC = () => {
               zIndex: 2,
               cursor: "pointer",
               pointerEvents: "none",
-              fontSize: `${LETTER_HEIGHT}px`, // font scales with body height
+              fontSize: `${LETTER_HEIGHT}px`,
               lineHeight: 1,
             }}
           >
