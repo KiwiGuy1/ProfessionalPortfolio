@@ -2,15 +2,12 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import Matter from "matter-js";
-import { Application as PixiApplication, extend } from "@pixi/react";
 import {
-  Graphics,
-  Container,
-  Sprite,
-  Texture,
-  Assets,
-  Application,
-} from "pixi.js";
+  Application as PixiApplication,
+  extend,
+  ApplicationRef,
+} from "@pixi/react";
+import { Graphics, Container, Sprite, Texture, Assets } from "pixi.js";
 
 extend({ Graphics, Container, Sprite, Texture });
 
@@ -38,7 +35,7 @@ function getSceneSize() {
 
 export default function ProjectPhysics() {
   const { width: SCENE_WIDTH, height: SCENE_HEIGHT } = getSceneSize();
-  const pixiAppRef = useRef<Application | null>(null); // PixiJS Application ref
+  const pixiAppRef = useRef<ApplicationRef | null>(null); // PixiJS ApplicationRef from @pixi/react
 
   const [rectPos, setRectPos] = useState<{
     x: number;
@@ -136,9 +133,9 @@ export default function ProjectPhysics() {
   useEffect(() => {
     let mouseConstraint: Matter.MouseConstraint | null = null;
     let scrollTimeout: NodeJS.Timeout | null = null;
+    const canvas = appRef.current?.querySelector("canvas");
 
     function handleScroll() {
-      const canvas = appRef.current?.querySelector("canvas");
       if (!canvas) return;
       canvas.style.pointerEvents = "none";
       if (scrollTimeout !== null) {
@@ -150,9 +147,7 @@ export default function ProjectPhysics() {
     }
 
     function attachMouse() {
-      if (!engineRef.current || !appRef.current) return;
-      const canvas = appRef.current.querySelector("canvas");
-      if (!canvas) return;
+      if (!engineRef.current || !canvas) return;
       canvas.style.touchAction = "auto";
       canvas.style.userSelect = "none";
       canvas.style.pointerEvents = "auto";
@@ -179,7 +174,6 @@ export default function ProjectPhysics() {
       if (mouseConstraint && engineRef.current) {
         Matter.World.remove(engineRef.current.world, mouseConstraint);
       }
-      const canvas = appRef.current?.querySelector("canvas");
       if (canvas) {
         canvas.removeEventListener("wheel", handleScroll);
         canvas.removeEventListener("touchmove", handleScroll);
@@ -246,10 +240,10 @@ export default function ProjectPhysics() {
             pivot={{ x: 0, y: 0 }}
           >
             <pixiSprite
-              texture={Texture.from("/img/green.jpeg")} // <-- Add leading slash!
+              texture={texture ?? Texture.EMPTY} // Use the loaded texture, fallback to Texture.EMPTY
               width={RECT_WIDTH}
               height={RECT_HEIGHT}
-              anchor={0.5} // Center the sprite
+              anchor={0.5}
             />
             <pixiGraphics
               draw={(g) => {
