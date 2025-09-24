@@ -222,17 +222,6 @@ export default function ProjectPhysics() {
           height={SCENE_HEIGHT}
           background={COLORS.background}
           autoStart
-          style={{
-            width: SCENE_WIDTH,
-            height: SCENE_HEIGHT,
-            margin: 0,
-            padding: 0,
-            boxSizing: "border-box",
-            position: "relative",
-            opacity: ready ? 1 : 0, // Hide until ready
-            transition: "opacity 0.25s ease-in-out",
-            background: "white",
-          }}
           ref={pixiAppRef}
         >
           {/* Rectangle */}
