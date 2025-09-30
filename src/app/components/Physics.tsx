@@ -5,10 +5,15 @@ import Matter from "matter-js";
 import { motion, AnimatePresence } from "framer-motion";
 
 const COLORS = {
-  line: "#FFF",
-  letter: "#141414",
-  letterShadow: "none",
-  background: "#EAE8FF",
+  line: "#6C63FF", // Changed to accent purple
+  letter: "#FFFFFF", // Changed to white
+  letterShadow: "rgba(108, 99, 255, 0.3)", // Purple glow
+  background: "#0F0F0F", // Changed to dark background
+  ball: "#1A1A1A", // Dark gray for ball
+  ballStroke: "#1A1A1A", // Purple stroke for ball
+  button: "#1A1A1A", // Dark button background
+  buttonText: "#FFFFFF", // White button text
+  buttonBorder: "rgba(255, 255, 255, 0.1)", // Subtle border
 };
 
 const NAME = "Joseph Gutierrez";
@@ -51,7 +56,7 @@ const Physics: React.FC = () => {
     { x: number; y: number }[]
   >([]);
   const letters = NAME.split("");
-  const ballRef = useRef<Matter.Body | null>(null); // <-- Add this
+  const ballRef = useRef<Matter.Body | null>(null);
   const [showWave, setShowWave] = useState(false);
 
   useEffect(() => {
@@ -69,11 +74,11 @@ const Physics: React.FC = () => {
         height: window.innerHeight,
         wireframes: false,
         background: "transparent",
-        pixelRatio: 1, // <-- Force pixel ratio to 1 for alignment
+        pixelRatio: 1,
       },
     });
 
-    // Giant ball
+    // Giant ball with new colors
     let ball: Matter.Body | null = null;
     setTimeout(() => {
       ball = Matter.Bodies.circle(
@@ -84,23 +89,24 @@ const Physics: React.FC = () => {
           restitution: 0.5,
           friction: 0.05,
           render: {
-            fillStyle: "#FFF",
-            strokeStyle: "#222",
+            fillStyle: COLORS.ball,
+            strokeStyle: COLORS.ballStroke,
+            lineWidth: 3,
           },
           label: "giant-ball",
         }
       );
       Matter.Body.setVelocity(ball, { x: 0, y: isMobile ? 18 : 25 });
       Matter.Composite.add(engine.world, ball);
-      ballRef.current = ball; // <-- Save reference
+      ballRef.current = ball;
     }, 1200);
 
-    // Ground line
+    // Ground line with new color
     const totalNameWidth =
       letters.length * LETTER_WIDTH + (letters.length - 1) * LETTER_SPACING;
     const ground = Matter.Bodies.rectangle(
       width / 2,
-      height - LINE_HEIGHT / 2, // <-- always at the bottom
+      height - LINE_HEIGHT / 2,
       totalNameWidth,
       LINE_HEIGHT,
       {
@@ -158,7 +164,7 @@ const Physics: React.FC = () => {
     );
     Matter.Composite.add(engine.world, [leftWall, rightWall]);
 
-    // Mouse/touch constraint for dragging (works for mobile and desktop)
+    // Mouse/touch constraint for dragging
     const mouse = Matter.Mouse.create(render.canvas);
     const mouseConstraint = Matter.MouseConstraint.create(engine, {
       mouse,
@@ -170,6 +176,7 @@ const Physics: React.FC = () => {
     Matter.Composite.add(engine.world, mouseConstraint);
     mouseConstraintRef.current = mouseConstraint;
     render.mouse = mouse;
+
     // Runner & Render
     const runner = Matter.Runner.create();
     runner.delta = 1000 / 120;
@@ -189,7 +196,7 @@ const Physics: React.FC = () => {
     }
     animationFrame = requestAnimationFrame(updatePositionsAnim);
 
-    // Handle resize: update positions, not recreate world
+    // Handle resize
     function handleResize() {
       const width = window.innerWidth;
       const height = window.innerHeight;
@@ -262,9 +269,9 @@ const Physics: React.FC = () => {
   const handleResetWithWave = () => {
     handleReset();
     setShowWave(true);
-    setTimeout(() => setShowWave(false), 700); // duration matches animation
+    setTimeout(() => setShowWave(false), 700);
   };
-  // --- RENDER HTML ---
+
   return (
     <div
       ref={sceneRef}
@@ -280,7 +287,7 @@ const Physics: React.FC = () => {
         height: "100vh",
       }}
     >
-      {/* Reset Button */}
+      {/* Reset Button with new styling */}
       <div
         style={{
           position: "absolute",
@@ -301,16 +308,27 @@ const Physics: React.FC = () => {
             padding: "12px 32px",
             fontSize: "1.2rem",
             fontWeight: "bold",
-            background: "#fff",
-            color: "#222",
+            background: COLORS.button,
+            color: COLORS.buttonText,
+            border: `1px solid ${COLORS.buttonBorder}`,
+            borderRadius: "8px",
             cursor: "pointer",
             opacity: 0.95,
             outline: "none",
-            position: "relative", // Needed for absolute SVG
+            position: "relative",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             overflow: "visible",
+            transition: "all 0.3s ease",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "#2A2A2A";
+            e.currentTarget.style.borderColor = COLORS.line;
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = COLORS.button;
+            e.currentTarget.style.borderColor = COLORS.buttonBorder;
           }}
         >
           Reset
@@ -336,9 +354,9 @@ const Physics: React.FC = () => {
                 <circle
                   cx="100"
                   cy="100"
-                  r="80 "
+                  r="80"
                   fill="none"
-                  stroke="#000"
+                  stroke={COLORS.line}
                   strokeWidth="6"
                   strokeOpacity="0.7"
                 />
@@ -347,7 +365,8 @@ const Physics: React.FC = () => {
           </AnimatePresence>
         </button>
       </div>
-      {/* Letters */}
+
+      {/* Letters with new colors and glow */}
       {letters.map((char, i) => {
         const pos = currentPositions[i];
         if (!pos) return null;
@@ -362,10 +381,10 @@ const Physics: React.FC = () => {
               color: COLORS.letter,
               willChange: "transform",
               textShadow: `
-      0 0 8px ${COLORS.letterShadow},
-      0 0 16px ${COLORS.letterShadow},
-      0 0 24px ${COLORS.letterShadow}
-    `,
+                0 0 8px ${COLORS.letterShadow},
+                0 0 16px ${COLORS.letterShadow},
+                0 0 24px ${COLORS.letterShadow}
+              `,
               transform: "translate(-50%, -50%)",
               userSelect: "none",
               zIndex: 2,
@@ -379,7 +398,6 @@ const Physics: React.FC = () => {
           </span>
         );
       })}
-      {/* No blob follower/cursor here */}
     </div>
   );
 };

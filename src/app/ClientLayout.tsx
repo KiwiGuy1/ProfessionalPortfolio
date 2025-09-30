@@ -5,6 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import GlobalNav from "./components/GlobalNav";
 import { Bebas_Neue } from "next/font/google";
+import Welcome from "./components/Welcome";
 
 const ANIMATION_DURATION = 0.5; // seconds
 const bebas = Bebas_Neue({
@@ -12,10 +13,6 @@ const bebas = Bebas_Neue({
   weight: "400",
   display: "swap",
 });
-
-function wait(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
 
 export default function ClientLayout({
   children,
@@ -29,25 +26,21 @@ export default function ClientLayout({
   const [pendingRoute, setPendingRoute] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
   const [showNav, setShowNav] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [showWelcome, setShowWelcome] = useState(true);
 
   useEffect(() => {
     setMounted(true);
-    const navTimer = setTimeout(() => setShowNav(true), 2000);
-    return () => clearTimeout(navTimer);
   }, []);
 
-  useEffect(() => {
-    async function preload() {
-      await wait(2000); // Simulate loading
-      setLoading(false);
-    }
-    preload();
-  }, []);
+  // Handle welcome completion
+  const handleWelcomeComplete = () => {
+    setShowWelcome(false);
+    setShowNav(true);
+  };
 
   // Custom navigation handler
   const handleNavigate = async (href: string) => {
-    if (loading || href === pathname) return;
+    if (showWelcome || href === pathname) return;
     await router.prefetch(href);
     setOverlayVisible(true);
     setOverlayShouldHide(false);
@@ -79,16 +72,10 @@ export default function ClientLayout({
     <div>
       {mounted && (
         <>
-          {loading && (
-            <motion.div
-              initial={{ opacity: 1 }}
-              animate={{ opacity: loading ? 1 : 0 }}
-              transition={{ duration: 0.5 }}
-              className="fixed inset-0 z-[100] bg-black flex items-center justify-center"
-            >
-              <span className="text-4xl text-white font-bold">Loading...</span>
-            </motion.div>
-          )}
+          {/* Welcome Screen */}
+          {showWelcome && <Welcome onComplete={handleWelcomeComplete} />}
+
+          {/* Page Transition Overlay */}
           <motion.div
             initial={false}
             animate={{
@@ -99,9 +86,13 @@ export default function ClientLayout({
             className="fixed inset-0 z-40 bg-black"
             onAnimationComplete={handleOverlayAnimationComplete}
           />
+
+          {/* Navigation */}
           {showNav && <GlobalNav onNavigate={handleNavigate} />}
+
+          {/* Main Content */}
           <div className="relative min-h-screen w-full">
-            {!loading && (
+            {!showWelcome && (
               <span className={bebas.className + " text-8xl font-extrabold"}>
                 {children}
               </span>
