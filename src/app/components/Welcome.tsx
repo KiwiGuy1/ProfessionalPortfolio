@@ -22,158 +22,154 @@ export default function Welcome({ onComplete }: WelcomeProps) {
   const logoRef = useRef(null);
   const particlesRef = useRef<HTMLDivElement>(null);
   const codeLineRef = useRef(null);
+  const gridRef = useRef(null);
 
   useGSAP(() => {
-    // Create floating code particles
+    // Create subtle geometric particles
     const particles = [];
-    const codeSymbols = [
-      "{ }",
-      "< />",
-      "( )",
-      "[ ]",
-      "=>",
-      "&&",
-      "||",
-      "++",
-      "--",
-    ];
+    const shapes = ["▪", "▫", "●", "○", "◆", "◇", "▲", "△"];
     const particleColors = [
-      "rgba(108, 99, 255, 0.8)", // Purple accent
-      "rgba(90, 82, 232, 0.6)", // Darker purple
-      "rgba(255, 255, 255, 0.3)", // White
-      "rgba(168, 168, 168, 0.5)", // Gray
+      "rgba(108, 99, 255, 0.4)",
+      "rgba(90, 82, 232, 0.3)",
+      "rgba(255, 255, 255, 0.15)",
+      "rgba(168, 168, 168, 0.2)",
     ];
 
-    for (let i = 0; i < 25; i++) {
+    for (let i = 0; i < 15; i++) {
       const particle = document.createElement("div");
       particle.className = "particle";
-      particle.textContent =
-        codeSymbols[Math.floor(Math.random() * codeSymbols.length)];
+      particle.textContent = shapes[Math.floor(Math.random() * shapes.length)];
       particle.style.cssText = `
         position: absolute;
-        font-size: ${Math.random() * 16 + 12}px;
+        font-size: ${Math.random() * 8 + 8}px;
         color: ${
           particleColors[Math.floor(Math.random() * particleColors.length)]
         };
         left: ${Math.random() * 100}%;
         top: ${Math.random() * 100}%;
-        font-family: 'JetBrains Mono', monospace;
+        font-family: ${inter.style.fontFamily};
         pointer-events: none;
-        opacity: 0.7;
+        opacity: 0.6;
       `;
       particlesRef.current?.appendChild(particle);
       particles.push(particle);
     }
 
-    // Welcome screen animations
+    // Professional welcome animation sequence
     const welcomeTl = gsap.timeline({
       onComplete: () => {
         setTimeout(() => {
-          // Exit animation
+          // Smooth exit animation
           gsap.to(welcomeRef.current, {
-            scale: 0.9,
+            scale: 1.05,
             opacity: 0,
-            duration: 1.2,
+            duration: 1,
             ease: "power2.inOut",
             onComplete: () => onComplete(),
           });
-        }, 3000);
+        }, 2500);
       },
     });
 
-    // Logo entrance with elegant scale and rotation
+    // Sophisticated entrance animations
     welcomeTl
-      .from(logoRef.current, {
-        scale: 0,
-        rotation: 180,
+      .from(gridRef.current, {
+        opacity: 0,
+        scale: 0.8,
         duration: 1.5,
-        ease: "elastic.out(1, 0.3)",
+        ease: "power2.out",
       })
-      // Name with wave effect
+      .from(
+        logoRef.current,
+        {
+          scale: 0.5,
+          opacity: 0,
+          duration: 1,
+          ease: "back.out(1.2)",
+        },
+        "-=1.2"
+      )
       .from(
         nameRef.current,
         {
-          y: 100,
-          opacity: 0,
-          duration: 1.2,
-          ease: "power3.out",
-        },
-        "-=0.8"
-      )
-      // Title with slide in
-      .from(
-        titleRef.current,
-        {
-          x: -100,
+          y: 50,
           opacity: 0,
           duration: 1,
-          ease: "power2.out",
+          ease: "power3.out",
         },
         "-=0.6"
       )
-      // Subtitle with typewriter effect
       .from(
-        subtitleRef.current,
+        titleRef.current,
         {
-          width: 0,
-          duration: 1.5,
-          ease: "power2.inOut",
+          y: 30,
+          opacity: 0,
+          duration: 0.8,
+          ease: "power2.out",
         },
         "-=0.4"
       )
-      // Code line animation
+      .from(
+        subtitleRef.current,
+        {
+          y: 20,
+          opacity: 0,
+          duration: 0.8,
+          ease: "power2.out",
+        },
+        "-=0.3"
+      )
       .from(
         codeLineRef.current,
         {
           opacity: 0,
           y: 20,
-          duration: 0.8,
+          duration: 0.6,
           ease: "power2.out",
         },
-        "-=0.5"
+        "-=0.2"
       );
 
-    // Floating particles animation
+    // Subtle floating animation for particles
     particles.forEach((particle, i) => {
       gsap.to(particle, {
-        y: "random(-150, 150)",
-        x: "random(-150, 150)",
-        rotation: "random(-360, 360)",
-        duration: "random(4, 8)",
+        y: "random(-50, 50)",
+        x: "random(-50, 50)",
+        duration: "random(8, 12)",
         repeat: -1,
         yoyo: true,
         ease: "sine.inOut",
-        delay: i * 0.1,
+        delay: i * 0.2,
       });
     });
 
-    // Animate floating tech icons
-    gsap.to(".floating-tech", {
-      y: "random(-30, 30)",
-      x: "random(-20, 20)",
-      rotation: "random(-15, 15)",
-      duration: "random(3, 6)",
+    // Animate geometric elements
+    gsap.to(".geo-element", {
+      rotation: 360,
+      duration: 20,
+      repeat: -1,
+      ease: "none",
+      stagger: {
+        each: 2,
+        from: "random",
+      },
+    });
+
+    // Pulse animation for accent lines
+    gsap.to(".accent-line", {
+      scaleX: "random(0.8, 1.2)",
+      opacity: "random(0.2, 0.6)",
+      duration: "random(3, 5)",
       repeat: -1,
       yoyo: true,
       ease: "sine.inOut",
-      stagger: 0.2,
+      stagger: 0.5,
     });
 
-    // Animate glowing lines
-    gsap.to(".glow-line", {
-      scaleY: "random(0.5, 1.5)",
-      opacity: "random(0.3, 0.8)",
-      duration: "random(1.5, 3)",
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut",
-      stagger: 0.3,
-    });
-
-    // Animate the code cursor
+    // Typing cursor animation
     gsap.to(".cursor", {
       opacity: 0,
-      duration: 0.8,
+      duration: 1,
       repeat: -1,
       yoyo: true,
       ease: "power2.inOut",
@@ -186,83 +182,68 @@ export default function Welcome({ onComplete }: WelcomeProps) {
       className={`fixed inset-0 z-50 flex items-center justify-center overflow-hidden ${inter.className}`}
       style={{
         background:
-          "linear-gradient(135deg, #0F0F0F 0%, #1A1A1A 50%, #0F0F0F 100%)",
+          "radial-gradient(ellipse at center, #1A1A1A 0%, #0F0F0F 70%)",
       }}
     >
+      {/* Subtle Grid Background */}
+      <div
+        ref={gridRef}
+        className="absolute inset-0 opacity-5"
+        style={{
+          backgroundImage: `
+            linear-gradient(rgba(108, 99, 255, 0.1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(108, 99, 255, 0.1) 1px, transparent 1px)
+          `,
+          backgroundSize: "50px 50px",
+        }}
+      />
+
       {/* Particles Container */}
       <div
         ref={particlesRef}
         className="absolute inset-0 pointer-events-none"
       />
 
-      {/* Background Tech Elements */}
+      {/* Minimalist Geometric Elements */}
       <div className="absolute inset-0">
-        {/* Floating Tech Icons */}
-        <div className="floating-tech absolute top-1/4 left-1/4 text-3xl opacity-20">
-          ⚛️
-        </div>
-        <div className="floating-tech absolute top-1/3 right-1/3 text-2xl opacity-25">
-          📱
-        </div>
-        <div className="floating-tech absolute bottom-1/3 left-1/5 text-4xl opacity-15">
-          💻
-        </div>
-        <div className="floating-tech absolute top-3/4 right-1/4 text-2xl opacity-30">
-          🚀
-        </div>
-        <div className="floating-tech absolute top-1/5 right-1/5 text-3xl opacity-20">
-          ⚡
-        </div>
-        <div className="floating-tech absolute bottom-1/4 right-2/3 text-2xl opacity-25">
-          🔧
-        </div>
-        <div className="floating-tech absolute top-2/3 left-1/6 text-3xl opacity-15">
-          🎯
-        </div>
-        <div className="floating-tech absolute bottom-1/2 right-1/6 text-2xl opacity-30">
-          💡
-        </div>
+        {/* Accent Lines */}
+        <div className="accent-line absolute top-1/4 left-1/4 w-16 h-0.5 bg-gradient-to-r from-purple-500 to-transparent opacity-30"></div>
+        <div className="accent-line absolute top-1/3 right-1/3 w-12 h-0.5 bg-gradient-to-l from-purple-400 to-transparent opacity-25 rotate-45"></div>
+        <div className="accent-line absolute bottom-1/3 left-1/5 w-20 h-0.5 bg-gradient-to-r from-indigo-500 to-transparent opacity-20"></div>
+        <div className="accent-line absolute bottom-1/4 right-1/4 w-14 h-0.5 bg-gradient-to-l from-purple-300 to-transparent opacity-30 -rotate-45"></div>
 
-        {/* Glowing Lines */}
-        <div className="glow-line absolute top-1/4 left-1/2 w-0.5 h-20 bg-gradient-to-b from-purple-500 to-transparent opacity-30 rounded-full"></div>
-        <div className="glow-line absolute top-1/3 left-3/4 w-0.5 h-16 bg-gradient-to-b from-blue-400 to-transparent opacity-25 rounded-full"></div>
-        <div className="glow-line absolute bottom-1/3 left-1/4 w-0.5 h-24 bg-gradient-to-b from-purple-400 to-transparent opacity-20 rounded-full"></div>
-        <div className="glow-line absolute bottom-1/4 right-1/3 w-0.5 h-18 bg-gradient-to-b from-indigo-400 to-transparent opacity-25 rounded-full"></div>
-
-        {/* Circuit-like decorative elements */}
-        <div className="floating-tech absolute top-1/6 left-1/3 text-xl opacity-30">
-          ○
-        </div>
-        <div className="floating-tech absolute bottom-1/6 right-1/4 text-lg opacity-25">
-          ◇
-        </div>
-        <div className="floating-tech absolute top-1/2 left-1/6 text-xl opacity-20">
-          △
-        </div>
+        {/* Geometric Elements */}
+        <div className="geo-element absolute top-1/6 left-1/6 w-3 h-3 border border-purple-500 opacity-20 rotate-45"></div>
+        <div className="geo-element absolute top-1/5 right-1/5 w-2 h-2 bg-purple-400 opacity-25 rounded-full"></div>
+        <div className="geo-element absolute bottom-1/4 left-1/3 w-4 h-4 border border-indigo-400 opacity-15"></div>
+        <div className="geo-element absolute bottom-1/6 right-1/6 w-3 h-3 bg-purple-300 opacity-20"></div>
+        <div className="geo-element absolute top-1/2 left-1/12 w-2 h-8 bg-gradient-to-b from-purple-500 to-transparent opacity-20"></div>
+        <div className="geo-element absolute top-1/3 right-1/12 w-2 h-6 bg-gradient-to-t from-indigo-500 to-transparent opacity-15"></div>
       </div>
 
-      {/* Welcome Content */}
+      {/* Main Content */}
       <div className="text-center z-10 max-w-4xl mx-auto px-8">
-        {/* Logo */}
-        <div
-          ref={logoRef}
-          className="mb-8 text-7xl"
-          style={{
-            filter: "drop-shadow(0 0 30px rgba(108, 99, 255, 0.6))",
-          }}
-        >
-          👨‍💻
+        {/* Minimalist Logo */}
+        <div ref={logoRef} className="mb-12 flex justify-center">
+          <div
+            className="w-20 h-20 border-2 border-purple-500 rounded-lg flex items-center justify-center"
+            style={{
+              background: "rgba(108, 99, 255, 0.1)",
+              boxShadow: "0 0 40px rgba(108, 99, 255, 0.2)",
+            }}
+          >
+            <span className="text-2xl font-bold text-purple-400">JG</span>
+          </div>
         </div>
 
         {/* Name */}
         <h1
           ref={nameRef}
-          className="text-5xl md:text-7xl font-bold text-white mb-6"
+          className="text-4xl md:text-6xl font-light text-white mb-4 tracking-wide"
           style={{
-            background: "linear-gradient(135deg, #6C63FF 0%, #5A52E8 100%)",
+            background: "linear-gradient(135deg, #FFFFFF 0%, #A8A8A8 100%)",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
-            textShadow: "0 0 40px rgba(108, 99, 255, 0.3)",
           }}
         >
           Joseph Gutierrez
@@ -271,72 +252,83 @@ export default function Welcome({ onComplete }: WelcomeProps) {
         {/* Title */}
         <h2
           ref={titleRef}
-          className="text-2xl md:text-4xl text-gray-300 font-medium mb-4"
+          className="text-xl md:text-2xl text-purple-400 font-medium mb-6 tracking-widest uppercase"
           style={{
-            letterSpacing: "0.1em",
+            letterSpacing: "0.3em",
           }}
         >
           Full-Stack Developer
         </h2>
 
-        {/* Subtitle with overflow hidden for typewriter effect */}
-        <div className="overflow-hidden mb-8">
-          <h3
-            ref={subtitleRef}
-            className="text-lg md:text-xl text-gray-400 font-light whitespace-nowrap"
-            style={{
-              letterSpacing: "0.15em",
-            }}
-          >
-            Crafting Digital Experiences
-          </h3>
-        </div>
+        {/* Subtitle */}
+        <p
+          ref={subtitleRef}
+          className="text-base md:text-lg text-gray-400 font-light mb-12 max-w-2xl mx-auto leading-relaxed"
+          style={{
+            letterSpacing: "0.05em",
+          }}
+        >
+          Building scalable applications with modern technologies
+          <br />
+          <span className="text-purple-300">React • Node.js • TypeScript</span>
+        </p>
 
         {/* Code Line */}
         <div
           ref={codeLineRef}
-          className="text-sm md:text-base text-purple-400 font-mono mb-12"
+          className="text-sm md:text-base text-gray-500 font-mono mb-16 max-w-lg mx-auto"
           style={{
-            fontFamily: "'JetBrains Mono', monospace",
+            fontFamily: "'SF Mono', 'Monaco', 'Cascadia Code', monospace",
+            lineHeight: "1.6",
           }}
         >
-          const developer = &#123; passionate: true, creative: true &#125;;
-          <span className="cursor text-white">|</span>
+          <span className="text-purple-400">const</span>{" "}
+          <span className="text-white">developer</span>{" "}
+          <span className="text-gray-400">=</span>{" "}
+          <span className="text-green-400">&#123;</span>
+          <br />
+          <span className="ml-4 text-blue-400">passionate</span>
+          <span className="text-gray-400">:</span>{" "}
+          <span className="text-yellow-400">true</span>
+          <span className="text-gray-400">,</span>
+          <br />
+          <span className="ml-4 text-blue-400">creative</span>
+          <span className="text-gray-400">:</span>{" "}
+          <span className="text-yellow-400">true</span>
+          <br />
+          <span className="text-green-400">&#125;</span>
+          <span className="cursor text-purple-400">|</span>
         </div>
 
         {/* Loading indicator */}
-        <div className="mt-12">
-          <div className="w-80 h-1 bg-gray-800 rounded-full mx-auto overflow-hidden">
+        <div className="mt-8">
+          <div className="w-64 h-px bg-gray-800 mx-auto overflow-hidden">
             <div
-              className="h-full rounded-full animate-pulse"
+              className="h-full animate-pulse"
               style={{
                 background:
-                  "linear-gradient(90deg, #6C63FF 0%, #5A52E8 50%, #6C63FF 100%)",
+                  "linear-gradient(90deg, transparent 0%, #6C63FF 50%, transparent 100%)",
+                animation: "loading 2s ease-in-out infinite",
               }}
             ></div>
           </div>
-          <p className="text-gray-400 mt-4 text-sm tracking-widest">
-            INITIALIZING PORTFOLIO
+          <p className="text-gray-500 mt-6 text-xs tracking-[0.3em] uppercase font-medium">
+            Loading Portfolio
           </p>
         </div>
       </div>
 
-      {/* Corner Decorative Elements */}
-      <div className="absolute top-10 left-10 text-3xl text-purple-500 opacity-50 animate-spin-slow">
-        ⚙️
-      </div>
-      <div className="absolute bottom-10 right-10 text-2xl text-blue-400 opacity-60 animate-bounce">
-        💻
-      </div>
-      <div className="absolute top-1/2 left-10 text-xl text-purple-400 opacity-40 animate-pulse">
-        🔗
-      </div>
-      <div className="absolute top-1/2 right-10 text-xl text-indigo-400 opacity-50 animate-ping">
-        ✨
-      </div>
-      <div className="absolute bottom-1/4 right-1/4 text-2xl text-purple-300 opacity-40 animate-bounce">
-        🚀
-      </div>
+      <style jsx>{`
+        @keyframes loading {
+          0%,
+          100% {
+            transform: translateX(-100%);
+          }
+          50% {
+            transform: translateX(400%);
+          }
+        }
+      `}</style>
     </div>
   );
 }
