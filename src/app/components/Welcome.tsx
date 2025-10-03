@@ -67,7 +67,7 @@ export default function Welcome({ onComplete }: WelcomeProps) {
             ease: "power2.inOut",
             onComplete: () => onComplete(),
           });
-        }, 2500);
+        }, 1500);
       },
     });
 
