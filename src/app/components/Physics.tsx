@@ -291,7 +291,7 @@ const Physics: React.FC = () => {
   const ballRef = useRef<Matter.Body | null>(null);
   const [showWave, setShowWave] = useState(false);
   const particlesRef = useRef<Particle[]>([]);
-  const animationRef = useRef<number>();
+  const animationRef = useRef<number | null>(null);
   const floatingShapesRef = useRef<FloatingShape[]>([]);
   const floatingBodiesRef = useRef<Matter.Body[]>([]);
   const rainingShapesRef = useRef<Matter.Body[]>([]);
