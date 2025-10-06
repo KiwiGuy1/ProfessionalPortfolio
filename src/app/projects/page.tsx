@@ -1,11 +1,12 @@
 "use client";
-import React, { useEffect, useRef } from "react";
+import React, { useRef, useCallback } from "react";
 import Image from "next/image";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import { Inter } from "next/font/google";
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const inter = Inter({
   subsets: ["latin"],
@@ -19,41 +20,38 @@ const projects = [
     title: "ShopSight",
     subtitle: "E-Commerce Analytics Dashboard",
     description:
-      "Full-stack analytics platform built with React, Node.js, and PostgreSQL. Features real-time data visualization, user behavior tracking, and predictive analytics.",
-    tech: ["React", "Node.js", "PostgreSQL", "Chart.js", "Redis"],
+      "A comprehensive full-stack analytics platform built with React, Node.js, and MongoDB. Features real-time data visualization, user behavior tracking, and business intelligence tools. This project demonstrates modern web development practices and showcases my ability to create complex, data-driven applications.",
+    tech: ["React", "Node.js", "MongoDB", "Chart.js", "Express", "CSS3"],
     role: "Full-Stack Developer",
     duration: "3 months",
     image: "/img/ecom.png",
+    githubUrl: "https://github.com/KiwiGuy1",
+    demoUrl: "#",
+    featured: true,
   },
+];
+
+const upcomingProjects = [
   {
-    id: 2,
-    title: "TaskFlow",
-    subtitle: "Project Management System",
+    title: "TaskFlow Pro",
     description:
-      "Collaborative project management tool with real-time updates, team collaboration features, and advanced reporting capabilities.",
-    tech: ["Next.js", "Express", "MongoDB", "Socket.io", "Tailwind"],
-    role: "Lead Developer",
-    duration: "4 months",
+      "Team collaboration platform with real-time updates and project management tools",
+    tech: ["Next.js", "TypeScript", "PostgreSQL"],
+    status: "In Development",
   },
   {
-    id: 3,
     title: "FinanceTracker",
-    subtitle: "Personal Finance Application",
     description:
-      "Modern financial tracking app with budgeting tools, expense categorization, and investment portfolio management.",
-    tech: ["React Native", "Firebase", "Plaid API", "Redux", "TypeScript"],
-    role: "Mobile Developer",
-    duration: "2 months",
+      "Personal finance management application with budget tracking and analytics",
+    tech: ["React Native", "Firebase", "Redux"],
+    status: "Planning",
   },
   {
-    id: 4,
-    title: "WeatherVision",
-    subtitle: "AI-Powered Weather App",
+    title: "AI Weather Assistant",
     description:
-      "Advanced weather application with machine learning predictions, satellite imagery, and personalized recommendations.",
-    tech: ["Vue.js", "Python", "TensorFlow", "OpenWeather API", "Docker"],
-    role: "Full-Stack Developer",
-    duration: "2 months",
+      "Smart weather app with machine learning predictions and personalized insights",
+    tech: ["Vue.js", "Python", "TensorFlow"],
+    status: "Research",
   },
 ];
 
@@ -61,55 +59,98 @@ const ProjectsPage: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
+  const lineRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
+  // Refs for hover animations
+  const featuredProjectRef = useRef<HTMLDivElement>(null);
+  const ctaButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Get the featured project
+  const featuredProject = projects[0];
+
+  // GSAP scroll animations setup
+  useGSAP(
+    () => {
       // Hero animations
-      gsap
-        .timeline()
-        .from(titleRef.current, {
-          y: 100,
-          opacity: 0,
-          duration: 1.2,
-          ease: "power3.out",
-        })
+      const tl = gsap.timeline();
+
+      tl.from(titleRef.current, {
+        y: 100,
+        opacity: 0,
+        duration: 1.2,
+        ease: "power3.out",
+      })
         .from(
-          subtitleRef.current,
-          { y: 50, opacity: 0, duration: 1, ease: "power3.out" },
+          lineRef.current,
+          {
+            scaleX: 0,
+            duration: 1.5,
+            ease: "power3.out",
+          },
           "-=0.8"
         )
         .from(
-          ".hero-line",
-          { scaleX: 0, duration: 1.5, ease: "power3.out" },
-          "-=0.5"
+          subtitleRef.current,
+          {
+            y: 50,
+            opacity: 0,
+            duration: 1,
+            ease: "power3.out",
+          },
+          "-=1"
         );
 
-      // Stats animation
+      // Stats animations
       gsap.from(".stat-item", {
         y: 60,
         opacity: 0,
         duration: 1,
         stagger: 0.2,
-        scrollTrigger: { trigger: ".stats", start: "top 85%" },
+        scrollTrigger: {
+          trigger: ".stats-section",
+          start: "top 85%",
+          end: "bottom 20%",
+        },
       });
 
-      // Project cards animation
-      gsap.from(".project-card", {
+      // Featured project animation
+      gsap.from(".featured-project", {
         y: 120,
         opacity: 0,
         duration: 1.2,
-        stagger: 0.2,
-        scrollTrigger: { trigger: ".projects", start: "top 80%" },
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: ".featured-section",
+          start: "top 80%",
+          end: "bottom 20%",
+        },
       });
 
-      // Tech items animation
+      // Tech stack animations
       gsap.from(".tech-item", {
         scale: 0,
         opacity: 0,
         duration: 0.8,
-        stagger: 0.05,
+        stagger: 0.1,
         ease: "back.out(1.7)",
-        scrollTrigger: { trigger: ".tech-stack", start: "top 85%" },
+        scrollTrigger: {
+          trigger: ".tech-stack",
+          start: "top 85%",
+          end: "bottom 20%",
+        },
+      });
+
+      // Upcoming projects animations
+      gsap.from(".upcoming-card", {
+        y: 80,
+        opacity: 0,
+        duration: 1,
+        stagger: 0.2,
+        scrollTrigger: {
+          trigger: ".upcoming-section",
+          start: "top 85%",
+          end: "bottom 20%",
+        },
       });
 
       // CTA animation
@@ -117,11 +158,109 @@ const ProjectsPage: React.FC = () => {
         y: 80,
         opacity: 0,
         duration: 1.2,
-        scrollTrigger: { trigger: ".cta", start: "top 80%" },
+        scrollTrigger: {
+          trigger: ".cta-section",
+          start: "top 80%",
+          end: "bottom 20%",
+        },
       });
-    }, containerRef);
+    },
+    { scope: containerRef }
+  ); // This ensures proper cleanup
 
-    return () => ctx.revert();
+  // React synthetic event handlers using useCallback to prevent re-renders
+  const handleFeaturedProjectMouseEnter = useCallback(() => {
+    if (featuredProjectRef.current) {
+      gsap.to(featuredProjectRef.current, {
+        y: -10,
+        scale: 1.02,
+        boxShadow: "0 25px 50px rgba(108, 99, 255, 0.3)",
+        borderColor: "rgba(108, 99, 255, 0.6)",
+        duration: 0.4,
+        ease: "power2.out",
+      });
+    }
+  }, []);
+
+  const handleFeaturedProjectMouseLeave = useCallback(() => {
+    if (featuredProjectRef.current) {
+      gsap.to(featuredProjectRef.current, {
+        y: 0,
+        scale: 1,
+        boxShadow: "0 0 0 rgba(108, 99, 255, 0)",
+        borderColor: "rgba(108, 99, 255, 0.3)",
+        duration: 0.4,
+        ease: "power2.out",
+      });
+    }
+  }, []);
+
+  const handleUpcomingCardMouseEnter = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      gsap.to(e.currentTarget, {
+        y: -5,
+        boxShadow: "0 15px 30px rgba(0, 0, 0, 0.2)",
+        borderColor: "rgba(255, 255, 255, 0.2)",
+        duration: 0.3,
+        ease: "power2.out",
+      });
+    },
+    []
+  );
+
+  const handleUpcomingCardMouseLeave = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      gsap.to(e.currentTarget, {
+        y: 0,
+        boxShadow: "0 0 0 rgba(0, 0, 0, 0)",
+        borderColor: "rgba(255, 255, 255, 0.1)",
+        duration: 0.3,
+        ease: "power2.out",
+      });
+    },
+    []
+  );
+
+  const handleButtonMouseEnter = useCallback(
+    (e: React.MouseEvent<HTMLElement>) => {
+      gsap.to(e.currentTarget, {
+        scale: 1.05,
+        duration: 0.2,
+        ease: "power2.out",
+      });
+    },
+    []
+  );
+
+  const handleButtonMouseLeave = useCallback(
+    (e: React.MouseEvent<HTMLElement>) => {
+      gsap.to(e.currentTarget, {
+        scale: 1,
+        duration: 0.2,
+        ease: "power2.out",
+      });
+    },
+    []
+  );
+
+  const handleCtaButtonMouseEnter = useCallback(() => {
+    if (ctaButtonRef.current) {
+      gsap.to(ctaButtonRef.current, {
+        scale: 1.05,
+        duration: 0.2,
+        ease: "power2.out",
+      });
+    }
+  }, []);
+
+  const handleCtaButtonMouseLeave = useCallback(() => {
+    if (ctaButtonRef.current) {
+      gsap.to(ctaButtonRef.current, {
+        scale: 1,
+        duration: 0.2,
+        ease: "power2.out",
+      });
+    }
   }, []);
 
   return (
@@ -162,15 +301,16 @@ const ProjectsPage: React.FC = () => {
               lineHeight: "1.1",
             }}
           >
-            Projects
+            My Work
           </h1>
           <div
-            className="hero-line"
+            ref={lineRef}
             style={{
               width: "clamp(64px, 10vw, 128px)",
               height: "4px",
               margin: "0 auto 2rem",
               background: "#6C63FF",
+              transformOrigin: "left",
             }}
           />
           <p
@@ -184,16 +324,16 @@ const ProjectsPage: React.FC = () => {
               padding: "0 1rem",
             }}
           >
-            Crafting digital experiences through innovative full-stack
-            solutions. Each project represents a journey of problem-solving,
-            creativity, and technical excellence.
+            Showcasing my journey in full-stack development through real
+            projects and innovative solutions. Every line of code tells a story
+            of growth and learning.
           </p>
         </div>
       </section>
 
       {/* Stats Section */}
       <section
-        className="stats"
+        className="stats-section"
         style={{ padding: "clamp(3rem, 8vw, 5rem) 1rem" }}
       >
         <div
@@ -206,10 +346,10 @@ const ProjectsPage: React.FC = () => {
           }}
         >
           {[
-            { number: "15+", label: "Projects Completed" },
-            { number: "3+", label: "Years Experience" },
-            { number: "10+", label: "Technologies" },
-            { number: "98%", label: "Client Satisfaction" },
+            { number: "1", label: "Featured Project" },
+            { number: "6+", label: "Technologies Used" },
+            { number: "3", label: "Projects in Pipeline" },
+            { number: "100%", label: "Passion Driven" },
           ].map((stat, i) => (
             <div key={i} className="stat-item" style={{ textAlign: "center" }}>
               <div
@@ -235,256 +375,415 @@ const ProjectsPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Projects Section */}
+      {/* Featured Project Section */}
       <section
-        className="projects"
+        className="featured-section"
         style={{ padding: "clamp(3rem, 8vw, 5rem) 1rem" }}
       >
-        <div
-          style={{
-            maxWidth: "90rem",
-            margin: "0 auto",
-            display: "grid",
-            gridTemplateColumns:
-              "repeat(auto-fit, minmax(min(100%, 400px), 1fr))",
-            gap: "clamp(2rem, 5vw, 3rem)",
-          }}
-        >
-          {projects.map((project) => (
+        <div style={{ maxWidth: "80rem", margin: "0 auto" }}>
+          <h2
+            style={{
+              fontSize: "clamp(2rem, 5vw, 3rem)",
+              fontWeight: "bold",
+              marginBottom: "3rem",
+              textAlign: "center",
+              color: "#FFFFFF",
+            }}
+          >
+            Featured Project
+          </h2>
+
+          {featuredProject && (
             <div
-              key={project.id}
-              className="project-card"
+              ref={featuredProjectRef}
+              className="featured-project"
+              onMouseEnter={handleFeaturedProjectMouseEnter}
+              onMouseLeave={handleFeaturedProjectMouseLeave}
               style={{
                 background: "#1A1A1A",
-                borderRadius: "1.5rem",
-                padding: "clamp(1.5rem, 4vw, 2rem)",
-                border: "1px solid rgba(255, 255, 255, 0.1)",
+                borderRadius: "2rem",
+                padding: "clamp(2rem, 5vw, 3rem)",
+                border: "2px solid rgba(108, 99, 255, 0.3)",
                 cursor: "pointer",
-                transition: "transform 0.3s ease",
                 width: "100%",
                 boxSizing: "border-box",
+                position: "relative",
+                overflow: "hidden",
               }}
-              onMouseEnter={(e) =>
-                gsap.to(e.currentTarget, { y: -10, scale: 1.02, duration: 0.4 })
-              }
-              onMouseLeave={(e) =>
-                gsap.to(e.currentTarget, { y: 0, scale: 1, duration: 0.4 })
-              }
             >
-              {/* Project Image */}
+              {/* Featured Badge */}
               <div
                 style={{
-                  marginBottom: "clamp(1rem, 3vw, 2rem)",
-                  borderRadius: "1rem",
-                  overflow: "hidden",
-                  height: "clamp(200px, 30vw, 256px)",
-                  width: "100%",
-                  position: "relative",
+                  position: "absolute",
+                  top: "2rem",
+                  right: "2rem",
+                  background:
+                    "linear-gradient(135deg, #6C63FF 0%, #5A52E8 100%)",
+                  color: "white",
+                  padding: "0.5rem 1rem",
+                  borderRadius: "1.5rem",
+                  fontSize: "0.875rem",
+                  fontWeight: "600",
+                  zIndex: 10,
                 }}
               >
-                {project.image ? (
-                  <Image
-                    src={project.image}
-                    alt={project.title}
-                    fill
-                    style={{
-                      objectFit: "cover",
-                    }}
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
-                    onError={(e) => {
-                      // Hide the image and show fallback
-                      e.currentTarget.style.display = "none";
-                      const parent = e.currentTarget.parentElement;
-                      if (parent) {
-                        parent.style.background =
-                          "linear-gradient(135deg, #6C63FF 0%, #5A52E8 100%)";
-                        parent.style.display = "flex";
-                        parent.style.alignItems = "center";
-                        parent.style.justifyContent = "center";
-                        parent.innerHTML = `<div style='color: white; font-size: clamp(1rem, 3vw, 1.5rem); font-weight: bold; text-align: center; padding: 1rem;'>${project.title}</div>`;
-                      }
-                    }}
-                  />
-                ) : (
-                  // Fallback for projects without images
-                  <div
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      background:
-                        "linear-gradient(135deg, #6C63FF 0%, #5A52E8 100%)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      color: "white",
-                      fontSize: "clamp(1rem, 3vw, 1.5rem)",
-                      fontWeight: "bold",
-                      textAlign: "center",
-                      padding: "1rem",
-                    }}
-                  >
-                    {project.title}
-                  </div>
-                )}
+                ⭐ Featured
               </div>
 
-              {/* Project Info */}
-              <div>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: "3rem",
+                  alignItems: "center",
+                }}
+                className="project-grid"
+              >
+                {/* Project Image */}
                 <div
                   style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    marginBottom: "1rem",
-                    flexWrap: "wrap",
-                    gap: "0.5rem",
+                    borderRadius: "1rem",
+                    overflow: "hidden",
+                    height: "clamp(250px, 35vw, 400px)",
+                    width: "100%",
+                    position: "relative",
+                    background:
+                      "linear-gradient(135deg, #6C63FF 0%, #5A52E8 100%)",
                   }}
                 >
-                  <span
+                  {featuredProject.image ? (
+                    <Image
+                      src={featuredProject.image}
+                      alt={featuredProject.title}
+                      fill
+                      style={{ objectFit: "cover" }}
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      priority
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = "none";
+                        const parent = target.parentElement;
+                        if (parent) {
+                          parent.innerHTML = `
+                            <div style="
+                              width: 100%; 
+                              height: 100%; 
+                              display: flex; 
+                              align-items: center; 
+                              justify-content: center; 
+                              color: white; 
+                              font-size: clamp(1.5rem, 4vw, 2rem); 
+                              font-weight: bold;
+                              text-align: center;
+                            ">
+                              ${featuredProject.title}
+                            </div>
+                          `;
+                        }
+                      }}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        color: "white",
+                        fontSize: "clamp(1.5rem, 4vw, 2rem)",
+                        fontWeight: "bold",
+                        textAlign: "center",
+                      }}
+                    >
+                      {featuredProject.title}
+                    </div>
+                  )}
+                </div>
+
+                {/* Project Info */}
+                <div>
+                  <div
                     style={{
-                      fontSize: "clamp(0.75rem, 2vw, 0.875rem)",
-                      padding: "0.25rem 0.75rem",
-                      borderRadius: "1.25rem",
-                      background: "rgba(108, 99, 255, 0.2)",
-                      color: "#6C63FF",
-                      whiteSpace: "nowrap",
+                      display: "flex",
+                      gap: "1rem",
+                      marginBottom: "1.5rem",
+                      flexWrap: "wrap",
                     }}
                   >
-                    {project.role}
-                  </span>
-                  <span
+                    <span
+                      style={{
+                        fontSize: "0.875rem",
+                        padding: "0.5rem 1rem",
+                        borderRadius: "1.5rem",
+                        background: "rgba(108, 99, 255, 0.2)",
+                        color: "#6C63FF",
+                      }}
+                    >
+                      {featuredProject.role}
+                    </span>
+                    <span
+                      style={{
+                        fontSize: "0.875rem",
+                        padding: "0.5rem 1rem",
+                        borderRadius: "1.5rem",
+                        background: "rgba(255, 255, 255, 0.1)",
+                        color: "#A8A8A8",
+                      }}
+                    >
+                      {featuredProject.duration}
+                    </span>
+                  </div>
+
+                  <h3
                     style={{
-                      fontSize: "clamp(0.75rem, 2vw, 0.875rem)",
+                      fontSize: "clamp(2rem, 5vw, 3rem)",
+                      fontWeight: "bold",
+                      marginBottom: "1rem",
+                      lineHeight: "1.2",
+                    }}
+                  >
+                    {featuredProject.title}
+                  </h3>
+                  <h4
+                    style={{
+                      fontSize: "clamp(1.25rem, 3vw, 1.5rem)",
+                      color: "#D1D5DB",
+                      marginBottom: "1.5rem",
+                    }}
+                  >
+                    {featuredProject.subtitle}
+                  </h4>
+                  <p
+                    style={{
                       color: "#A8A8A8",
+                      lineHeight: "1.7",
+                      marginBottom: "2rem",
+                      fontSize: "clamp(1rem, 2.5vw, 1.125rem)",
                     }}
                   >
-                    {project.duration}
-                  </span>
+                    {featuredProject.description}
+                  </p>
+
+                  {/* Tech Stack */}
+                  <div className="tech-stack" style={{ marginBottom: "2rem" }}>
+                    <h5
+                      style={{
+                        fontSize: "1rem",
+                        fontWeight: "600",
+                        color: "#D1D5DB",
+                        marginBottom: "1rem",
+                      }}
+                    >
+                      Technologies Used
+                    </h5>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        gap: "0.75rem",
+                      }}
+                    >
+                      {featuredProject.tech.map((tech, i) => (
+                        <span
+                          key={i}
+                          className="tech-item"
+                          style={{
+                            fontSize: "0.875rem",
+                            padding: "0.5rem 1rem",
+                            borderRadius: "1.5rem",
+                            border: "1px solid rgba(255, 255, 255, 0.2)",
+                            background: "rgba(255, 255, 255, 0.05)",
+                          }}
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Project Links */}
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "1rem",
+                      flexWrap: "wrap",
+                    }}
+                  >
+                    <a
+                      href={featuredProject.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onMouseEnter={handleButtonMouseEnter}
+                      onMouseLeave={handleButtonMouseLeave}
+                      style={{
+                        padding: "1rem 2rem",
+                        textAlign: "center",
+                        borderRadius: "0.75rem",
+                        border: "1px solid rgba(255, 255, 255, 0.2)",
+                        background: "rgba(255, 255, 255, 0.05)",
+                        textDecoration: "none",
+                        color: "inherit",
+                        fontSize: "1rem",
+                        fontWeight: "500",
+                        minWidth: "140px",
+                        display: "inline-block",
+                      }}
+                    >
+                      View Code
+                    </a>
+                    <a
+                      href={featuredProject.demoUrl}
+                      onMouseEnter={handleButtonMouseEnter}
+                      onMouseLeave={handleButtonMouseLeave}
+                      style={{
+                        padding: "1rem 2rem",
+                        textAlign: "center",
+                        borderRadius: "0.75rem",
+                        background:
+                          "linear-gradient(135deg, #6C63FF 0%, #5A52E8 100%)",
+                        color: "white",
+                        textDecoration: "none",
+                        fontSize: "1rem",
+                        fontWeight: "500",
+                        minWidth: "140px",
+                        display: "inline-block",
+                      }}
+                    >
+                      Live Demo
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Upcoming Projects Section */}
+      <section
+        className="upcoming-section"
+        style={{ padding: "clamp(3rem, 8vw, 5rem) 1rem" }}
+      >
+        <div style={{ maxWidth: "80rem", margin: "0 auto" }}>
+          <h2
+            style={{
+              fontSize: "clamp(2rem, 5vw, 3rem)",
+              fontWeight: "bold",
+              marginBottom: "3rem",
+              textAlign: "center",
+              color: "#FFFFFF",
+            }}
+          >
+            What&#39;s Next
+          </h2>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+              gap: "2rem",
+              maxWidth: "80rem",
+              margin: "0 auto",
+            }}
+          >
+            {upcomingProjects.map((project, index) => (
+              <div
+                key={index}
+                className="upcoming-card"
+                onMouseEnter={handleUpcomingCardMouseEnter}
+                onMouseLeave={handleUpcomingCardMouseLeave}
+                style={{
+                  background: "#1A1A1A",
+                  borderRadius: "1.5rem",
+                  padding: "2rem",
+                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                  position: "relative",
+                  cursor: "pointer",
+                  height: "fit-content",
+                }}
+              >
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "1.5rem",
+                    right: "1.5rem",
+                    padding: "0.5rem 1rem",
+                    borderRadius: "1.5rem",
+                    background:
+                      project.status === "In Development"
+                        ? "rgba(34, 197, 94, 0.2)"
+                        : project.status === "Planning"
+                        ? "rgba(251, 191, 36, 0.2)"
+                        : "rgba(156, 163, 175, 0.2)",
+                    color:
+                      project.status === "In Development"
+                        ? "#22c55e"
+                        : project.status === "Planning"
+                        ? "#fbbf24"
+                        : "#9ca3af",
+                    fontSize: "0.875rem",
+                    fontWeight: "600",
+                  }}
+                >
+                  {project.status}
                 </div>
 
                 <h3
                   style={{
-                    fontSize: "clamp(1.5rem, 4vw, 2rem)",
+                    fontSize: "1.75rem",
                     fontWeight: "bold",
-                    marginBottom: "0.5rem",
-                    lineHeight: "1.2",
+                    marginBottom: "1rem",
+                    paddingRight: "5rem",
+                    lineHeight: "1.3",
                   }}
                 >
                   {project.title}
                 </h3>
-                <h4
-                  style={{
-                    fontSize: "clamp(1rem, 3vw, 1.25rem)",
-                    color: "#D1D5DB",
-                    marginBottom: "1rem",
-                    lineHeight: "1.3",
-                  }}
-                >
-                  {project.subtitle}
-                </h4>
+
                 <p
                   style={{
                     color: "#A8A8A8",
+                    marginBottom: "2rem",
                     lineHeight: "1.6",
-                    marginBottom: "1.5rem",
-                    fontSize: "clamp(0.875rem, 2.5vw, 1rem)",
+                    fontSize: "1rem",
                   }}
                 >
                   {project.description}
                 </p>
 
-                {/* Tech Stack */}
-                <div className="tech-stack" style={{ marginBottom: "1.5rem" }}>
-                  <h5
-                    style={{
-                      fontSize: "clamp(0.75rem, 2vw, 0.875rem)",
-                      fontWeight: "600",
-                      color: "#D1D5DB",
-                      marginBottom: "0.75rem",
-                    }}
-                  >
-                    Technologies
-                  </h5>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexWrap: "wrap",
-                      gap: "0.5rem",
-                    }}
-                  >
-                    {project.tech.map((tech, i) => (
-                      <span
-                        key={i}
-                        className="tech-item"
-                        style={{
-                          fontSize: "clamp(0.625rem, 1.8vw, 0.75rem)",
-                          padding: "0.25rem 0.75rem",
-                          borderRadius: "1.25rem",
-                          border: "1px solid rgba(255, 255, 255, 0.2)",
-                          background: "rgba(255, 255, 255, 0.05)",
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Project Links */}
                 <div
                   style={{
                     display: "flex",
-                    gap: "1rem",
-                    flexDirection: window.innerWidth < 400 ? "column" : "row",
+                    flexWrap: "wrap",
+                    gap: "0.75rem",
                   }}
                 >
-                  <a
-                    href="#"
-                    style={{
-                      flex: "1",
-                      padding: "0.75rem 1rem",
-                      textAlign: "center",
-                      borderRadius: "0.5rem",
-                      border: "1px solid rgba(255, 255, 255, 0.2)",
-                      background: "rgba(255, 255, 255, 0.05)",
-                      textDecoration: "none",
-                      color: "inherit",
-                      fontSize: "clamp(0.875rem, 2.5vw, 1rem)",
-                      transition: "all 0.3s ease",
-                    }}
-                  >
-                    GitHub
-                  </a>
-                  <a
-                    href="#"
-                    style={{
-                      flex: "1",
-                      padding: "0.75rem 1rem",
-                      textAlign: "center",
-                      borderRadius: "0.5rem",
-                      background: "#6C63FF",
-                      color: "#0F0F0F",
-                      textDecoration: "none",
-                      fontSize: "clamp(0.875rem, 2.5vw, 1rem)",
-                      transition: "all 0.3s ease",
-                    }}
-                  >
-                    Live Demo
-                  </a>
+                  {project.tech.map((tech, i) => (
+                    <span
+                      key={i}
+                      style={{
+                        fontSize: "0.875rem",
+                        padding: "0.5rem 1rem",
+                        borderRadius: "1.5rem",
+                        background: "rgba(255, 255, 255, 0.05)",
+                        border: "1px solid rgba(255, 255, 255, 0.1)",
+                      }}
+                    >
+                      {tech}
+                    </span>
+                  ))}
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
       {/* CTA Section */}
       <section
-        className="cta"
-        style={{
-          padding: "clamp(3rem, 8vw, 5rem) 1rem",
-          textAlign: "center",
-        }}
+        className="cta-section"
+        style={{ padding: "clamp(3rem, 8vw, 5rem) 1rem", textAlign: "center" }}
       >
         <div
           className="cta-content"
@@ -506,7 +805,7 @@ const ProjectsPage: React.FC = () => {
               lineHeight: "1.2",
             }}
           >
-            Let&#39;s Build Something Amazing
+            Let&#39;s Create Something Together
           </h2>
           <p
             style={{
@@ -516,10 +815,13 @@ const ProjectsPage: React.FC = () => {
               lineHeight: "1.5",
             }}
           >
-            Ready to bring your next project to life? Let&#39;s discuss how we
-            can work together.
+            I&#39;m always excited to take on new challenges and collaborate on
+            innovative projects.
           </p>
           <button
+            ref={ctaButtonRef}
+            onMouseEnter={handleCtaButtonMouseEnter}
+            onMouseLeave={handleCtaButtonMouseLeave}
             style={{
               padding: "clamp(0.75rem, 3vw, 1rem) clamp(1.5rem, 4vw, 2rem)",
               fontSize: "clamp(1rem, 2.5vw, 1.125rem)",
@@ -529,13 +831,21 @@ const ProjectsPage: React.FC = () => {
               color: "#FFFFFF",
               border: "none",
               cursor: "pointer",
-              transition: "all 0.3s ease",
             }}
           >
             Get In Touch
           </button>
         </div>
       </section>
+
+      <style jsx>{`
+        @media (max-width: 768px) {
+          .project-grid {
+            grid-template-columns: 1fr !important;
+            gap: 2rem !important;
+          }
+        }
+      `}</style>
     </div>
   );
 };
