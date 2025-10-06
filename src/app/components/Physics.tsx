@@ -544,11 +544,11 @@ const Physics: React.FC = () => {
       });
 
       // Electron orbital animations
-      electronRefs.current.forEach((electron, index) => {
+      electronRefs.current.forEach((electron) => {
         if (electron) {
           gsap.to(electron, {
             rotation: 360,
-            duration: 2 + index * 0.5, // Different speeds for each electron
+            duration: 2, // Default duration since index is removed
             ease: "none",
             repeat: -1,
           });
@@ -573,7 +573,7 @@ const Physics: React.FC = () => {
         });
 
         // Speed up electrons on hover
-        electronRefs.current.forEach((electron, index) => {
+        electronRefs.current.forEach((electron) => {
           if (electron) {
             gsap.to(electron, {
               rotation: "+=360",
