@@ -203,6 +203,12 @@ export default function GlobalNav({
           WebkitBackdropFilter: "blur(20px)",
           borderBottom: "1px solid rgba(108, 99, 255, 0.2)",
           boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 50,
+          pointerEvents: "auto",
         }}
       >
         <div className="flex items-center justify-between px-6 py-4">

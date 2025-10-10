@@ -42,8 +42,8 @@ const LETTER_SPACING = isMobile
 const LINE_HEIGHT =
   typeof window !== "undefined"
     ? isMobile
-      ? window.innerHeight / 3.5 // Changed from 2.5 to 3.5 for mobile
-      : window.innerHeight / 3 // Changed from 2 to 3 for desktop
+      ? window.innerHeight / 2.5 // Changed back to 2.5 for better mobile positioning
+      : window.innerHeight / 3 // Desktop stays at 3
     : 400;
 const BALL_RADIUS = isMobile ? 30 : 80;
 
@@ -53,7 +53,9 @@ function calculateLetterPositions(letters: string[]) {
   const totalWidth =
     letters.length * LETTER_WIDTH + (letters.length - 1) * LETTER_SPACING;
   const startX = Math.max(width / 2 - totalWidth / 2, 8);
-  const y = Math.max(window.innerHeight / 3, 40);
+  const y = isMobile
+    ? Math.max(window.innerHeight / 2.2, 80) // Better mobile Y positioning
+    : Math.max(window.innerHeight / 3, 40); // Desktop positioning
   return letters.map((_, i) => ({
     x: startX + i * (LETTER_WIDTH + LETTER_SPACING) + LETTER_WIDTH / 2,
     y,
@@ -1071,7 +1073,9 @@ const Physics: React.FC = () => {
         style={{
           position: "absolute",
           left: "50%",
-          bottom: `${LINE_HEIGHT - 200}px`,
+          bottom: isMobile
+            ? `${LINE_HEIGHT - 120}px` // Better mobile button positioning
+            : `${LINE_HEIGHT - 200}px`, // Desktop button positioning
           zIndex: 10,
           display: "flex",
           justifyContent: "center",

@@ -1,5 +1,5 @@
 "use client";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { Inter } from "next/font/google";
@@ -23,6 +23,38 @@ export default function Welcome({ onComplete }: WelcomeProps) {
   const particlesRef = useRef<HTMLDivElement>(null);
   const codeLineRef = useRef(null);
   const gridRef = useRef(null);
+
+  // Disable scrolling when component mounts
+  useEffect(() => {
+    // Prevent scrolling on document body
+    const originalStyle = window.getComputedStyle(document.body).overflow;
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+
+    // Also prevent touch scrolling on mobile
+    const preventTouchMove = (e: TouchEvent) => {
+      e.preventDefault();
+    };
+
+    const preventWheel = (e: WheelEvent) => {
+      e.preventDefault();
+    };
+
+    document.addEventListener("touchmove", preventTouchMove, {
+      passive: false,
+    });
+    document.addEventListener("wheel", preventWheel, {
+      passive: false,
+    });
+
+    // Cleanup function to restore scrolling
+    return () => {
+      document.body.style.overflow = originalStyle;
+      document.documentElement.style.overflow = "auto";
+      document.removeEventListener("touchmove", preventTouchMove);
+      document.removeEventListener("wheel", preventWheel);
+    };
+  }, []);
 
   useGSAP(() => {
     // Create subtle geometric particles
@@ -179,10 +211,18 @@ export default function Welcome({ onComplete }: WelcomeProps) {
   return (
     <div
       ref={welcomeRef}
-      className={`fixed inset-0 z-50 flex items-center justify-center overflow-hidden ${inter.className}`}
+      className={`fixed inset-0 z-[9999] flex items-center justify-center ${inter.className}`}
       style={{
         background:
           "radial-gradient(ellipse at center, #1A1A1A 0%, #0F0F0F 70%)",
+        overflow: "hidden",
+        height: "100vh",
+        width: "100vw",
+        position: "fixed",
+        top: 0,
+        left: 0,
+        touchAction: "none", // Prevents touch scrolling
+        WebkitOverflowScrolling: "touch", // iOS specific
       }}
     >
       {/* Subtle Grid Background */}
@@ -222,24 +262,26 @@ export default function Welcome({ onComplete }: WelcomeProps) {
       </div>
 
       {/* Main Content */}
-      <div className="text-center z-10 max-w-4xl mx-auto px-8">
+      <div className="text-center z-10 max-w-4xl mx-auto px-4 sm:px-8">
         {/* Minimalist Logo */}
-        <div ref={logoRef} className="mb-12 flex justify-center">
+        <div ref={logoRef} className="mb-8 sm:mb-12 flex justify-center">
           <div
-            className="w-20 h-20 border-2 border-purple-500 rounded-lg flex items-center justify-center"
+            className="w-16 h-16 sm:w-20 sm:h-20 border-2 border-purple-500 rounded-lg flex items-center justify-center"
             style={{
               background: "rgba(108, 99, 255, 0.1)",
               boxShadow: "0 0 40px rgba(108, 99, 255, 0.2)",
             }}
           >
-            <span className="text-2xl font-bold text-purple-400">JG</span>
+            <span className="text-xl sm:text-2xl font-bold text-purple-400">
+              JG
+            </span>
           </div>
         </div>
 
         {/* Name */}
         <h1
           ref={nameRef}
-          className="text-4xl md:text-6xl font-light text-white mb-4 tracking-wide"
+          className="text-3xl sm:text-4xl md:text-6xl font-light text-white mb-3 sm:mb-4 tracking-wide px-2"
           style={{
             background: "linear-gradient(135deg, #FFFFFF 0%, #A8A8A8 100%)",
             WebkitBackgroundClip: "text",
@@ -252,9 +294,9 @@ export default function Welcome({ onComplete }: WelcomeProps) {
         {/* Title */}
         <h2
           ref={titleRef}
-          className="text-xl md:text-2xl text-purple-400 font-medium mb-6 tracking-widest uppercase"
+          className="text-lg sm:text-xl md:text-2xl text-purple-400 font-medium mb-4 sm:mb-6 tracking-widest uppercase px-2"
           style={{
-            letterSpacing: "0.3em",
+            letterSpacing: "0.2em",
           }}
         >
           Full-Stack Developer
@@ -263,7 +305,7 @@ export default function Welcome({ onComplete }: WelcomeProps) {
         {/* Subtitle */}
         <p
           ref={subtitleRef}
-          className="text-base md:text-lg text-gray-400 font-light mb-12 max-w-2xl mx-auto leading-relaxed"
+          className="text-sm sm:text-base md:text-lg text-gray-400 font-light mb-8 sm:mb-12 max-w-2xl mx-auto leading-relaxed px-4"
           style={{
             letterSpacing: "0.05em",
           }}
@@ -276,7 +318,7 @@ export default function Welcome({ onComplete }: WelcomeProps) {
         {/* Code Line */}
         <div
           ref={codeLineRef}
-          className="text-sm md:text-base text-gray-500 font-mono mb-16 max-w-lg mx-auto"
+          className="text-xs sm:text-sm md:text-base text-gray-500 font-mono mb-12 sm:mb-16 max-w-lg mx-auto px-4"
           style={{
             fontFamily: "'SF Mono', 'Monaco', 'Cascadia Code', monospace",
             lineHeight: "1.6",
@@ -301,8 +343,8 @@ export default function Welcome({ onComplete }: WelcomeProps) {
         </div>
 
         {/* Loading indicator */}
-        <div className="mt-8">
-          <div className="w-64 h-px bg-gray-800 mx-auto overflow-hidden">
+        <div className="mt-6 sm:mt-8 px-4">
+          <div className="w-48 sm:w-64 h-px bg-gray-800 mx-auto overflow-hidden">
             <div
               className="h-full animate-pulse"
               style={{
@@ -312,7 +354,7 @@ export default function Welcome({ onComplete }: WelcomeProps) {
               }}
             ></div>
           </div>
-          <p className="text-gray-500 mt-6 text-xs tracking-[0.3em] uppercase font-medium">
+          <p className="text-gray-500 mt-4 sm:mt-6 text-xs tracking-[0.3em] uppercase font-medium">
             Loading Portfolio
           </p>
         </div>

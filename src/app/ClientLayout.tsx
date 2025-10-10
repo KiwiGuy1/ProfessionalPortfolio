@@ -91,7 +91,7 @@ export default function ClientLayout({
           {showNav && <GlobalNav onNavigate={handleNavigate} />}
 
           {/* Main Content */}
-          <div className="relative min-h-screen w-full">
+          <div className="relative min-h-screen w-full pt-20">
             {!showWelcome && (
               <span className={bebas.className + " text-8xl font-extrabold"}>
                 {children}
