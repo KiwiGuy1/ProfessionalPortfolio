@@ -3,19 +3,20 @@ import { withAccelerate } from "@prisma/extension-accelerate";
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
 
-// Use Accelerate URL in production (Vercel), direct connection in development
-const databaseUrl =
-  process.env.PRISMA_ACCELERATE_URL || process.env.DATABASE_URL;
+// Use Accelerate only in production (Vercel). Local dev uses direct connection
+const isProd = process.env.NODE_ENV === "production";
+const accelerateUrl = process.env.PRISMA_ACCELERATE_URL;
 
 export const prisma =
   globalForPrisma.prisma ||
-  new PrismaClient({
-    datasourceUrl: databaseUrl,
-    log:
-      process.env.NODE_ENV === "development"
-        ? ["query", "error", "warn"]
-        : ["error"],
-  }).$extends(withAccelerate());
+  (isProd
+    ? new PrismaClient({
+        accelerateUrl,
+        log: ["error"],
+      }).$extends(withAccelerate())
+    : new PrismaClient({
+        log: ["query", "error", "warn"],
+      }));
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
