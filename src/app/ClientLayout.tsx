@@ -8,6 +8,7 @@ import { Bebas_Neue } from "next/font/google";
 import Welcome from "./components/Welcome";
 
 const ANIMATION_DURATION = 0.5; // seconds
+const WELCOME_COOLDOWN_MS = 24 * 60 * 60 * 1000; // 24 hours
 const bebas = Bebas_Neue({
   subsets: ["latin"],
   weight: "400",
@@ -30,7 +31,33 @@ export default function ClientLayout({
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+
+    // Check if welcome should be shown based on localStorage
+    const lastWelcomeTime = localStorage.getItem("lastWelcomeShown");
+    const now = Date.now();
+
+    // Don't show welcome for dashboard or auth routes
+    if (pathname.startsWith("/dashboard") || pathname.startsWith("/api/auth")) {
+      setShowWelcome(false);
+      setShowNav(false);
+    } else if (lastWelcomeTime) {
+      // If welcome was shown before, check if cooldown has passed
+      const timeSinceWelcome = now - parseInt(lastWelcomeTime);
+      if (timeSinceWelcome < WELCOME_COOLDOWN_MS) {
+        // Still in cooldown, don't show welcome
+        setShowWelcome(false);
+        setShowNav(true);
+      } else {
+        // Cooldown expired, show welcome again
+        setShowWelcome(true);
+        localStorage.setItem("lastWelcomeShown", now.toString());
+      }
+    } else {
+      // First visit, show welcome and record timestamp
+      setShowWelcome(true);
+      localStorage.setItem("lastWelcomeShown", now.toString());
+    }
+  }, [pathname]);
 
   // Handle welcome completion
   const handleWelcomeComplete = () => {
@@ -92,11 +119,15 @@ export default function ClientLayout({
 
           {/* Main Content */}
           <div className="relative min-h-screen w-full">
-            {!showWelcome && (
+            {!showWelcome && pathname.startsWith("/dashboard") ? (
+              // Dashboard: render without styling
+              children
+            ) : !showWelcome ? (
+              // Other pages: render with styling
               <span className={bebas.className + " text-8xl font-extrabold"}>
                 {children}
               </span>
-            )}
+            ) : null}
           </div>
         </>
       )}

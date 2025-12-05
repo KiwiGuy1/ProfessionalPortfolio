@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import ClientLayout from "./ClientLayout"; // the client component
-import "./globals.css"; // global styles
+import ClientLayout from "./ClientLayout";
+import Providers from "./providers";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -18,7 +19,9 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
       <body>
-        <ClientLayout>{children}</ClientLayout>
+        <Providers>
+          <ClientLayout>{children}</ClientLayout>
+        </Providers>
       </body>
     </html>
   );
