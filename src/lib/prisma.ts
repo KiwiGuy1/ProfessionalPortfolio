@@ -7,16 +7,24 @@ const isProd = process.env.NODE_ENV === "production";
 const accelerateUrl = process.env.PRISMA_ACCELERATE_URL;
 const databaseUrl = process.env.DATABASE_URL;
 
-// Only initialize Prisma if we have a database URL (skip during build)
+// Detect if we're in build mode (no connection possible)
+const isBuild =
+  process.env.VERCEL_ENV === "preview" ||
+  process.env.VERCEL_ENV === "production" ||
+  process.argv.includes("next build");
+
 let prismaClient: any;
 
 if (!databaseUrl && !accelerateUrl) {
-  // During build, DATABASE_URL won't be available, return a proxy
+  // No database URL available - return a proxy to avoid build errors
+  console.warn("DATABASE_URL not available, Prisma client will be unavailable");
   prismaClient = new Proxy(
     {},
     {
       get: () => () => {
-        throw new Error("Prisma not initialized - no database URL provided");
+        throw new Error(
+          "Prisma client not initialized - DATABASE_URL is missing. This should only happen during build."
+        );
       },
     }
   );
@@ -33,12 +41,13 @@ if (!databaseUrl && !accelerateUrl) {
       });
     }
   } catch (error) {
-    console.error("Failed to initialize Prisma:", error);
+    console.error("Failed to initialize Prisma client:", error);
+    // Return a proxy as fallback
     prismaClient = new Proxy(
       {},
       {
         get: () => () => {
-          throw new Error("Prisma initialization failed");
+          throw new Error("Prisma client failed to initialize");
         },
       }
     );
