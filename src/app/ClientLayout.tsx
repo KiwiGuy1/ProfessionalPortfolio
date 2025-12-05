@@ -32,30 +32,53 @@ export default function ClientLayout({
   useEffect(() => {
     setMounted(true);
 
-    // Check if welcome should be shown based on localStorage
-    const lastWelcomeTime = localStorage.getItem("lastWelcomeShown");
-    const now = Date.now();
-
     // Don't show welcome for dashboard or auth routes
     if (pathname.startsWith("/dashboard") || pathname.startsWith("/api/auth")) {
       setShowWelcome(false);
       setShowNav(false);
-    } else if (lastWelcomeTime) {
-      // If welcome was shown before, check if cooldown has passed
-      const timeSinceWelcome = now - parseInt(lastWelcomeTime);
-      if (timeSinceWelcome < WELCOME_COOLDOWN_MS) {
-        // Still in cooldown, don't show welcome
-        setShowWelcome(false);
-        setShowNav(true);
+      return;
+    }
+
+    try {
+      // Check if welcome should be shown based on localStorage
+      const lastWelcomeTime = localStorage.getItem("lastWelcomeShown");
+      const now = Date.now();
+
+      if (lastWelcomeTime) {
+        const parsedTime = parseInt(lastWelcomeTime, 10);
+        // Validate timestamp is a valid number and not in the future
+        if (isNaN(parsedTime) || parsedTime > now) {
+          localStorage.removeItem("lastWelcomeShown");
+          setShowWelcome(true);
+          localStorage.setItem("lastWelcomeShown", now.toString());
+        } else {
+          const timeSinceWelcome = now - parsedTime;
+          if (timeSinceWelcome < WELCOME_COOLDOWN_MS) {
+            // Still in cooldown, don't show welcome
+            setShowWelcome(false);
+            setShowNav(true);
+          } else {
+            // Cooldown expired, show welcome again
+            setShowWelcome(true);
+            localStorage.setItem("lastWelcomeShown", now.toString());
+          }
+        }
       } else {
-        // Cooldown expired, show welcome again
+        // First visit, show welcome and record timestamp
         setShowWelcome(true);
         localStorage.setItem("lastWelcomeShown", now.toString());
       }
-    } else {
-      // First visit, show welcome and record timestamp
-      setShowWelcome(true);
-      localStorage.setItem("lastWelcomeShown", now.toString());
+    } catch (error) {
+      // localStorage might be unavailable or disabled
+      console.warn("Unable to access localStorage", error);
+      // Default to showing welcome if localStorage fails
+      if (
+        !pathname.startsWith("/dashboard") &&
+        !pathname.startsWith("/api/auth")
+      ) {
+        setShowWelcome(true);
+        setShowNav(false);
+      }
     }
   }, [pathname]);
 

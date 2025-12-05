@@ -35,10 +35,10 @@ const authOptions: NextAuthOptions = {
       },
     }),
   ],
-  session: { strategy: "jwt" },
+  session: { strategy: "jwt", maxAge: 24 * 60 * 60 }, // 24 hour session expiry
   callbacks: {
     async redirect({ url, baseUrl }) {
-      // Redirect to dashboard after login
+      // Validate redirect URL to prevent open redirect attacks
       if (url.startsWith(baseUrl)) return `${baseUrl}/dashboard`;
       else if (url.startsWith("/")) return new URL(url, baseUrl).toString();
       return baseUrl;
@@ -49,6 +49,10 @@ const authOptions: NextAuthOptions = {
       }
       return session;
     },
+  },
+  pages: {
+    signIn: "/api/auth/signin",
+    error: "/api/auth/error",
   },
 };
 
