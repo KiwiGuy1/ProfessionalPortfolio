@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { withAccelerate } from "@prisma/extension-accelerate";
 
 const globalForPrisma = global as unknown as { prisma: any };
@@ -10,7 +10,9 @@ const accelerateUrl =
   (databaseUrl?.startsWith("prisma+postgres://") ? databaseUrl : undefined);
 
 let prismaClient: any;
-const logLevels = isProd ? ["error"] : ["query", "error", "warn"];
+const logLevels: Prisma.LogLevel[] = isProd
+  ? ["error"]
+  : ["query", "error", "warn"];
 
 if (!databaseUrl && !accelerateUrl) {
   // No database configuration available.
