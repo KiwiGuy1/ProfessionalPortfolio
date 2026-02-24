@@ -123,9 +123,7 @@ export default function ClientLayout({
   }, [pathname, pendingRoute, transitionPhase]);
 
   const overlayOpacity =
-    transitionPhase === "covering" || transitionPhase === "navigating"
-      ? 1
-      : 0;
+    transitionPhase === "covering" || transitionPhase === "navigating" ? 1 : 0;
 
   return (
     <div>

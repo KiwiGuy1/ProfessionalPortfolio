@@ -8,7 +8,6 @@ import prisma from "@/lib/prisma";
 const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   secret: process.env.NEXTAUTH_SECRET,
-  trustHost: process.env.AUTH_TRUST_HOST === "true",
   providers: [
     CredentialsProvider({
       name: "Credentials",
