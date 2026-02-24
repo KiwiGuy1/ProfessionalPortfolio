@@ -4,26 +4,25 @@ import { withAccelerate } from "@prisma/extension-accelerate";
 const globalForPrisma = global as unknown as { prisma: any };
 
 const isProd = process.env.NODE_ENV === "production";
-const accelerateUrl = process.env.PRISMA_ACCELERATE_URL;
 const databaseUrl = process.env.DATABASE_URL;
-
-// Detect if we're in build mode (no connection possible)
-const isBuild =
-  process.env.VERCEL_ENV === "preview" ||
-  process.env.VERCEL_ENV === "production" ||
-  process.argv.includes("next build");
+const accelerateUrl =
+  process.env.PRISMA_ACCELERATE_URL ||
+  (databaseUrl?.startsWith("prisma+postgres://") ? databaseUrl : undefined);
 
 let prismaClient: any;
+const logLevels = isProd ? ["error"] : ["query", "error", "warn"];
 
 if (!databaseUrl && !accelerateUrl) {
-  // No database URL available - return a proxy to avoid build errors
-  console.warn("DATABASE_URL not available, Prisma client will be unavailable");
+  // No database configuration available.
+  console.warn(
+    "Prisma is not configured: set PRISMA_ACCELERATE_URL or DATABASE_URL."
+  );
   prismaClient = new Proxy(
     {},
     {
       get: () => () => {
         throw new Error(
-          "Prisma client not initialized - DATABASE_URL is missing. This should only happen during build."
+          "Prisma client not initialized. Missing PRISMA_ACCELERATE_URL/DATABASE_URL."
         );
       },
     }
@@ -33,21 +32,23 @@ if (!databaseUrl && !accelerateUrl) {
     if (accelerateUrl) {
       prismaClient = new PrismaClient({
         accelerateUrl,
-        log: isProd ? ["error"] : ["query", "error", "warn"],
+        log: logLevels,
       }).$extends(withAccelerate());
     } else {
-      prismaClient = new PrismaClient({
-        log: isProd ? ["error"] : ["query", "error", "warn"],
-      });
+      // Prisma 7 with engineType "client" needs accelerateUrl or a DB adapter.
+      throw new Error(
+        "PrismaClient requires PRISMA_ACCELERATE_URL (or a driver adapter). DATABASE_URL alone is not supported in this setup."
+      );
     }
   } catch (error) {
     console.error("Failed to initialize Prisma client:", error);
-    // Return a proxy as fallback
     prismaClient = new Proxy(
       {},
       {
         get: () => () => {
-          throw new Error("Prisma client failed to initialize");
+          throw new Error(
+            "Prisma client failed to initialize. Verify PRISMA_ACCELERATE_URL in deployment env vars."
+          );
         },
       }
     );

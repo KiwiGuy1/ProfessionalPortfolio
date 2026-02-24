@@ -22,8 +22,9 @@ export default function ClientLayout({
 }) {
   const router = useRouter();
   const pathname = usePathname();
-  const [overlayVisible, setOverlayVisible] = useState(false);
-  const [overlayShouldHide, setOverlayShouldHide] = useState(false);
+  const [transitionPhase, setTransitionPhase] = useState<
+    "idle" | "covering" | "navigating" | "revealing"
+  >("idle");
   const [pendingRoute, setPendingRoute] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
   const [showNav, setShowNav] = useState(false);
@@ -90,33 +91,41 @@ export default function ClientLayout({
 
   // Custom navigation handler
   const handleNavigate = async (href: string) => {
-    if (showWelcome || href === pathname) return;
-    await router.prefetch(href);
-    setOverlayVisible(true);
-    setOverlayShouldHide(false);
+    if (showWelcome || href === pathname || transitionPhase !== "idle") return;
+    try {
+      await router.prefetch(href);
+    } catch {
+      // Prefetch can fail in some environments; navigation should still proceed.
+    }
     setPendingRoute(href);
+    setTransitionPhase("covering");
   };
 
-  // Use Framer Motion's animation complete for route change
+  // Start route change only after the old page is fully covered.
   const handleOverlayAnimationComplete = () => {
-    if (overlayVisible && pendingRoute) {
+    if (transitionPhase === "covering" && pendingRoute) {
       router.push(pendingRoute);
+      setTransitionPhase("navigating");
+      return;
+    }
+
+    if (transitionPhase === "revealing") {
+      setTransitionPhase("idle");
       setPendingRoute(null);
-      // Wait for new content to be ready, then fade out overlay
-      setTimeout(() => setOverlayShouldHide(true), 100); // Small delay for React to render new content
     }
   };
 
-  // Hide overlay after fade out
+  // Fade overlay out only when the new pathname is active.
   useEffect(() => {
-    if (overlayShouldHide) {
-      const timer = setTimeout(() => {
-        setOverlayVisible(false);
-        setOverlayShouldHide(false);
-      }, ANIMATION_DURATION * 1000);
-      return () => clearTimeout(timer);
+    if (transitionPhase === "navigating" && pendingRoute === pathname) {
+      requestAnimationFrame(() => setTransitionPhase("revealing"));
     }
-  }, [overlayShouldHide]);
+  }, [pathname, pendingRoute, transitionPhase]);
+
+  const overlayOpacity =
+    transitionPhase === "covering" || transitionPhase === "navigating"
+      ? 1
+      : 0;
 
   return (
     <div>
@@ -128,9 +137,7 @@ export default function ClientLayout({
           {/* Page Transition Overlay */}
           <motion.div
             initial={false}
-            animate={{
-              opacity: overlayVisible ? (overlayShouldHide ? 0 : 1) : 0,
-            }}
+            animate={{ opacity: overlayOpacity }}
             transition={{ duration: ANIMATION_DURATION, ease: "easeInOut" }}
             style={{ pointerEvents: "none" }}
             className="fixed inset-0 z-40 bg-black"
@@ -138,7 +145,9 @@ export default function ClientLayout({
           />
 
           {/* Navigation */}
-          {showNav && <GlobalNav onNavigate={handleNavigate} />}
+          {showNav && (
+            <GlobalNav onNavigate={handleNavigate} currentPath={pathname} />
+          )}
 
           {/* Main Content */}
           <div className="relative min-h-screen w-full">

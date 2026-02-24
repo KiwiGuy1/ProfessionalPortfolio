@@ -7,6 +7,8 @@ import prisma from "@/lib/prisma";
 
 const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
+  secret: process.env.NEXTAUTH_SECRET,
+  trustHost: process.env.AUTH_TRUST_HOST === "true",
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -38,10 +40,10 @@ const authOptions: NextAuthOptions = {
   session: { strategy: "jwt", maxAge: 24 * 60 * 60 }, // 24 hour session expiry
   callbacks: {
     async redirect({ url, baseUrl }) {
-      // Validate redirect URL to prevent open redirect attacks
-      if (url.startsWith(baseUrl)) return `${baseUrl}/dashboard`;
-      else if (url.startsWith("/")) return new URL(url, baseUrl).toString();
-      return baseUrl;
+      // Allow only same-origin or relative redirects.
+      if (url.startsWith("/")) return new URL(url, baseUrl).toString();
+      if (url.startsWith(baseUrl)) return url;
+      return `${baseUrl}/dashboard`;
     },
     async session({ session, token }) {
       if (session.user) {
