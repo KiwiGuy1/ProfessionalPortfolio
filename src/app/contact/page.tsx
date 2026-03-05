@@ -1,10 +1,12 @@
 "use client";
-import React, {
+
+import {
+  useEffect,
+  useRef,
   useState,
   ChangeEvent,
   FormEvent,
-  useRef,
-  useEffect,
+  CSSProperties,
 } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -19,14 +21,18 @@ const inter = Inter({
 });
 
 const COLORS = {
-  background: "#0F0F0F",
-  primary: "#FFFFFF",
-  accent: "#6C63FF",
-  secondary: "#A8A8A8",
-  cardBg: "#1A1A1A",
-  gradient: "linear-gradient(135deg, #6C63FF 0%, #5A52E8 100%)",
-  border: "rgba(255, 255, 255, 0.1)",
-  surface: "rgba(255, 255, 255, 0.05)",
+  background: "#06141F",
+  primary: "#F8FAFC",
+  secondary: "#9FB5C7",
+  accent: "#2DD4BF",
+  accentAlt: "#38BDF8",
+  border: "rgba(45, 212, 191, 0.22)",
+  card: "rgba(8, 33, 49, 0.74)",
+  field: "rgba(56, 189, 248, 0.1)",
+  successBg: "rgba(34, 197, 94, 0.14)",
+  successText: "#22C55E",
+  errorBg: "rgba(239, 68, 68, 0.14)",
+  errorText: "#F87171",
 };
 
 interface FormData {
@@ -35,74 +41,42 @@ interface FormData {
   message: string;
 }
 
-const ContactPage: React.FC = () => {
-  const [form, setForm] = useState<FormData>({
-    name: "",
-    email: "",
-    message: "",
-  });
+const focusStyle = (el: HTMLInputElement | HTMLTextAreaElement) => {
+  el.style.borderColor = COLORS.accent;
+  el.style.boxShadow = "0 0 0 3px rgba(45, 212, 191, 0.18)";
+};
+
+const blurStyle = (el: HTMLInputElement | HTMLTextAreaElement) => {
+  el.style.borderColor = COLORS.border;
+  el.style.boxShadow = "none";
+};
+
+export default function ContactPage() {
+  const [form, setForm] = useState<FormData>({ name: "", email: "", message: "" });
   const [status, setStatus] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const subtitleRef = useRef<HTMLParagraphElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Hero section animations
-      const tl = gsap.timeline();
-
-      tl.from(titleRef.current, {
-        y: 100,
+      gsap.from(".contact-hero", {
+        y: 42,
         opacity: 0,
-        duration: 1.2,
+        duration: 0.9,
         ease: "power3.out",
-      })
-        .from(
-          subtitleRef.current,
-          {
-            y: 50,
-            opacity: 0,
-            duration: 1,
-            ease: "power3.out",
-          },
-          "-=0.8"
-        )
-        .from(
-          ".hero-line",
-          {
-            scaleX: 0,
-            duration: 1.5,
-            ease: "power3.out",
-          },
-          "-=0.5"
-        );
-
-      // Form animation
-      gsap.from(".form-card", {
-        y: 80,
-        opacity: 0,
-        duration: 1.2,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: formRef.current,
-          start: "top 80%",
-          toggleActions: "play none none reverse",
-        },
       });
 
-      // Form field animations
-      gsap.from(".form-field", {
-        y: 40,
+      gsap.from(".contact-panel", {
+        y: 45,
         opacity: 0,
-        duration: 0.8,
-        stagger: 0.1,
+        duration: 0.9,
+        stagger: 0.12,
         ease: "power3.out",
         scrollTrigger: {
-          trigger: ".form-field",
-          start: "top 90%",
+          trigger: ".contact-grid",
+          start: "top 84%",
           toggleActions: "play none none reverse",
         },
       });
@@ -111,9 +85,9 @@ const ContactPage: React.FC = () => {
     return () => ctx.revert();
   }, []);
 
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -131,10 +105,9 @@ const ContactPage: React.FC = () => {
         setStatus("Message sent successfully!");
         setForm({ name: "", email: "", message: "" });
 
-        // Success animation
-        gsap.to(".form-card", {
-          scale: 1.02,
-          duration: 0.3,
+        gsap.to(".form-shell", {
+          scale: 1.01,
+          duration: 0.2,
           yoyo: true,
           repeat: 1,
           ease: "power2.inOut",
@@ -150,510 +123,316 @@ const ContactPage: React.FC = () => {
     }
   };
 
-  return (
-    <div
-      ref={containerRef}
-      className={inter.className}
-      style={{
-        background: COLORS.background,
-        color: COLORS.primary,
-        minHeight: "100vh",
-        width: "100%",
-        overflowX: "hidden",
-        paddingTop: "80px",
-      }}
-    >
-      {/* Hero Section */}
-      <section
-        style={{
-          minHeight: "calc(100vh - 80px)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          textAlign: "center",
-          padding: "2rem 1rem",
-          width: "100%",
-          boxSizing: "border-box",
-          background: `radial-gradient(circle at 50% 50%, rgba(108, 99, 255, 0.1) 0%, transparent 50%)`,
-        }}
-      >
-        <div style={{ maxWidth: "48rem", width: "100%" }}>
-          <h1
-            ref={titleRef}
-            style={{
-              fontSize: "clamp(2.5rem, 8vw, 6rem)",
-              fontWeight: "bold",
-              marginBottom: "2rem",
-              background: COLORS.gradient,
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              lineHeight: "1.1",
-            }}
-          >
-            Let's Work Together
-          </h1>
-          <div
-            className="hero-line"
-            style={{
-              width: "clamp(64px, 10vw, 128px)",
-              height: "4px",
-              margin: "0 auto 2rem",
-              background: COLORS.accent,
-            }}
-          />
-          <p
-            ref={subtitleRef}
-            style={{
-              fontSize: "clamp(1rem, 2.5vw, 1.25rem)",
-              color: COLORS.secondary,
-              margin: "0 auto 3rem",
-              lineHeight: "1.6",
-              padding: "0 1rem",
-            }}
-          >
-            Ready to bring your ideas to life? Send me a message and let's
-            discuss your next project.
-          </p>
+  const statusStyle: CSSProperties = status.includes("success")
+    ? {
+        background: COLORS.successBg,
+        border: "1px solid rgba(34, 197, 94, 0.35)",
+        color: COLORS.successText,
+      }
+    : status.includes("Failed") || status.includes("error")
+    ? {
+        background: COLORS.errorBg,
+        border: "1px solid rgba(239, 68, 68, 0.35)",
+        color: COLORS.errorText,
+      }
+    : {
+        background: COLORS.field,
+        border: `1px solid ${COLORS.border}`,
+        color: COLORS.accent,
+      };
 
-          {/* Contact Form */}
-          <div
-            className="form-card"
-            style={{
-              background: COLORS.cardBg,
-              border: `1px solid ${COLORS.border}`,
-              borderRadius: "2rem",
-              padding: "clamp(2rem, 6vw, 3rem)",
-              textAlign: "left",
-            }}
-          >
-            <form
-              ref={formRef}
-              onSubmit={handleSubmit}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "1.5rem",
-              }}
-            >
-              <div className="form-field">
-                <label
-                  style={{
-                    display: "block",
-                    marginBottom: "0.5rem",
-                    fontSize: "clamp(0.875rem, 2.5vw, 1rem)",
-                    fontWeight: "500",
-                    color: COLORS.primary,
-                  }}
-                >
-                  Name
-                </label>
+  return (
+    <div ref={containerRef} className={inter.className}>
+      <main className="contact-root">
+        <section className="contact-hero shell">
+          <p className="eyebrow">Contact</p>
+          <h1>Let&apos;s Build Something Great</h1>
+          <p>
+            Have a product idea, redesign, or collaboration in mind? Send a
+            message and I&apos;ll get back to you.
+          </p>
+        </section>
+
+        <section className="shell contact-grid">
+          <aside className="contact-panel info-shell">
+            <h2>Get In Touch</h2>
+            <p>
+              I&apos;m open to freelance and full-time opportunities. The best way
+              to reach me is email, but I&apos;m also active on social platforms.
+            </p>
+
+            <ul>
+              <li>
+                <span>Email</span>
+                <a href="mailto:prototype.object@outlook.com">
+                  prototype.object@outlook.com
+                </a>
+              </li>
+              <li>
+                <span>Location</span>
+                <strong>Sioux Falls, SD</strong>
+              </li>
+              <li>
+                <span>Availability</span>
+                <strong>Open for projects</strong>
+              </li>
+            </ul>
+          </aside>
+
+          <div className="contact-panel form-shell">
+            <form ref={formRef} onSubmit={handleSubmit}>
+              <label>
+                Name
                 <input
                   name="name"
                   placeholder="Your full name"
                   value={form.name}
                   onChange={handleChange}
+                  onFocus={(e) => focusStyle(e.target)}
+                  onBlur={(e) => blurStyle(e.target)}
                   required
-                  style={{
-                    width: "100%",
-                    padding: "1rem 1.25rem",
-                    background: COLORS.surface,
-                    border: `1px solid ${COLORS.border}`,
-                    borderRadius: "0.75rem",
-                    color: COLORS.primary,
-                    fontSize: "clamp(0.875rem, 2.5vw, 1rem)",
-                    outline: "none",
-                    transition: "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)", // Smoother transition
-                    boxSizing: "border-box",
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = COLORS.accent;
-                    e.target.style.boxShadow = `0 0 0 3px rgba(108, 99, 255, 0.1)`;
-                    gsap.to(e.target, {
-                      scale: 1.02,
-                      duration: 0.5, // Longer duration
-                      ease: "power2.out",
-                    });
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = COLORS.border;
-                    e.target.style.boxShadow = "none";
-                    gsap.to(e.target, {
-                      scale: 1,
-                      duration: 0.5, // Longer duration
-                      ease: "power2.out",
-                    });
-                  }}
                 />
-              </div>
+              </label>
 
-              <div className="form-field">
-                <label
-                  style={{
-                    display: "block",
-                    marginBottom: "0.5rem",
-                    fontSize: "clamp(0.875rem, 2.5vw, 1rem)",
-                    fontWeight: "500",
-                    color: COLORS.primary,
-                  }}
-                >
-                  Email
-                </label>
+              <label>
+                Email
                 <input
                   type="email"
                   name="email"
-                  placeholder="your.email@example.com"
+                  placeholder="you@example.com"
                   value={form.email}
                   onChange={handleChange}
+                  onFocus={(e) => focusStyle(e.target)}
+                  onBlur={(e) => blurStyle(e.target)}
                   required
-                  style={{
-                    width: "100%",
-                    padding: "1rem 1.25rem",
-                    background: COLORS.surface,
-                    border: `1px solid ${COLORS.border}`,
-                    borderRadius: "0.75rem",
-                    color: COLORS.primary,
-                    fontSize: "clamp(0.875rem, 2.5vw, 1rem)",
-                    outline: "none",
-                    transition: "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)", // Smoother transition
-                    boxSizing: "border-box",
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = COLORS.accent;
-                    e.target.style.boxShadow = `0 0 0 3px rgba(108, 99, 255, 0.1)`;
-                    gsap.to(e.target, {
-                      scale: 1.02,
-                      duration: 0.5, // Longer duration
-                      ease: "power2.out",
-                    });
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = COLORS.border;
-                    e.target.style.boxShadow = "none";
-                    gsap.to(e.target, {
-                      scale: 1,
-                      duration: 0.5, // Longer duration
-                      ease: "power2.out",
-                    });
-                  }}
                 />
-              </div>
+              </label>
 
-              <div className="form-field">
-                <label
-                  style={{
-                    display: "block",
-                    marginBottom: "0.5rem",
-                    fontSize: "clamp(0.875rem, 2.5vw, 1rem)",
-                    fontWeight: "500",
-                    color: COLORS.primary,
-                  }}
-                >
-                  Message
-                </label>
+              <label>
+                Message
                 <textarea
                   name="message"
-                  placeholder="Tell me about your project..."
+                  rows={6}
+                  placeholder="Tell me about your project"
                   value={form.message}
                   onChange={handleChange}
+                  onFocus={(e) => focusStyle(e.target)}
+                  onBlur={(e) => blurStyle(e.target)}
                   required
-                  rows={5}
-                  style={{
-                    width: "100%",
-                    padding: "1rem 1.25rem",
-                    background: COLORS.surface,
-                    border: `1px solid ${COLORS.border}`,
-                    borderRadius: "0.75rem",
-                    color: COLORS.primary,
-                    fontSize: "clamp(0.875rem, 2.5vw, 1rem)",
-                    outline: "none",
-                    transition: "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)", // Smoother transition
-                    resize: "vertical",
-                    minHeight: "120px",
-                    boxSizing: "border-box",
-                    fontFamily: inter.style.fontFamily,
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = COLORS.accent;
-                    e.target.style.boxShadow = `0 0 0 3px rgba(108, 99, 255, 0.1)`;
-                    gsap.to(e.target, {
-                      scale: 1.02,
-                      duration: 0.5, // Longer duration
-                      ease: "power2.out",
-                    });
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = COLORS.border;
-                    e.target.style.boxShadow = "none";
-                    gsap.to(e.target, {
-                      scale: 1,
-                      duration: 0.5, // Longer duration
-                      ease: "power2.out",
-                    });
-                  }}
                 />
-              </div>
+              </label>
 
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                style={{
-                  padding: "1rem 2rem",
-                  background: isSubmitting ? COLORS.secondary : COLORS.gradient,
-                  color: "#FFFFFF !important",
-                  border: "none",
-                  borderRadius: "0.75rem",
-                  fontSize: "clamp(1rem, 2.5vw, 1.125rem)",
-                  fontWeight: "700",
-                  cursor: isSubmitting ? "not-allowed" : "pointer",
-                  transition: "all 0.6s cubic-bezier(0.4, 0, 0.2, 1)", // Smoother and longer transition
-                  textTransform: "uppercase",
-                  letterSpacing: "0.05em",
-                  position: "relative",
-                  overflow: "hidden",
-                  textShadow: "0 1px 2px rgba(0, 0, 0, 0.3)",
-                  transform: "translateY(0) scale(1)", // Initial state for smooth animation
-                }}
-                onMouseEnter={(e) => {
-                  if (!isSubmitting) {
-                    // Smoother GSAP animation
-                    gsap.to(e.currentTarget, {
-                      scale: 1.03, // Slightly less dramatic
-                      y: -3, // Subtle lift
-                      duration: 0.6, // Longer duration
-                      ease: "power2.out", // Smoother easing
-                    });
-
-                    // Gradual box shadow
-                    gsap.to(e.currentTarget, {
-                      boxShadow: "0 20px 40px rgba(108, 99, 255, 0.3)",
-                      duration: 0.6,
-                      ease: "power2.out",
-                    });
-
-                    // Smoother ripple effect
-                    const ripple = document.createElement("div");
-                    ripple.style.cssText = `
-                      position: absolute;
-                      border-radius: 50%;
-                      background: rgba(255, 255, 255, 0.2);
-                      transform: scale(0);
-                      animation: smoothRipple 0.8s ease-out;
-                      pointer-events: none;
-                      left: 50%;
-                      top: 50%;
-                      width: 30px;
-                      height: 30px;
-                      margin-left: -15px;
-                      margin-top: -15px;
-                    `;
-                    e.currentTarget.appendChild(ripple);
-
-                    setTimeout(() => ripple.remove(), 800);
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!isSubmitting) {
-                    // Smooth return animation
-                    gsap.to(e.currentTarget, {
-                      scale: 1,
-                      y: 0,
-                      boxShadow: "0 4px 12px rgba(108, 99, 255, 0.1)",
-                      duration: 0.6, // Longer duration
-                      ease: "power2.out",
-                    });
-                  }
-                }}
-              >
+              <button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? "Sending..." : "Send Message"}
               </button>
+
+              {status && (
+                <div className="status" style={statusStyle}>
+                  {status}
+                </div>
+              )}
             </form>
-
-            {status && (
-              <div
-                style={{
-                  marginTop: "1.5rem",
-                  padding: "1rem",
-                  borderRadius: "0.75rem",
-                  textAlign: "center",
-                  fontSize: "clamp(0.875rem, 2.5vw, 1rem)",
-                  background: status.includes("success")
-                    ? "rgba(34, 197, 94, 0.1)"
-                    : status.includes("Failed") || status.includes("error")
-                    ? "rgba(239, 68, 68, 0.1)"
-                    : COLORS.surface,
-                  color: status.includes("success")
-                    ? "#22c55e"
-                    : status.includes("Failed") || status.includes("error")
-                    ? "#ef4444"
-                    : COLORS.accent,
-                  border: `1px solid ${
-                    status.includes("success")
-                      ? "rgba(34, 197, 94, 0.2)"
-                      : status.includes("Failed") || status.includes("error")
-                      ? "rgba(239, 68, 68, 0.2)"
-                      : COLORS.border
-                  }`,
-                }}
-              >
-                {status}
-              </div>
-            )}
           </div>
-        </div>
-      </section>
+        </section>
+      </main>
 
-      {/* Modern Minimal Footer */}
-      <footer
-        style={{
-          padding: "3rem 1rem 2rem",
-          textAlign: "center",
-          borderTop: `1px solid rgba(255, 255, 255, 0.05)`,
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: "3rem",
-            marginBottom: "2rem",
-            flexWrap: "wrap",
-            alignItems: "center",
-          }}
-        >
-          <a
-            href="mailto:prototype.object@outlook.com"
-            style={{
-              color: COLORS.accent,
-              textDecoration: "none",
-              fontSize: "1.125rem",
-              fontWeight: "500",
-              transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)", // Smoother transition
-            }}
-            onMouseEnter={(e) => {
-              (e.target as HTMLElement).style.color = "#8B7EFF";
-              (e.target as HTMLElement).style.transform = "translateY(-3px)"; // Slightly more movement
-            }}
-            onMouseLeave={(e) => {
-              (e.target as HTMLElement).style.color = COLORS.accent;
-              (e.target as HTMLElement).style.transform = "translateY(0)";
-            }}
-          >
-            prototype.object@outlook.com
-          </a>
-
-          <span style={{ color: COLORS.border, fontSize: "1.25rem" }}>•</span>
-
-          <a
-            href="https://linkedin.com/in/joseph"
-            style={{
-              color: COLORS.secondary,
-              textDecoration: "none",
-              fontSize: "1.125rem",
-              transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)", // Smoother transition
-            }}
-            onMouseEnter={(e) => {
-              (e.target as HTMLElement).style.color = COLORS.primary;
-              (e.target as HTMLElement).style.transform = "translateY(-3px)";
-            }}
-            onMouseLeave={(e) => {
-              (e.target as HTMLElement).style.color = COLORS.secondary;
-              (e.target as HTMLElement).style.transform = "translateY(0)";
-            }}
-          >
-            LinkedIn
-          </a>
-
-          <span style={{ color: COLORS.border, fontSize: "1.25rem" }}>•</span>
-
-          <a
-            href="https://github.com/KiwiGuy1"
-            style={{
-              color: COLORS.secondary,
-              textDecoration: "none",
-              fontSize: "1.125rem",
-              transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)", // Smoother transition
-            }}
-            onMouseEnter={(e) => {
-              (e.target as HTMLElement).style.color = COLORS.primary;
-              (e.target as HTMLElement).style.transform = "translateY(-3px)";
-            }}
-            onMouseLeave={(e) => {
-              (e.target as HTMLElement).style.color = COLORS.secondary;
-              (e.target as HTMLElement).style.transform = "translateY(0)";
-            }}
-          >
-            GitHub
-          </a>
-
-          <span style={{ color: COLORS.border, fontSize: "1.25rem" }}>•</span>
-
-          <span
-            style={{
-              color: COLORS.secondary,
-              fontSize: "1.125rem",
-              display: "flex",
-              alignItems: "center",
-              gap: "0.5rem",
-            }}
-          >
-            📍 Sioux Falls, SD
-          </span>
-        </div>
-
-        <div
-          style={{
-            marginTop: "2rem",
-            paddingTop: "2rem",
-            borderTop: `1px solid rgba(255, 255, 255, 0.05)`,
-          }}
-        >
-          <p
-            style={{
-              color: COLORS.secondary,
-              fontSize: "0.875rem",
-              margin: "0",
-              opacity: "0.6",
-            }}
-          >
-            © 2024 Joseph Gutierrez • Available for remote work worldwide
-          </p>
-        </div>
-      </footer>
-
-      {/* Enhanced CSS for smoother animations */}
       <style jsx>{`
-        @keyframes smoothRipple {
-          0% {
-            transform: scale(0);
-            opacity: 0.6;
-          }
-          50% {
-            opacity: 0.3;
-          }
-          100% {
-            transform: scale(6);
-            opacity: 0;
+        .contact-root {
+          min-height: 100vh;
+          background:
+            radial-gradient(circle at 12% 20%, rgba(45, 212, 191, 0.16) 0%, transparent 38%),
+            radial-gradient(circle at 90% 10%, rgba(56, 189, 248, 0.14) 0%, transparent 42%),
+            ${COLORS.background};
+          color: ${COLORS.primary};
+          padding: 96px 1rem 4.5rem;
+        }
+
+        .shell {
+          width: min(1120px, 100%);
+          margin: 0 auto;
+        }
+
+        .contact-hero {
+          text-align: center;
+          margin-bottom: 1.8rem;
+        }
+
+        .eyebrow {
+          margin: 0 0 0.9rem;
+          text-transform: uppercase;
+          letter-spacing: 0.12em;
+          font-size: 0.78rem;
+          color: ${COLORS.accent};
+          font-weight: 600;
+        }
+
+        h1 {
+          margin: 0;
+          font-size: clamp(2rem, 6.4vw, 4.4rem);
+          line-height: 1.06;
+          background: linear-gradient(135deg, ${COLORS.accent} 0%, ${COLORS.accentAlt} 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+
+        .contact-hero > p {
+          margin: 1rem auto 0;
+          max-width: 720px;
+          color: ${COLORS.secondary};
+          line-height: 1.75;
+          font-size: clamp(0.97rem, 2.4vw, 1.18rem);
+        }
+
+        .contact-grid {
+          display: grid;
+          gap: 1rem;
+          grid-template-columns: 0.95fr 1.2fr;
+        }
+
+        .contact-panel {
+          border-radius: 1.35rem;
+          border: 1px solid ${COLORS.border};
+          background: ${COLORS.card};
+          backdrop-filter: blur(14px);
+        }
+
+        .info-shell {
+          padding: clamp(1rem, 3vw, 1.5rem);
+        }
+
+        h2 {
+          margin: 0;
+          font-size: clamp(1.25rem, 4vw, 1.75rem);
+        }
+
+        .info-shell > p {
+          margin: 0.8rem 0 1.15rem;
+          color: ${COLORS.secondary};
+          line-height: 1.7;
+          font-size: 0.96rem;
+        }
+
+        ul {
+          list-style: none;
+          margin: 0;
+          padding: 0;
+          display: grid;
+          gap: 0.8rem;
+        }
+
+        li {
+          border: 1px solid ${COLORS.border};
+          border-radius: 0.9rem;
+          background: ${COLORS.field};
+          padding: 0.85rem 0.9rem;
+          display: grid;
+          gap: 0.2rem;
+        }
+
+        li span {
+          font-size: 0.73rem;
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
+          color: ${COLORS.secondary};
+        }
+
+        li a,
+        li strong {
+          color: ${COLORS.primary};
+          font-size: 0.95rem;
+          text-decoration: none;
+          font-weight: 500;
+        }
+
+        .form-shell {
+          padding: clamp(1rem, 3vw, 1.5rem);
+        }
+
+        form {
+          display: grid;
+          gap: 0.85rem;
+        }
+
+        label {
+          display: grid;
+          gap: 0.45rem;
+          font-size: 0.85rem;
+          font-weight: 500;
+          color: ${COLORS.primary};
+        }
+
+        input,
+        textarea {
+          width: 100%;
+          border-radius: 0.85rem;
+          border: 1px solid ${COLORS.border};
+          background: ${COLORS.field};
+          color: ${COLORS.primary};
+          padding: 0.82rem 0.92rem;
+          font-size: 0.95rem;
+          outline: none;
+          transition: border-color 0.2s ease, box-shadow 0.2s ease;
+          box-sizing: border-box;
+          font-family: ${inter.style.fontFamily};
+        }
+
+        textarea {
+          resize: vertical;
+          min-height: 132px;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+          color: #89a6bc;
+        }
+
+        button {
+          border: none;
+          border-radius: 0.85rem;
+          padding: 0.88rem 1rem;
+          font-size: 0.96rem;
+          font-weight: 600;
+          letter-spacing: 0.02em;
+          text-transform: uppercase;
+          color: #02161f;
+          background: linear-gradient(135deg, ${COLORS.accent} 0%, ${COLORS.accentAlt} 100%);
+          cursor: pointer;
+          transition: transform 0.2s ease, filter 0.2s ease;
+        }
+
+        button:hover:not(:disabled) {
+          transform: translateY(-1px);
+          filter: brightness(1.02);
+        }
+
+        button:disabled {
+          opacity: 0.65;
+          cursor: not-allowed;
+        }
+
+        .status {
+          border-radius: 0.8rem;
+          padding: 0.72rem 0.82rem;
+          font-size: 0.9rem;
+          text-align: center;
+        }
+
+        @media (max-width: 920px) {
+          .contact-grid {
+            grid-template-columns: 1fr;
           }
         }
 
-        /* Smooth scroll behavior */
-        * {
-          scroll-behavior: smooth;
-        }
-
-        @media (max-width: 768px) {
-          footer > div:first-child {
-            flex-direction: column !important;
-            gap: 1.5rem !important;
+        @media (max-width: 640px) {
+          .contact-root {
+            padding-top: 88px;
           }
 
-          footer > div:first-child span {
-            display: none !important;
+          button {
+            width: 100%;
           }
         }
       `}</style>
     </div>
   );
-};
-
-export default ContactPage;
+}

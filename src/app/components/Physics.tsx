@@ -6,28 +6,28 @@ import { motion, AnimatePresence } from "framer-motion";
 import { gsap } from "gsap";
 
 const COLORS = {
-  line: "#6C63FF",
+  line: "#2DD4BF",
   letter: "#FFFFFF",
-  letterShadow: "rgba(108, 99, 255, 0.3)",
-  background: "#0F0F0F",
-  ball: "#1A1A1A",
-  ballStroke: "#6C63FF",
+  letterShadow: "rgba(45, 212, 191, 0.35)",
+  background: "#06141F",
+  ball: "#0E2433",
+  ballStroke: "#2DD4BF",
   button: "#1A1A1A",
   buttonText: "#FFFFFF",
   buttonBorder: "rgba(255, 255, 255, 0.1)",
-  particle: "#6C63FF",
-  star: "#FFD700",
-  comet: "#FF6B6B",
-  aurora: ["#6C63FF", "#8B5FBF", "#A855F7", "#C084FC"],
+  particle: "#2DD4BF",
+  star: "#FDE68A",
+  comet: "#FB7185",
+  aurora: ["#2DD4BF", "#38BDF8", "#22D3EE", "#67E8F9"],
   rain: [
-    "#6C63FF", // Primary purple
-    "#8B5FBF", // Medium purple
-    "#A855F7", // Light purple
-    "#C084FC", // Lavender
-    "#7C3AED", // Violet
-    "#5B21B6", // Deep purple
-    "#4C1D95", // Dark purple
-    "#3730A3", // Indigo
+    "#2DD4BF",
+    "#14B8A6",
+    "#38BDF8",
+    "#0EA5E9",
+    "#22D3EE",
+    "#67E8F9",
+    "#F59E0B",
+    "#FDBA74",
   ],
 };
 
@@ -1058,8 +1058,9 @@ const Physics: React.FC = () => {
         position: "relative",
         overflow: "hidden",
         background: `
-          radial-gradient(circle at 20% 80%, rgba(108, 99, 255, 0.1) 0%, transparent 50%),
-          radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
+          radial-gradient(circle at 12% 82%, rgba(45, 212, 191, 0.2) 0%, transparent 52%),
+          radial-gradient(circle at 86% 16%, rgba(56, 189, 248, 0.16) 0%, transparent 44%),
+          radial-gradient(circle at 50% 12%, rgba(253, 186, 116, 0.1) 0%, transparent 30%),
           ${COLORS.background}
         `,
         boxSizing: "border-box",
@@ -1068,6 +1069,37 @@ const Physics: React.FC = () => {
         height: "100vh",
       }}
     >
+      <div
+        style={{
+          position: "absolute",
+          width: isMobile ? "210px" : "380px",
+          height: isMobile ? "210px" : "380px",
+          top: isMobile ? "15%" : "18%",
+          left: isMobile ? "-70px" : "-120px",
+          borderRadius: "58% 42% 61% 39% / 45% 59% 41% 55%",
+          background:
+            "radial-gradient(circle, rgba(45, 212, 191, 0.22) 0%, rgba(45, 212, 191, 0.04) 70%, transparent 100%)",
+          filter: "blur(6px)",
+          pointerEvents: "none",
+          zIndex: 1,
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          width: isMobile ? "190px" : "320px",
+          height: isMobile ? "190px" : "320px",
+          bottom: isMobile ? "14%" : "12%",
+          right: isMobile ? "-50px" : "-90px",
+          borderRadius: "46% 54% 42% 58% / 61% 38% 62% 39%",
+          background:
+            "radial-gradient(circle, rgba(251, 146, 60, 0.18) 0%, rgba(251, 146, 60, 0.02) 72%, transparent 100%)",
+          filter: "blur(6px)",
+          pointerEvents: "none",
+          zIndex: 1,
+        }}
+      />
+
       {/* Cute Atom Button */}
       <div
         style={{
@@ -1082,40 +1114,38 @@ const Physics: React.FC = () => {
           alignItems: "center",
           transform: "translateX(-50%)",
         }}
-      >
-        <button
-          ref={buttonRef}
-          onClick={handleResetWithWave}
-          style={{
-            minWidth: 200,
-            minHeight: 64,
-            padding: "18px 32px",
-            fontSize: "0.95rem",
-            fontWeight: "500",
-            background: `
-              linear-gradient(145deg, 
-                rgba(23, 23, 28, 0.95) 0%, 
-                rgba(31, 31, 40, 0.95) 100%
-              )
-            `,
-            color: "#FFFFFF",
-            border: `1px solid rgba(108, 99, 255, 0.25)`,
-            borderRadius: "16px",
-            cursor: "pointer",
-            outline: "none",
-            position: "relative",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "12px",
-            overflow: "visible",
-            boxShadow: `
-              0 8px 32px rgba(0, 0, 0, 0.4),
-              0 2px 8px rgba(0, 0, 0, 0.2),
-              inset 0 1px 0 rgba(255, 255, 255, 0.05)
-            `,
-            backdropFilter: "blur(20px)",
-            WebkitBackdropFilter: "blur(20px)",
+        >
+          <button
+            ref={buttonRef}
+            onClick={handleResetWithWave}
+            style={{
+              minWidth: 220,
+              minHeight: 66,
+              padding: "18px 34px",
+              fontSize: "0.95rem",
+              fontWeight: "600",
+              background:
+                "linear-gradient(120deg, rgba(12, 31, 47, 0.92) 0%, rgba(15, 54, 71, 0.92) 55%, rgba(30, 41, 59, 0.92) 100%)",
+              color: "#FFFFFF",
+              border: `1px solid rgba(45, 212, 191, 0.34)`,
+              borderRadius: "999px",
+              cursor: "pointer",
+              outline: "none",
+              position: "relative",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "12px",
+              overflow: "visible",
+              boxShadow: `
+                0 16px 40px rgba(2, 8, 23, 0.55),
+                0 4px 14px rgba(15, 23, 42, 0.36),
+                inset 0 1px 0 rgba(255, 255, 255, 0.08)
+              `,
+              backdropFilter: "blur(20px)",
+              WebkitBackdropFilter: "blur(20px)",
+              letterSpacing: "0.04em",
+              textTransform: "uppercase",
           }}
         >
           {/* Animated Atom Icon */}
@@ -1137,12 +1167,12 @@ const Physics: React.FC = () => {
                 height: "8px",
                 background: `
                   radial-gradient(circle, 
-                    rgba(108, 99, 255, 1) 0%, 
-                    rgba(168, 85, 247, 0.8) 100%
+                    rgba(45, 212, 191, 1) 0%, 
+                    rgba(14, 165, 233, 0.8) 100%
                   )
                 `,
                 borderRadius: "50%",
-                boxShadow: "0 0 12px rgba(108, 99, 255, 0.6)",
+                boxShadow: "0 0 12px rgba(45, 212, 191, 0.6)",
                 zIndex: 3,
               }}
             />
@@ -1158,7 +1188,7 @@ const Physics: React.FC = () => {
                   position: "absolute",
                   width: "20px",
                   height: "20px",
-                  border: "1px solid rgba(108, 99, 255, 0.3)",
+                  border: "1px solid rgba(45, 212, 191, 0.3)",
                   borderRadius: "50%",
                   transform: `rotate(${index * 60}deg)`,
                   transformOrigin: "center",
@@ -1175,18 +1205,18 @@ const Physics: React.FC = () => {
                     height: "4px",
                     background: `rgba(${
                       index === 0
-                        ? "108, 99, 255"
+                        ? "45, 212, 191"
                         : index === 1
-                        ? "168, 85, 247"
-                        : "196, 132, 252"
+                        ? "14, 165, 233"
+                        : "251, 146, 60"
                     }, 0.9)`,
                     borderRadius: "50%",
                     boxShadow: `0 0 8px rgba(${
                       index === 0
-                        ? "108, 99, 255"
+                        ? "45, 212, 191"
                         : index === 1
-                        ? "168, 85, 247"
-                        : "196, 132, 252"
+                        ? "14, 165, 233"
+                        : "251, 146, 60"
                     }, 0.6)`,
                   }}
                 />
@@ -1199,7 +1229,7 @@ const Physics: React.FC = () => {
             style={{
               fontFamily:
                 "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
-              letterSpacing: "0.01em",
+              letterSpacing: "0.03em",
               color: "#FFFFFF",
               textShadow: "0 1px 2px rgba(0, 0, 0, 0.5)",
             }}
@@ -1228,7 +1258,7 @@ const Physics: React.FC = () => {
                       position: "absolute",
                       width: "64px",
                       height: "64px",
-                      border: `2px solid rgba(108, 99, 255, 0.4)`,
+                      border: `2px solid rgba(45, 212, 191, 0.35)`,
                       borderRadius: "50%",
                       left: "-32px",
                       top: "-32px",
@@ -1267,7 +1297,7 @@ const Physics: React.FC = () => {
                 0 0 10px ${COLORS.letterShadow},
                 0 0 20px ${COLORS.letterShadow},
                 0 0 30px ${COLORS.letterShadow},
-                0 0 40px rgba(108, 99, 255, 0.1)
+                0 0 40px rgba(45, 212, 191, 0.12)
               `,
               transform: "translate(-50%, -50%)",
               userSelect: "none",
@@ -1276,7 +1306,7 @@ const Physics: React.FC = () => {
               pointerEvents: "none",
               fontSize: `${LETTER_HEIGHT}px`,
               lineHeight: 1,
-              filter: "drop-shadow(0 0 8px rgba(108, 99, 255, 0.4))",
+              filter: "drop-shadow(0 0 8px rgba(45, 212, 191, 0.4))",
             }}
           >
             {char === " " ? "\u00A0" : char}
@@ -1293,7 +1323,7 @@ const Physics: React.FC = () => {
           right: 0,
           bottom: 0,
           background: `
-            radial-gradient(circle at 50% 50%, rgba(108, 99, 255, 0.05) 0%, transparent 70%)
+            radial-gradient(circle at 50% 50%, rgba(45, 212, 191, 0.06) 0%, transparent 70%)
           `,
           pointerEvents: "none",
           zIndex: 0,

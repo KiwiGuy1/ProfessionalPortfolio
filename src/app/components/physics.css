@@ -14,11 +14,11 @@
   width: 70vw;
   max-width: 900px;
   min-height: 64px;
-  color: #eae8ff;
+  color: #dcfdfa;
   font-size: 2rem;
   font-weight: bold;
   z-index: 10;
-  box-shadow: 0 4px 24px rgba(234, 232, 255, 0.08);
+  box-shadow: 0 4px 24px rgba(45, 212, 191, 0.14);
 }
 
 /* Logo Text */
@@ -27,7 +27,7 @@
   font-weight: bold;
   letter-spacing: 2px;
   margin-right: 2rem;
-  color: #eae8ff;
+  color: #dcfdfa;
 }
 
 /* Navigation Links */
@@ -36,7 +36,7 @@
   gap: 2.5rem;
   font-size: 1.15rem;
   font-weight: 500;
-  color: #eae8ff;
+  color: #dcfdfa;
 }
 
 .nav > a {
@@ -48,8 +48,8 @@
 }
 
 .nav > a:hover {
-  background: rgba(234, 232, 255, 0.15);
-  color: rgba(234, 232, 255);
+  background: rgba(45, 212, 191, 0.15);
+  color: #ccfbf1;
 }
 
 /* Responsive adjustments for mobile */

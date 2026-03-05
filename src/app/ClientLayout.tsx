@@ -154,9 +154,7 @@ export default function ClientLayout({
               children
             ) : !showWelcome ? (
               // Other pages: render with styling
-              <span className={bebas.className + " text-8xl font-extrabold"}>
-                {children}
-              </span>
+              <div className={bebas.className}>{children}</div>
             ) : null}
           </div>
         </>

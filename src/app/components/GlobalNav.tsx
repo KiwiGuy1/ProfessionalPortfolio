@@ -6,10 +6,10 @@ import { gsap } from "gsap";
 import "./physics.css";
 
 const navItems = [
-  { text: "Home", link: "/", color: "#6C63FF" },
-  { text: "Projects", link: "/projects", color: "#8B5FBF" },
-  { text: "About", link: "/about", color: "#A855F7" },
-  { text: "Contact", link: "/contact", color: "#C084FC" },
+  { text: "Home", link: "/", color: "#2DD4BF" },
+  { text: "Projects", link: "/projects", color: "#38BDF8" },
+  { text: "About", link: "/about", color: "#22D3EE" },
+  { text: "Contact", link: "/contact", color: "#FDBA74" },
 ];
 
 interface GlobalNavProps {
@@ -195,13 +195,13 @@ export default function GlobalNav({
         style={{
           background: `
             linear-gradient(135deg, 
-              rgba(15, 15, 15, 0.95) 0%, 
-              rgba(23, 23, 28, 0.95) 100%
+              rgba(4, 20, 31, 0.95) 0%, 
+              rgba(8, 33, 49, 0.95) 100%
             )
           `,
           backdropFilter: "blur(20px)",
           WebkitBackdropFilter: "blur(20px)",
-          borderBottom: "1px solid rgba(108, 99, 255, 0.2)",
+          borderBottom: "1px solid rgba(45, 212, 191, 0.22)",
           boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
           position: "fixed",
           top: 0,
@@ -216,11 +216,11 @@ export default function GlobalNav({
           <motion.div
             className="text-2xl font-bold cursor-pointer"
             style={{
-              background: "linear-gradient(135deg, #6C63FF 0%, #A855F7 100%)",
+              background: "linear-gradient(135deg, #2DD4BF 0%, #38BDF8 100%)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",
-              filter: "drop-shadow(0 0 8px rgba(108, 99, 255, 0.3))",
+              filter: "drop-shadow(0 0 8px rgba(45, 212, 191, 0.3))",
             }}
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 400, damping: 17 }}
@@ -414,12 +414,12 @@ export default function GlobalNav({
               style={{
                 background: `
                   radial-gradient(circle, 
-                    rgba(108, 99, 255, 0.1) 0%, 
-                    rgba(168, 85, 247, 0.05) 100%
+                    rgba(45, 212, 191, 0.12) 0%, 
+                    rgba(56, 189, 248, 0.05) 100%
                   )
                 `,
                 borderRadius: "50%",
-                border: "1px solid rgba(108, 99, 255, 0.3)",
+                border: "1px solid rgba(45, 212, 191, 0.35)",
               }}
             >
               <div
@@ -439,12 +439,12 @@ export default function GlobalNav({
                     height: "6px",
                     background: `
                       radial-gradient(circle, 
-                        rgba(108, 99, 255, 1) 0%, 
-                        rgba(168, 85, 247, 0.8) 100%
+                        rgba(45, 212, 191, 1) 0%, 
+                        rgba(56, 189, 248, 0.8) 100%
                       )
                     `,
                     borderRadius: "50%",
-                    boxShadow: "0 0 8px rgba(108, 99, 255, 0.6)",
+                    boxShadow: "0 0 8px rgba(45, 212, 191, 0.6)",
                     zIndex: 3,
                   }}
                 />
@@ -460,7 +460,7 @@ export default function GlobalNav({
                       position: "absolute",
                       width: "16px",
                       height: "16px",
-                      border: "1px solid rgba(108, 99, 255, 0.2)",
+                      border: "1px solid rgba(45, 212, 191, 0.24)",
                       borderRadius: "50%",
                       transform: `rotate(${index * 60}deg)`,
                       transformOrigin: "center",
@@ -475,10 +475,10 @@ export default function GlobalNav({
                         transform: "translateX(-50%)",
                         width: "3px",
                         height: "3px",
-                        background: navItems[index]?.color || "#6C63FF",
+                        background: navItems[index]?.color || "#2DD4BF",
                         borderRadius: "50%",
                         boxShadow: `0 0 6px ${
-                          navItems[index]?.color || "#6C63FF"
+                          navItems[index]?.color || "#2DD4BF"
                         }`,
                       }}
                     />
@@ -502,9 +502,9 @@ export default function GlobalNav({
             style={{
               background: `
                 radial-gradient(circle at 50% 20%, 
-                  rgba(108, 99, 255, 0.15) 0%, 
-                  rgba(15, 15, 15, 0.95) 50%,
-                  rgba(15, 15, 15, 0.98) 100%
+                  rgba(45, 212, 191, 0.14) 0%, 
+                  rgba(7, 26, 38, 0.95) 50%,
+                  rgba(5, 18, 29, 0.98) 100%
                 )
               `,
               backdropFilter: "blur(20px)",
@@ -663,17 +663,17 @@ export default function GlobalNav({
                 height: "60px",
                 background: `
                   radial-gradient(circle, 
-                    rgba(108, 99, 255, 0.2) 0%, 
-                    rgba(168, 85, 247, 0.1) 100%
+                    rgba(45, 212, 191, 0.22) 0%, 
+                    rgba(56, 189, 248, 0.12) 100%
                   )
                 `,
                 borderRadius: "50%",
-                border: "2px solid rgba(108, 99, 255, 0.5)",
+                border: "2px solid rgba(45, 212, 191, 0.5)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 backdropFilter: "blur(20px)",
-                boxShadow: "0 0 30px rgba(108, 99, 255, 0.3)",
+                boxShadow: "0 0 30px rgba(45, 212, 191, 0.3)",
               }}
             >
               <motion.div

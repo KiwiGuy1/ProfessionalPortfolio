@@ -1,5 +1,6 @@
 "use client";
-import React, { useRef, useEffect } from "react";
+
+import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Inter } from "next/font/google";
@@ -13,63 +14,70 @@ const inter = Inter({
 });
 
 const COLORS = {
-  background: "#0F0F0F",
-  primary: "#FFFFFF",
-  accent: "#6C63FF",
-  secondary: "#A8A8A8",
-  cardBg: "#1A1A1A",
-  gradient: "linear-gradient(135deg, #6C63FF 0%, #5A52E8 100%)",
-  border: "rgba(255, 255, 255, 0.1)",
-  surface: "rgba(255, 255, 255, 0.05)",
+  background: "#06141F",
+  backgroundSoft: "#0A2233",
+  primary: "#F8FAFC",
+  secondary: "#9FB5C7",
+  accent: "#2DD4BF",
+  accentAlt: "#38BDF8",
+  border: "rgba(45, 212, 191, 0.22)",
+  card: "rgba(8, 33, 49, 0.72)",
+  chip: "rgba(56, 189, 248, 0.14)",
 };
+
+const journey = [
+  {
+    title: "Full Stack Developer",
+    company: "Freelance",
+    period: "2023 - Present",
+    description:
+      "Building polished web apps with a focus on performance, maintainable architecture, and product-quality UX.",
+  },
+  {
+    title: "Frontend Developer",
+    company: "Previous Company",
+    period: "2022 - 2023",
+    description:
+      "Shipped responsive interfaces and improved core page performance across high-traffic surfaces.",
+  },
+  {
+    title: "Learning & Growth",
+    company: "Self-taught",
+    period: "2021 - 2022",
+    description:
+      "Built fundamentals through consistent practice, project work, and modern web tooling.",
+  },
+];
 
 export default function About() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const subtitleRef = useRef<HTMLParagraphElement>(null);
-  const experienceRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Hero section animations
-      const tl = gsap.timeline();
-
-      tl.from(titleRef.current, {
-        y: 100,
+      gsap.from(".about-hero", {
+        y: 44,
         opacity: 0,
-        duration: 1.2,
+        duration: 0.9,
         ease: "power3.out",
-      })
-        .from(
-          subtitleRef.current,
-          {
-            y: 50,
-            opacity: 0,
-            duration: 1,
-            ease: "power3.out",
-          },
-          "-=0.8"
-        )
-        .from(
-          ".hero-line",
-          {
-            scaleX: 0,
-            duration: 1.5,
-            ease: "power3.out",
-          },
-          "-=0.5"
-        );
+      });
 
-      // Experience animation
-      gsap.from(".experience-item", {
-        y: 60,
+      gsap.from(".about-card", {
+        y: 42,
         opacity: 0,
-        duration: 1,
-        stagger: 0.3,
+        duration: 0.9,
+        delay: 0.15,
+        ease: "power3.out",
+      });
+
+      gsap.from(".journey-item", {
+        y: 50,
+        opacity: 0,
+        duration: 0.85,
+        stagger: 0.14,
         ease: "power3.out",
         scrollTrigger: {
-          trigger: experienceRef.current,
-          start: "top 85%",
+          trigger: ".journey-wrap",
+          start: "top 82%",
           toggleActions: "play none none reverse",
         },
       });
@@ -79,326 +87,237 @@ export default function About() {
   }, []);
 
   return (
-    <div
-      ref={containerRef}
-      className={inter.className}
-      style={{
-        background: COLORS.background,
-        color: COLORS.primary,
-        minHeight: "100vh",
-        width: "100%",
-        overflowX: "hidden",
-        paddingTop: "80px",
-      }}
-    >
-      {/* Hero Section */}
-      <section
-        style={{
-          minHeight: "calc(100vh - 80px)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          textAlign: "center",
-          padding: "2rem 1rem",
-          width: "100%",
-          boxSizing: "border-box",
-          background: `radial-gradient(circle at 50% 50%, rgba(108, 99, 255, 0.1) 0%, transparent 50%)`,
-        }}
-      >
-        <div style={{ maxWidth: "48rem", width: "100%" }}>
-          <h1
-            ref={titleRef}
-            style={{
-              fontSize: "clamp(2.5rem, 8vw, 6rem)",
-              fontWeight: "bold",
-              marginBottom: "2rem",
-              background: COLORS.gradient,
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              lineHeight: "1.1",
-            }}
-          >
-            About Me
-          </h1>
-          <div
-            className="hero-line"
-            style={{
-              width: "clamp(64px, 10vw, 128px)",
-              height: "4px",
-              margin: "0 auto 2rem",
-              background: COLORS.accent,
-            }}
-          />
-          <p
-            ref={subtitleRef}
-            style={{
-              fontSize: "clamp(1rem, 2.5vw, 1.25rem)",
-              color: COLORS.secondary,
-              margin: "0 auto 3rem",
-              lineHeight: "1.6",
-              padding: "0 1rem",
-            }}
-          >
-            Hi, I make beautiful websites and web applications. I have a passion
-            for creating engaging and interactive user experiences with modern
-            technologies and thoughtful design.
+    <div ref={containerRef} className={inter.className}>
+      <main className="about-root">
+        <section className="about-hero section-shell">
+          <p className="eyebrow">About</p>
+          <h1>Crafting Clean, Fast Interfaces</h1>
+          <p className="lead">
+            I design and build modern web experiences focused on clarity,
+            motion, and usability. My goal is always the same: make products
+            feel effortless for users.
           </p>
+        </section>
 
-          {/* About Card */}
-          <div
-            style={{
-              background: COLORS.cardBg,
-              border: `1px solid ${COLORS.border}`,
-              borderRadius: "2rem",
-              padding: "clamp(2rem, 6vw, 3rem)",
-              textAlign: "left",
-            }}
-          >
-            <div
-              style={{ display: "flex", flexDirection: "column", gap: "2rem" }}
-            >
-              <div>
-                <h3
-                  style={{
-                    fontSize: "clamp(1.25rem, 3vw, 1.5rem)",
-                    fontWeight: "600",
-                    marginBottom: "1rem",
-                    color: COLORS.primary,
-                  }}
-                >
-                  What I Do
-                </h3>
-                <p
-                  style={{
-                    color: COLORS.secondary,
-                    fontSize: "clamp(0.875rem, 2.5vw, 1rem)",
-                    lineHeight: "1.6",
-                    marginBottom: "1.5rem",
-                  }}
-                >
-                  My expertise includes front-end development, UI/UX design, and
-                  performance optimization. I specialize in creating responsive,
-                  accessible, and high-performance web applications that deliver
-                  exceptional user experiences.
-                </p>
-              </div>
+        <section className="section-shell about-card card">
+          <div className="card-grid">
+            <div>
+              <h2>What I Do</h2>
+              <p>
+                I work across frontend and full-stack workflows, from component
+                architecture to deployment. I enjoy turning rough ideas into
+                production-ready interfaces that look sharp on desktop and
+                mobile.
+              </p>
+            </div>
 
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-                  gap: "1rem",
-                }}
-              >
-                <div style={{ textAlign: "center" }}>
-                  <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>
-                    🎨
-                  </div>
-                  <h4
-                    style={{
-                      fontSize: "1rem",
-                      fontWeight: "600",
-                      marginBottom: "0.25rem",
-                      color: COLORS.primary,
-                    }}
-                  >
-                    Design
-                  </h4>
-                  <p
-                    style={{
-                      fontSize: "0.875rem",
-                      color: COLORS.secondary,
-                      margin: "0",
-                    }}
-                  >
-                    UI/UX Design
-                  </p>
-                </div>
-                <div style={{ textAlign: "center" }}>
-                  <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>
-                    💻
-                  </div>
-                  <h4
-                    style={{
-                      fontSize: "1rem",
-                      fontWeight: "600",
-                      marginBottom: "0.25rem",
-                      color: COLORS.primary,
-                    }}
-                  >
-                    Development
-                  </h4>
-                  <p
-                    style={{
-                      fontSize: "0.875rem",
-                      color: COLORS.secondary,
-                      margin: "0",
-                    }}
-                  >
-                    Frontend & Backend
-                  </p>
-                </div>
-                <div style={{ textAlign: "center" }}>
-                  <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>
-                    ⚡
-                  </div>
-                  <h4
-                    style={{
-                      fontSize: "1rem",
-                      fontWeight: "600",
-                      marginBottom: "0.25rem",
-                      color: COLORS.primary,
-                    }}
-                  >
-                    Performance
-                  </h4>
-                  <p
-                    style={{
-                      fontSize: "0.875rem",
-                      color: COLORS.secondary,
-                      margin: "0",
-                    }}
-                  >
-                    Optimization
-                  </p>
-                </div>
-              </div>
+            <div className="skills-grid">
+              <article className="skill-pill">
+                <h3>Design</h3>
+                <p>UI systems, visual hierarchy, responsive layouts</p>
+              </article>
+              <article className="skill-pill">
+                <h3>Development</h3>
+                <p>Next.js, React, TypeScript, APIs</p>
+              </article>
+              <article className="skill-pill">
+                <h3>Performance</h3>
+                <p>Core Web Vitals, smooth interactions, lean bundles</p>
+              </article>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Experience Section */}
-      <section
-        ref={experienceRef}
-        style={{
-          padding: "clamp(3rem, 8vw, 5rem) 1rem",
-        }}
-      >
-        <div style={{ maxWidth: "48rem", margin: "0 auto" }}>
-          <h2
-            style={{
-              fontSize: "clamp(2rem, 5vw, 3rem)",
-              fontWeight: "bold",
-              marginBottom: "3rem",
-              color: COLORS.primary,
-              textAlign: "center",
-            }}
-          >
-            Experience & Journey
-          </h2>
-
-          <div
-            style={{ display: "flex", flexDirection: "column", gap: "2rem" }}
-          >
-            {[
-              {
-                title: "Full Stack Developer",
-                company: "Freelance",
-                period: "2023 - Present",
-                description:
-                  "Creating modern web applications with focus on performance and user experience.",
-              },
-              {
-                title: "Frontend Developer",
-                company: "Previous Company",
-                period: "2022 - 2023",
-                description:
-                  "Developed responsive interfaces and improved website performance by 40%.",
-              },
-              {
-                title: "Learning & Growth",
-                company: "Self-taught",
-                period: "2021 - 2022",
-                description:
-                  "Mastered modern web technologies through continuous learning and practice.",
-              },
-            ].map((exp, i) => (
-              <div
-                key={i}
-                className="experience-item"
-                style={{
-                  background: COLORS.cardBg,
-                  border: `1px solid ${COLORS.border}`,
-                  borderRadius: "1.5rem",
-                  padding: "clamp(1.5rem, 4vw, 2rem)",
-                  transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = COLORS.accent;
-                  e.currentTarget.style.transform = "translateX(8px)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = COLORS.border;
-                  e.currentTarget.style.transform = "translateX(0)";
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "flex-start",
-                    marginBottom: "1rem",
-                    flexWrap: "wrap",
-                    gap: "0.5rem",
-                  }}
-                >
+        <section className="section-shell journey-wrap">
+          <h2 className="section-title">Experience</h2>
+          <div className="timeline">
+            {journey.map((item, idx) => (
+              <article key={idx} className="journey-item card timeline-item">
+                <div className="timeline-top">
                   <div>
-                    <h3
-                      style={{
-                        fontSize: "clamp(1.125rem, 3vw, 1.25rem)",
-                        fontWeight: "600",
-                        color: COLORS.primary,
-                        marginBottom: "0.25rem",
-                      }}
-                    >
-                      {exp.title}
-                    </h3>
-                    <p
-                      style={{
-                        color: COLORS.accent,
-                        fontSize: "clamp(0.875rem, 2.5vw, 1rem)",
-                        fontWeight: "500",
-                        margin: "0",
-                      }}
-                    >
-                      {exp.company}
-                    </p>
+                    <h3>{item.title}</h3>
+                    <p className="company">{item.company}</p>
                   </div>
-                  <span
-                    style={{
-                      color: COLORS.secondary,
-                      fontSize: "clamp(0.75rem, 2vw, 0.875rem)",
-                      background: COLORS.surface,
-                      padding: "0.25rem 0.75rem",
-                      borderRadius: "1rem",
-                      border: `1px solid ${COLORS.border}`,
-                    }}
-                  >
-                    {exp.period}
-                  </span>
+                  <span className="period">{item.period}</span>
                 </div>
-                <p
-                  style={{
-                    color: COLORS.secondary,
-                    fontSize: "clamp(0.875rem, 2.5vw, 1rem)",
-                    lineHeight: "1.6",
-                    margin: "0",
-                  }}
-                >
-                  {exp.description}
-                </p>
-              </div>
+                <p className="description">{item.description}</p>
+              </article>
             ))}
           </div>
-        </div>
-      </section>
+        </section>
+      </main>
 
-      {/* CSS for smooth animations */}
       <style jsx>{`
-        /* Smooth scroll behavior */
-        * {
-          scroll-behavior: smooth;
+        .about-root {
+          min-height: 100vh;
+          background:
+            radial-gradient(circle at 14% 18%, rgba(45, 212, 191, 0.16) 0%, transparent 40%),
+            radial-gradient(circle at 86% 10%, rgba(56, 189, 248, 0.14) 0%, transparent 38%),
+            ${COLORS.background};
+          color: ${COLORS.primary};
+          padding: 96px 1rem 4.5rem;
+        }
+
+        .section-shell {
+          width: min(1080px, 100%);
+          margin: 0 auto;
+        }
+
+        .about-hero {
+          text-align: center;
+          margin-bottom: 1.75rem;
+        }
+
+        .eyebrow {
+          color: ${COLORS.accent};
+          text-transform: uppercase;
+          letter-spacing: 0.12em;
+          font-size: 0.78rem;
+          font-weight: 600;
+          margin: 0 0 0.9rem;
+        }
+
+        h1 {
+          margin: 0;
+          font-size: clamp(2rem, 6.3vw, 4.6rem);
+          line-height: 1.04;
+          background: linear-gradient(135deg, ${COLORS.accent} 0%, ${COLORS.accentAlt} 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+
+        .lead {
+          margin: 1rem auto 0;
+          max-width: 740px;
+          color: ${COLORS.secondary};
+          font-size: clamp(0.98rem, 2.5vw, 1.2rem);
+          line-height: 1.75;
+        }
+
+        .card {
+          border: 1px solid ${COLORS.border};
+          background: ${COLORS.card};
+          backdrop-filter: blur(14px);
+          border-radius: 1.4rem;
+        }
+
+        .about-card {
+          padding: clamp(1.3rem, 4vw, 2.2rem);
+          margin-bottom: 2.2rem;
+        }
+
+        .card-grid {
+          display: grid;
+          gap: 1.2rem;
+          grid-template-columns: 1.3fr 1fr;
+        }
+
+        h2 {
+          margin: 0 0 0.8rem;
+          font-size: clamp(1.45rem, 4vw, 2rem);
+          line-height: 1.2;
+        }
+
+        .card-grid > div > p {
+          margin: 0;
+          color: ${COLORS.secondary};
+          line-height: 1.75;
+          font-size: 1rem;
+        }
+
+        .skills-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 0.75rem;
+        }
+
+        .skill-pill {
+          border: 1px solid ${COLORS.border};
+          border-radius: 1rem;
+          padding: 0.95rem 1rem;
+          background: ${COLORS.chip};
+        }
+
+        .skill-pill h3 {
+          margin: 0 0 0.3rem;
+          font-size: 1.02rem;
+        }
+
+        .skill-pill p {
+          margin: 0;
+          color: ${COLORS.secondary};
+          font-size: 0.92rem;
+          line-height: 1.5;
+        }
+
+        .section-title {
+          text-align: center;
+          margin-bottom: 1.15rem;
+        }
+
+        .timeline {
+          display: grid;
+          gap: 0.9rem;
+        }
+
+        .timeline-item {
+          padding: 1.1rem;
+        }
+
+        .timeline-top {
+          display: flex;
+          justify-content: space-between;
+          gap: 0.8rem;
+          align-items: flex-start;
+          margin-bottom: 0.7rem;
+        }
+
+        .timeline-item h3 {
+          margin: 0;
+          font-size: 1.07rem;
+        }
+
+        .company {
+          margin: 0.2rem 0 0;
+          color: ${COLORS.accent};
+          font-size: 0.92rem;
+        }
+
+        .period {
+          border: 1px solid ${COLORS.border};
+          border-radius: 999px;
+          padding: 0.35rem 0.7rem;
+          font-size: 0.76rem;
+          color: ${COLORS.secondary};
+          background: ${COLORS.chip};
+          white-space: nowrap;
+        }
+
+        .description {
+          margin: 0;
+          color: ${COLORS.secondary};
+          line-height: 1.65;
+          font-size: 0.95rem;
+        }
+
+        @media (max-width: 900px) {
+          .card-grid {
+            grid-template-columns: 1fr;
+          }
+        }
+
+        @media (max-width: 640px) {
+          .about-root {
+            padding-top: 88px;
+          }
+
+          .timeline-top {
+            flex-direction: column;
+          }
+
+          .period {
+            margin-top: 0.15rem;
+          }
         }
       `}</style>
     </div>
