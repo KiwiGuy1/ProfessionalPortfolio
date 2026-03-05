@@ -40,6 +40,9 @@ const authOptions: NextAuthOptions = {
   callbacks: {
     async redirect({ url, baseUrl }) {
       // Allow only same-origin or relative redirects.
+      if (url === "/" || url === baseUrl || url === `${baseUrl}/`) {
+        return `${baseUrl}/dashboard`;
+      }
       if (url.startsWith("/")) return new URL(url, baseUrl).toString();
       if (url.startsWith(baseUrl)) return url;
       return `${baseUrl}/dashboard`;
