@@ -9,11 +9,23 @@ import Welcome from "./components/Welcome";
 
 const ANIMATION_DURATION = 0.5; // seconds
 const WELCOME_COOLDOWN_MS = 24 * 60 * 60 * 1000; // 24 hours
+const WELCOME_STORAGE_KEY = "lastWelcomeShown";
 const bebas = Bebas_Neue({
   subsets: ["latin"],
   weight: "400",
   display: "swap",
 });
+
+declare global {
+  interface Window {
+    __welcomeDebug?: {
+      reset: () => void;
+      play: () => void;
+      skip: () => void;
+      status: () => void;
+    };
+  }
+}
 
 export default function ClientLayout({
   children,
@@ -46,16 +58,16 @@ export default function ClientLayout({
 
     try {
       // Check if welcome should be shown based on localStorage
-      const lastWelcomeTime = localStorage.getItem("lastWelcomeShown");
+      const lastWelcomeTime = localStorage.getItem(WELCOME_STORAGE_KEY);
       const now = Date.now();
 
       if (lastWelcomeTime) {
         const parsedTime = parseInt(lastWelcomeTime, 10);
         // Validate timestamp is a valid number and not in the future
         if (isNaN(parsedTime) || parsedTime > now) {
-          localStorage.removeItem("lastWelcomeShown");
+          localStorage.removeItem(WELCOME_STORAGE_KEY);
           setShowWelcome(true);
-          localStorage.setItem("lastWelcomeShown", now.toString());
+          localStorage.setItem(WELCOME_STORAGE_KEY, now.toString());
         } else {
           const timeSinceWelcome = now - parsedTime;
           if (timeSinceWelcome < WELCOME_COOLDOWN_MS) {
@@ -65,13 +77,13 @@ export default function ClientLayout({
           } else {
             // Cooldown expired, show welcome again
             setShowWelcome(true);
-            localStorage.setItem("lastWelcomeShown", now.toString());
+            localStorage.setItem(WELCOME_STORAGE_KEY, now.toString());
           }
         }
       } else {
         // First visit, show welcome and record timestamp
         setShowWelcome(true);
-        localStorage.setItem("lastWelcomeShown", now.toString());
+        localStorage.setItem(WELCOME_STORAGE_KEY, now.toString());
       }
     } catch (error) {
       // localStorage might be unavailable or disabled
@@ -87,6 +99,33 @@ export default function ClientLayout({
       }
     }
   }, [pathname]);
+
+  useEffect(() => {
+    if (process.env.NODE_ENV === "production") return;
+
+    window.__welcomeDebug = {
+      reset: () => {
+        localStorage.removeItem(WELCOME_STORAGE_KEY);
+        console.log("Welcome cooldown reset.");
+      },
+      play: () => {
+        localStorage.removeItem(WELCOME_STORAGE_KEY);
+        window.location.href = "/";
+      },
+      skip: () => {
+        localStorage.setItem(WELCOME_STORAGE_KEY, Date.now().toString());
+        console.log("Welcome marked as seen just now.");
+      },
+      status: () => {
+        const value = localStorage.getItem(WELCOME_STORAGE_KEY);
+        console.log("lastWelcomeShown =", value);
+      },
+    };
+
+    return () => {
+      delete window.__welcomeDebug;
+    };
+  }, []);
 
   // Handle welcome completion
   const handleWelcomeComplete = () => {
