@@ -8,8 +8,6 @@ import prisma from "@/lib/prisma";
 const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   secret: process.env.NEXTAUTH_SECRET,
-  // Vercel preview/prod domains can vary; this prevents host validation failures.
-  trustHost: true,
   providers: [
     CredentialsProvider({
       name: "Credentials",
