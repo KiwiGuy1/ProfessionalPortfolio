@@ -4,9 +4,16 @@ import { withAccelerate } from "@prisma/extension-accelerate";
 const globalForPrisma = global as unknown as { prisma: any };
 
 const isProd = process.env.NODE_ENV === "production";
-const databaseUrl = process.env.DATABASE_URL;
+const prismaDatabaseUrl = process.env.PRISMA_DATABASE_URL;
+const databaseUrl =
+  process.env.DATABASE_URL ||
+  process.env.POSTGRES_URL ||
+  (prismaDatabaseUrl?.startsWith("postgres://") ? prismaDatabaseUrl : undefined);
 const accelerateUrl =
   process.env.PRISMA_ACCELERATE_URL ||
+  (prismaDatabaseUrl?.startsWith("prisma+postgres://")
+    ? prismaDatabaseUrl
+    : undefined) ||
   (databaseUrl?.startsWith("prisma+postgres://") ? databaseUrl : undefined);
 
 let prismaClient: any;
