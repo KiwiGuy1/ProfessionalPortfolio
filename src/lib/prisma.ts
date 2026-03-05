@@ -1,26 +1,39 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import { withAccelerate } from "@prisma/extension-accelerate";
 
-const globalForPrisma = global as unknown as { prisma: any };
-
 const isProd = process.env.NODE_ENV === "production";
+const logLevels: Prisma.LogLevel[] = isProd
+  ? ["error"]
+  : ["query", "error", "warn"];
+
+type PrismaSingleton = PrismaClient;
+
+const createPrismaClient = (accelerateUrl: string) =>
+  new PrismaClient({
+    accelerateUrl,
+    log: logLevels,
+  }).$extends(withAccelerate()) as unknown as PrismaSingleton;
+
+const globalForPrisma = globalThis as typeof globalThis & {
+  prisma?: PrismaSingleton;
+};
+
 const prismaDatabaseUrl = process.env.PRISMA_DATABASE_URL;
-const databaseUrl =
+const resolveDatabaseUrl = () =>
   process.env.DATABASE_URL ||
   process.env.POSTGRES_URL ||
   (prismaDatabaseUrl?.startsWith("postgres://") ? prismaDatabaseUrl : undefined);
-const accelerateUrl =
+const databaseUrl = resolveDatabaseUrl();
+const resolveAccelerateUrl = () =>
   process.env.PRISMA_ACCELERATE_URL ||
   (prismaDatabaseUrl?.startsWith("prisma+postgres://")
     ? prismaDatabaseUrl
     : undefined) ||
   (databaseUrl?.startsWith("prisma+postgres://") ? databaseUrl : undefined);
+const accelerateUrl = resolveAccelerateUrl();
 
-let prismaClient: any;
-const logLevels: Prisma.LogLevel[] = isProd
-  ? ["error"]
-  : ["query", "error", "warn"];
-const createUnavailableClient = (message: string) =>
+let prismaClient: PrismaSingleton;
+const createUnavailableClient = (message: string): PrismaSingleton =>
   new Proxy(
     {},
     {
@@ -28,7 +41,7 @@ const createUnavailableClient = (message: string) =>
         throw new Error(message);
       },
     }
-  );
+  ) as unknown as PrismaSingleton;
 
 if (!databaseUrl && !accelerateUrl) {
   // No database configuration available.
@@ -50,10 +63,7 @@ if (!databaseUrl && !accelerateUrl) {
     );
   } else {
     try {
-      prismaClient = new PrismaClient({
-        accelerateUrl,
-        log: logLevels,
-      }).$extends(withAccelerate());
+      prismaClient = createPrismaClient(accelerateUrl);
     } catch (error) {
       console.error("Failed to initialize Prisma client:", error);
       prismaClient = createUnavailableClient(
@@ -63,7 +73,7 @@ if (!databaseUrl && !accelerateUrl) {
   }
 }
 
-export const prisma = globalForPrisma.prisma || prismaClient;
+export const prisma = globalForPrisma.prisma ?? prismaClient;
 
 if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prisma = prisma;
