@@ -34,7 +34,11 @@ export default function ClientLayout({
     setMounted(true);
 
     // Don't show welcome for dashboard or auth routes
-    if (pathname.startsWith("/dashboard") || pathname.startsWith("/api/auth")) {
+    if (
+      pathname.startsWith("/dashboard") ||
+      pathname.startsWith("/api/auth") ||
+      pathname.startsWith("/signin")
+    ) {
       setShowWelcome(false);
       setShowNav(false);
       return;
@@ -75,7 +79,8 @@ export default function ClientLayout({
       // Default to showing welcome if localStorage fails
       if (
         !pathname.startsWith("/dashboard") &&
-        !pathname.startsWith("/api/auth")
+        !pathname.startsWith("/api/auth") &&
+        !pathname.startsWith("/signin")
       ) {
         setShowWelcome(true);
         setShowNav(false);
@@ -149,7 +154,9 @@ export default function ClientLayout({
 
           {/* Main Content */}
           <div className="relative min-h-screen w-full">
-            {!showWelcome && pathname.startsWith("/dashboard") ? (
+            {!showWelcome &&
+            (pathname.startsWith("/dashboard") ||
+              pathname.startsWith("/signin")) ? (
               // Dashboard: render without styling
               children
             ) : !showWelcome ? (
