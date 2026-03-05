@@ -61,10 +61,10 @@ export default function Welcome({ onComplete }: WelcomeProps) {
     const particles = [];
     const shapes = ["▪", "▫", "●", "○", "◆", "◇", "▲", "△"];
     const particleColors = [
-      "rgba(108, 99, 255, 0.4)",
-      "rgba(90, 82, 232, 0.3)",
+      "rgba(34, 211, 238, 0.38)",
+      "rgba(56, 189, 248, 0.32)",
       "rgba(255, 255, 255, 0.15)",
-      "rgba(168, 168, 168, 0.2)",
+      "rgba(148, 163, 184, 0.24)",
     ];
 
     for (let i = 0; i < 15; i++) {
@@ -214,7 +214,7 @@ export default function Welcome({ onComplete }: WelcomeProps) {
       className={`fixed inset-0 z-[9999] flex items-center justify-center ${inter.className}`}
       style={{
         background:
-          "radial-gradient(ellipse at center, #1A1A1A 0%, #0F0F0F 70%)",
+          "radial-gradient(ellipse at center, #0F172A 0%, #020617 72%)",
         overflow: "hidden",
         height: "100vh",
         width: "100vw",
@@ -231,8 +231,8 @@ export default function Welcome({ onComplete }: WelcomeProps) {
         className="absolute inset-0 opacity-5"
         style={{
           backgroundImage: `
-            linear-gradient(rgba(108, 99, 255, 0.1) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(108, 99, 255, 0.1) 1px, transparent 1px)
+            linear-gradient(rgba(45, 212, 191, 0.11) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(45, 212, 191, 0.11) 1px, transparent 1px)
           `,
           backgroundSize: "50px 50px",
         }}
@@ -247,18 +247,18 @@ export default function Welcome({ onComplete }: WelcomeProps) {
       {/* Minimalist Geometric Elements */}
       <div className="absolute inset-0">
         {/* Accent Lines */}
-        <div className="accent-line absolute top-1/4 left-1/4 w-16 h-0.5 bg-gradient-to-r from-purple-500 to-transparent opacity-30"></div>
-        <div className="accent-line absolute top-1/3 right-1/3 w-12 h-0.5 bg-gradient-to-l from-purple-400 to-transparent opacity-25 rotate-45"></div>
-        <div className="accent-line absolute bottom-1/3 left-1/5 w-20 h-0.5 bg-gradient-to-r from-indigo-500 to-transparent opacity-20"></div>
-        <div className="accent-line absolute bottom-1/4 right-1/4 w-14 h-0.5 bg-gradient-to-l from-purple-300 to-transparent opacity-30 -rotate-45"></div>
+        <div className="accent-line absolute top-1/4 left-1/4 w-16 h-0.5 bg-gradient-to-r from-cyan-400 to-transparent opacity-30"></div>
+        <div className="accent-line absolute top-1/3 right-1/3 w-12 h-0.5 bg-gradient-to-l from-sky-400 to-transparent opacity-25 rotate-45"></div>
+        <div className="accent-line absolute bottom-1/3 left-1/5 w-20 h-0.5 bg-gradient-to-r from-teal-400 to-transparent opacity-20"></div>
+        <div className="accent-line absolute bottom-1/4 right-1/4 w-14 h-0.5 bg-gradient-to-l from-cyan-300 to-transparent opacity-30 -rotate-45"></div>
 
         {/* Geometric Elements */}
-        <div className="geo-element absolute top-1/6 left-1/6 w-3 h-3 border border-purple-500 opacity-20 rotate-45"></div>
-        <div className="geo-element absolute top-1/5 right-1/5 w-2 h-2 bg-purple-400 opacity-25 rounded-full"></div>
-        <div className="geo-element absolute bottom-1/4 left-1/3 w-4 h-4 border border-indigo-400 opacity-15"></div>
-        <div className="geo-element absolute bottom-1/6 right-1/6 w-3 h-3 bg-purple-300 opacity-20"></div>
-        <div className="geo-element absolute top-1/2 left-1/12 w-2 h-8 bg-gradient-to-b from-purple-500 to-transparent opacity-20"></div>
-        <div className="geo-element absolute top-1/3 right-1/12 w-2 h-6 bg-gradient-to-t from-indigo-500 to-transparent opacity-15"></div>
+        <div className="geo-element absolute top-1/6 left-1/6 w-3 h-3 border border-cyan-400 opacity-20 rotate-45"></div>
+        <div className="geo-element absolute top-1/5 right-1/5 w-2 h-2 bg-sky-400 opacity-25 rounded-full"></div>
+        <div className="geo-element absolute bottom-1/4 left-1/3 w-4 h-4 border border-teal-300 opacity-15"></div>
+        <div className="geo-element absolute bottom-1/6 right-1/6 w-3 h-3 bg-cyan-300 opacity-20"></div>
+        <div className="geo-element absolute top-1/2 left-1/12 w-2 h-8 bg-gradient-to-b from-cyan-400 to-transparent opacity-20"></div>
+        <div className="geo-element absolute top-1/3 right-1/12 w-2 h-6 bg-gradient-to-t from-sky-400 to-transparent opacity-15"></div>
       </div>
 
       {/* Main Content */}
@@ -266,13 +266,13 @@ export default function Welcome({ onComplete }: WelcomeProps) {
         {/* Minimalist Logo */}
         <div ref={logoRef} className="mb-8 sm:mb-12 flex justify-center">
           <div
-            className="w-16 h-16 sm:w-20 sm:h-20 border-2 border-purple-500 rounded-lg flex items-center justify-center"
+            className="w-16 h-16 sm:w-20 sm:h-20 border-2 border-cyan-400 rounded-lg flex items-center justify-center"
             style={{
-              background: "rgba(108, 99, 255, 0.1)",
-              boxShadow: "0 0 40px rgba(108, 99, 255, 0.2)",
+              background: "rgba(34, 211, 238, 0.1)",
+              boxShadow: "0 0 40px rgba(34, 211, 238, 0.22)",
             }}
           >
-            <span className="text-xl sm:text-2xl font-bold text-purple-400">
+            <span className="text-xl sm:text-2xl font-bold text-cyan-300">
               JG
             </span>
           </div>
@@ -294,7 +294,7 @@ export default function Welcome({ onComplete }: WelcomeProps) {
         {/* Title */}
         <h2
           ref={titleRef}
-          className="text-lg sm:text-xl md:text-2xl text-purple-400 font-medium mb-4 sm:mb-6 tracking-widest uppercase px-2"
+          className="text-lg sm:text-xl md:text-2xl text-cyan-300 font-medium mb-4 sm:mb-6 tracking-widest uppercase px-2"
           style={{
             letterSpacing: "0.2em",
           }}
@@ -312,7 +312,7 @@ export default function Welcome({ onComplete }: WelcomeProps) {
         >
           Building scalable applications with modern technologies
           <br />
-          <span className="text-purple-300">React • Node.js • TypeScript</span>
+          <span className="text-cyan-200">React • Node.js • TypeScript</span>
         </p>
 
         {/* Code Line */}
@@ -324,7 +324,7 @@ export default function Welcome({ onComplete }: WelcomeProps) {
             lineHeight: "1.6",
           }}
         >
-          <span className="text-purple-400">const</span>{" "}
+          <span className="text-cyan-300">const</span>{" "}
           <span className="text-white">developer</span>{" "}
           <span className="text-gray-400">=</span>{" "}
           <span className="text-green-400">&#123;</span>
@@ -339,7 +339,7 @@ export default function Welcome({ onComplete }: WelcomeProps) {
           <span className="text-yellow-400">true</span>
           <br />
           <span className="text-green-400">&#125;</span>
-          <span className="cursor text-purple-400">|</span>
+          <span className="cursor text-cyan-300">|</span>
         </div>
 
         {/* Loading indicator */}
@@ -349,7 +349,7 @@ export default function Welcome({ onComplete }: WelcomeProps) {
               className="h-full animate-pulse"
               style={{
                 background:
-                  "linear-gradient(90deg, transparent 0%, #6C63FF 50%, transparent 100%)",
+                  "linear-gradient(90deg, transparent 0%, #22D3EE 50%, transparent 100%)",
                 animation: "loading 2s ease-in-out infinite",
               }}
             ></div>
