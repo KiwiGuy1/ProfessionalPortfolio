@@ -8,6 +8,8 @@ import prisma from "@/lib/prisma";
 const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   secret: process.env.NEXTAUTH_SECRET,
+  // Vercel preview/prod domains can vary; this prevents host validation failures.
+  trustHost: true,
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -23,7 +25,7 @@ const authOptions: NextAuthOptions = {
         if (!user || !user.password) return null;
         const isValid = await bcrypt.compare(
           credentials.password,
-          user.password
+          user.password,
         );
         if (!isValid) return null;
         // Return a sanitized user object to keep JWT payload lean
@@ -50,10 +52,6 @@ const authOptions: NextAuthOptions = {
       }
       return session;
     },
-  },
-  pages: {
-    signIn: "/api/auth/signin",
-    error: "/api/auth/error",
   },
 };
 
