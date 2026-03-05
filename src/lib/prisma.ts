@@ -37,10 +37,10 @@ if (!databaseUrl && !accelerateUrl) {
         log: logLevels,
       }).$extends(withAccelerate());
     } else {
-      // Prisma 7 with engineType "client" needs accelerateUrl or a DB adapter.
-      throw new Error(
-        "PrismaClient requires PRISMA_ACCELERATE_URL (or a driver adapter). DATABASE_URL alone is not supported in this setup."
-      );
+      // Standard direct database mode using DATABASE_URL.
+      prismaClient = new PrismaClient({
+        log: logLevels,
+      });
     }
   } catch (error) {
     console.error("Failed to initialize Prisma client:", error);
