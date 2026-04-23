@@ -25,7 +25,7 @@ import {
 } from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { SkeletonUtils } from "three-stdlib";
-import { KIWI_MODEL_PATH } from "@/lib/modelAssets";
+import { KIWI_MODEL_PATHS } from "@/lib/modelAssets";
 import styles from "./model-viewer.module.css";
 
 type SceneControls = {
@@ -143,21 +143,35 @@ function KiwiModel({ controls }: { controls: SceneControls }) {
   useEffect(() => {
     let isMounted = true;
     const loader = new GLTFLoader();
+    let modelPathIndex = 0;
 
-    loader.load(
-      KIWI_MODEL_PATH,
-      (gltf) => {
-        if (!isMounted) return;
-        setSourceScene(gltf.scene);
-        setLoadError(false);
-      },
-      undefined,
-      (error) => {
-        console.error(`Failed to load ${KIWI_MODEL_PATH}`, error);
-        if (!isMounted) return;
-        setLoadError(true);
-      },
-    );
+    const loadModel = () => {
+      const modelPath = KIWI_MODEL_PATHS[modelPathIndex];
+
+      loader.load(
+        modelPath,
+        (gltf) => {
+          if (!isMounted) return;
+          setSourceScene(gltf.scene);
+          setLoadError(false);
+        },
+        undefined,
+        (error) => {
+          console.error(`Failed to load ${modelPath}`, error);
+          modelPathIndex += 1;
+
+          if (modelPathIndex < KIWI_MODEL_PATHS.length) {
+            loadModel();
+            return;
+          }
+
+          if (!isMounted) return;
+          setLoadError(true);
+        },
+      );
+    };
+
+    loadModel();
 
     return () => {
       isMounted = false;
