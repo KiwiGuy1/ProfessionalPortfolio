@@ -27,6 +27,23 @@ const nextConfig: NextConfig = {
   /* config options here */
   headers: () => [
     {
+      source: "/model.glb",
+      headers: [
+        {
+          key: "Content-Type",
+          value: "model/gltf-binary",
+        },
+        {
+          key: "Cache-Control",
+          value: "public, max-age=31536000, immutable",
+        },
+        {
+          key: "Access-Control-Allow-Origin",
+          value: "*",
+        },
+      ],
+    },
+    {
       source: "/:path*",
       headers: securityHeaders,
     },

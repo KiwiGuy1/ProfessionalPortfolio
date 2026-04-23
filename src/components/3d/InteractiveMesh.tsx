@@ -4,9 +4,10 @@ import { useMemo } from "react";
 import { Center, useGLTF } from "@react-three/drei";
 import { Material, MeshStandardMaterial, Object3D } from "three";
 import { SkeletonUtils } from "three-stdlib";
+import { KIWI_MODEL_PATH } from "@/lib/modelAssets";
 
 export default function InteractiveMesh() {
-  const { scene } = useGLTF("/model.glb");
+  const { scene } = useGLTF(KIWI_MODEL_PATH);
 
   const clonedScene = useMemo(() => {
     const clone = SkeletonUtils.clone(scene);
@@ -49,4 +50,4 @@ export default function InteractiveMesh() {
   );
 }
 
-useGLTF.preload("/model.glb");
+useGLTF.preload(KIWI_MODEL_PATH);

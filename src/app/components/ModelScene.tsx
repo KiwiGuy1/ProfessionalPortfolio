@@ -25,6 +25,7 @@ import {
 } from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { SkeletonUtils } from "three-stdlib";
+import { KIWI_MODEL_PATH } from "@/lib/modelAssets";
 import styles from "./model-viewer.module.css";
 
 type SceneControls = {
@@ -144,7 +145,7 @@ function KiwiModel({ controls }: { controls: SceneControls }) {
     const loader = new GLTFLoader();
 
     loader.load(
-      "/model.glb",
+      KIWI_MODEL_PATH,
       (gltf) => {
         if (!isMounted) return;
         setSourceScene(gltf.scene);
@@ -152,7 +153,7 @@ function KiwiModel({ controls }: { controls: SceneControls }) {
       },
       undefined,
       (error) => {
-        console.error("Failed to load /model.glb", error);
+        console.error(`Failed to load ${KIWI_MODEL_PATH}`, error);
         if (!isMounted) return;
         setLoadError(true);
       },
