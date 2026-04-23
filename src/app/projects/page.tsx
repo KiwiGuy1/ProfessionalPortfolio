@@ -16,15 +16,15 @@ const inter = Inter({
 });
 
 const COLORS = {
-  background: "#06141F",
-  primary: "#F8FAFC",
-  secondary: "#9FB5C7",
-  accent: "#2DD4BF",
-  accentAlt: "#38BDF8",
-  border: "rgba(45, 212, 191, 0.22)",
-  card: "rgba(8, 33, 49, 0.74)",
-  surface: "rgba(56, 189, 248, 0.1)",
-  gradient: "linear-gradient(135deg, #2DD4BF 0%, #38BDF8 55%, #22D3EE 100%)",
+  background: "#020202",
+  primary: "#f5f5f5",
+  secondary: "#b9b9b9",
+  accent: "#f0f0f0",
+  accentAlt: "#8f8f8f",
+  border: "rgba(255, 255, 255, 0.14)",
+  card: "rgba(255, 255, 255, 0.05)",
+  surface: "rgba(255, 255, 255, 0.06)",
+  gradient: "linear-gradient(135deg, #ffffff 0%, #d7d7d7 55%, #8d8d8d 100%)",
 };
 
 const projects = [
@@ -120,8 +120,8 @@ export default function ProjectsPage() {
     if (!featuredProjectRef.current) return;
     gsap.to(featuredProjectRef.current, {
       y: -4,
-      borderColor: "rgba(45, 212, 191, 0.52)",
-      boxShadow: "0 18px 34px rgba(45, 212, 191, 0.16)",
+      borderColor: "rgba(255, 255, 255, 0.28)",
+      boxShadow: "0 18px 34px rgba(255, 255, 255, 0.08)",
       duration: 0.25,
       ease: "power2.out",
     });
@@ -141,7 +141,7 @@ export default function ProjectsPage() {
   const handleCardEnter = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     gsap.to(e.currentTarget, {
       y: -3,
-      borderColor: "rgba(45, 212, 191, 0.48)",
+      borderColor: "rgba(255, 255, 255, 0.24)",
       duration: 0.2,
       ease: "power2.out",
     });
@@ -302,8 +302,8 @@ export default function ProjectsPage() {
         .projects-root {
           min-height: 100vh;
           background:
-            radial-gradient(circle at 12% 16%, rgba(45, 212, 191, 0.16) 0%, transparent 39%),
-            radial-gradient(circle at 88% 11%, rgba(56, 189, 248, 0.14) 0%, transparent 41%),
+            radial-gradient(circle at 12% 16%, rgba(255, 255, 255, 0.08) 0%, transparent 39%),
+            radial-gradient(circle at 88% 11%, rgba(255, 255, 255, 0.05) 0%, transparent 41%),
             ${COLORS.background};
           color: ${COLORS.primary};
           padding: 96px 1rem 4.5rem;
@@ -436,7 +436,7 @@ export default function ProjectsPage() {
 
         .badge-accent {
           color: ${COLORS.accent};
-          background: rgba(45, 212, 191, 0.2);
+          background: rgba(255, 255, 255, 0.08);
         }
 
         h3 {
@@ -447,7 +447,7 @@ export default function ProjectsPage() {
 
         .subtitle {
           margin: 0;
-          color: #c9e2f0;
+          color: #e1e1e1;
           font-size: 1rem;
         }
 
@@ -470,7 +470,7 @@ export default function ProjectsPage() {
           background: ${COLORS.surface};
           padding: 0.3rem 0.68rem;
           font-size: 0.75rem;
-          color: #cfe8f5;
+          color: #e8e8e8;
         }
 
         .link-row {
@@ -500,7 +500,7 @@ export default function ProjectsPage() {
         .primary-link {
           border: none !important;
           background: ${COLORS.gradient} !important;
-          color: #042430 !important;
+          color: #050505 !important;
         }
 
         .upcoming-wrap {
@@ -528,8 +528,8 @@ export default function ProjectsPage() {
 
         .status {
           border-radius: 999px;
-          background: rgba(45, 212, 191, 0.2);
-          color: ${COLORS.accent};
+          background: rgba(255, 255, 255, 0.08);
+          color: ${COLORS.primary};
           font-size: 0.72rem;
           font-weight: 600;
           padding: 0.28rem 0.58rem;
@@ -551,7 +551,7 @@ export default function ProjectsPage() {
           border-radius: 1.25rem;
           background: ${COLORS.gradient};
           padding: clamp(1.25rem, 4vw, 2rem) clamp(1rem, 4vw, 1.8rem);
-          color: #032431;
+          color: #050505;
         }
 
         .cta-card h2 {
@@ -569,7 +569,7 @@ export default function ProjectsPage() {
         .cta-card button {
           border: none;
           border-radius: 999px;
-          background: #042230;
+          background: #111111;
           color: ${COLORS.primary};
           font-size: 0.9rem;
           font-weight: 600;

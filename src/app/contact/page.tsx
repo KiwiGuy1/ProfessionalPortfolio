@@ -21,18 +21,18 @@ const inter = Inter({
 });
 
 const COLORS = {
-  background: "#06141F",
-  primary: "#F8FAFC",
-  secondary: "#9FB5C7",
-  accent: "#2DD4BF",
-  accentAlt: "#38BDF8",
-  border: "rgba(45, 212, 191, 0.22)",
-  card: "rgba(8, 33, 49, 0.74)",
-  field: "rgba(56, 189, 248, 0.1)",
-  successBg: "rgba(34, 197, 94, 0.14)",
-  successText: "#22C55E",
-  errorBg: "rgba(239, 68, 68, 0.14)",
-  errorText: "#F87171",
+  background: "#020202",
+  primary: "#f5f5f5",
+  secondary: "#b9b9b9",
+  accent: "#f0f0f0",
+  accentAlt: "#8f8f8f",
+  border: "rgba(255, 255, 255, 0.14)",
+  card: "rgba(255, 255, 255, 0.05)",
+  field: "rgba(255, 255, 255, 0.06)",
+  successBg: "rgba(255, 255, 255, 0.1)",
+  successText: "#ffffff",
+  errorBg: "rgba(255, 255, 255, 0.08)",
+  errorText: "#d0d0d0",
 };
 
 interface FormData {
@@ -42,8 +42,8 @@ interface FormData {
 }
 
 const focusStyle = (el: HTMLInputElement | HTMLTextAreaElement) => {
-  el.style.borderColor = COLORS.accent;
-  el.style.boxShadow = "0 0 0 3px rgba(45, 212, 191, 0.18)";
+  el.style.borderColor = "rgba(255, 255, 255, 0.32)";
+  el.style.boxShadow = "0 0 0 3px rgba(255, 255, 255, 0.08)";
 };
 
 const blurStyle = (el: HTMLInputElement | HTMLTextAreaElement) => {
@@ -240,8 +240,8 @@ export default function ContactPage() {
         .contact-root {
           min-height: 100vh;
           background:
-            radial-gradient(circle at 12% 20%, rgba(45, 212, 191, 0.16) 0%, transparent 38%),
-            radial-gradient(circle at 90% 10%, rgba(56, 189, 248, 0.14) 0%, transparent 42%),
+            radial-gradient(circle at 12% 20%, rgba(255, 255, 255, 0.08) 0%, transparent 38%),
+            radial-gradient(circle at 90% 10%, rgba(255, 255, 255, 0.05) 0%, transparent 42%),
             ${COLORS.background};
           color: ${COLORS.primary};
           padding: 96px 1rem 4.5rem;
@@ -383,7 +383,7 @@ export default function ContactPage() {
 
         input::placeholder,
         textarea::placeholder {
-          color: #89a6bc;
+          color: #8f8f8f;
         }
 
         button {
@@ -394,7 +394,7 @@ export default function ContactPage() {
           font-weight: 600;
           letter-spacing: 0.02em;
           text-transform: uppercase;
-          color: #02161f;
+          color: #050505;
           background: linear-gradient(135deg, ${COLORS.accent} 0%, ${COLORS.accentAlt} 100%);
           cursor: pointer;
           transition: transform 0.2s ease, filter 0.2s ease;

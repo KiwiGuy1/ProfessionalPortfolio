@@ -41,9 +41,16 @@ export default function ClientLayout({
   const [mounted, setMounted] = useState(false);
   const [showNav, setShowNav] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
+  const isHomeRoute = pathname === "/";
 
   useEffect(() => {
     setMounted(true);
+
+    if (isHomeRoute) {
+      setShowWelcome(false);
+      setShowNav(true);
+      return;
+    }
 
     // Don't show welcome for dashboard or auth routes
     if (
@@ -98,7 +105,7 @@ export default function ClientLayout({
         setShowNav(false);
       }
     }
-  }, [pathname]);
+  }, [isHomeRoute, pathname]);
 
   useEffect(() => {
     if (process.env.NODE_ENV === "production") return;

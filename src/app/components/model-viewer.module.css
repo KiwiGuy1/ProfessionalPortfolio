@@ -1,0 +1,777 @@
+.page {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
+  height: 100dvh;
+  min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
+  overflow: hidden;
+  background: #030403;
+}
+
+.motionField {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.motionField::before,
+.motionField::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.motionField::before {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.032) 1px, transparent 1px);
+  background-position: center;
+  background-size: 72px 72px;
+  mask-image: radial-gradient(circle at 50% 70%, transparent 0 28%, #000 58%, transparent 86%);
+  opacity: 0.46;
+}
+
+.motionField::after {
+  background:
+    linear-gradient(90deg, transparent 0 49.8%, rgba(255, 255, 255, 0.08) 50%, transparent 50.2%),
+    linear-gradient(0deg, transparent 0 54%, rgba(255, 255, 255, 0.06) 54.12%, transparent 54.24%);
+  opacity: 0.34;
+  mix-blend-mode: screen;
+}
+
+.signalBeam,
+.signalBeamSoft {
+  position: absolute;
+  right: clamp(1.2rem, 5vw, 6.5rem);
+  top: 14%;
+  width: min(18vw, 180px);
+  height: 62vh;
+  border-left: 1px solid rgba(255, 255, 255, 0.18);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.1), transparent),
+    repeating-linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.08) 0 1px,
+      transparent 1px 28px
+    );
+  opacity: 0.48;
+  box-shadow:
+    0 0 44px rgba(255, 255, 255, 0.04),
+    inset 0 0 34px rgba(255, 255, 255, 0.035);
+  transform: skewX(-8deg);
+}
+
+.signalBeam::before,
+.signalBeamSoft::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #ffffff;
+  clip-path: polygon(46% 0, 54% 0, 68% 100%, 32% 100%);
+  opacity: 0.07;
+}
+
+.signalBeamSoft {
+  right: clamp(8rem, 17vw, 22rem);
+  top: 22%;
+  width: min(10vw, 112px);
+  height: 42vh;
+  opacity: 0.22;
+  transform: skewX(10deg);
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: grid;
+  grid-template-columns: minmax(0, 0.78fr) minmax(220px, 0.32fr);
+  grid-template-rows: 1fr auto;
+  gap: clamp(1rem, 3vw, 2.4rem);
+  align-items: end;
+  padding: clamp(6.4rem, 9vw, 7.4rem) clamp(1rem, 3.5vw, 4.2rem) clamp(4.6rem, 6vw, 5.8rem);
+  color: #ffffff;
+  pointer-events: none;
+}
+
+.heroCopy {
+  width: min(680px, 100%);
+}
+
+.kicker {
+  margin: 0 0 0.82rem;
+  color: rgba(255, 255, 255, 0.68);
+  font-family: "Satoshi", "Avenir Next", "Helvetica Neue", sans-serif;
+  font-size: clamp(0.72rem, 1vw, 0.82rem);
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.heroTitle {
+  width: min(660px, 100%);
+  margin: 0;
+  font-family: "Satoshi", "Avenir Next", "Helvetica Neue", sans-serif;
+  font-size: clamp(3rem, 8.8vw, 8.2rem);
+  font-weight: 900;
+  letter-spacing: -0.095em;
+  line-height: 0.82;
+  text-wrap: balance;
+  text-shadow: 0 18px 70px rgba(0, 0, 0, 0.62);
+}
+
+.heroText {
+  width: min(520px, 100%);
+  margin: 1.25rem 0 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-family: "Satoshi", "Avenir Next", "Helvetica Neue", sans-serif;
+  font-size: clamp(0.96rem, 1.5vw, 1.12rem);
+  font-weight: 560;
+  letter-spacing: -0.02em;
+  line-height: 1.62;
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.72rem;
+  margin-top: 1.35rem;
+  pointer-events: auto;
+}
+
+.primaryAction,
+.secondaryAction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0.82rem 1.05rem;
+  border-radius: 999px;
+  font-family: "Satoshi", "Avenir Next", "Helvetica Neue", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.primaryAction {
+  background: #ffffff;
+  color: #030403;
+}
+
+.secondaryAction {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(3, 4, 3, 0.36);
+  color: #ffffff;
+  backdrop-filter: blur(16px);
+}
+
+.primaryAction:hover,
+.secondaryAction:hover {
+  transform: translateY(-2px);
+}
+
+.secondaryAction:hover {
+  border-color: rgba(255, 255, 255, 0.42);
+}
+
+.fieldPanel {
+  --field-x: 50%;
+  --field-y: 50%;
+  position: relative;
+  align-self: stretch;
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  justify-self: end;
+  width: min(320px, 100%);
+  min-height: min(62vh, 520px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 1.35rem;
+  padding: 1rem;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 1rem;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at var(--field-x) var(--field-y), rgba(255, 255, 255, 0.16), transparent 30%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.07), transparent 42%),
+    rgba(3, 4, 3, 0.36);
+  box-shadow:
+    0 24px 54px rgba(0, 0, 0, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(18px);
+  font-family: "Satoshi", "Avenir Next", "Helvetica Neue", sans-serif;
+  pointer-events: auto;
+}
+
+.fieldPanel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 34px 34px;
+  mask-image: radial-gradient(circle at var(--field-x) var(--field-y), #000 0 28%, transparent 72%);
+  opacity: 0.72;
+  pointer-events: none;
+}
+
+.fieldHeader {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: 0.3rem;
+}
+
+.fieldHeader span {
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 0.66rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.fieldHeader strong {
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 0.92rem;
+  font-weight: 820;
+  letter-spacing: -0.01em;
+  line-height: 1.28;
+}
+
+.fieldCore {
+  position: relative;
+  z-index: 2;
+  align-self: center;
+  justify-self: center;
+  display: grid;
+  place-items: center;
+  width: min(220px, 78%);
+  aspect-ratio: 1;
+}
+
+.fieldCore span {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 50%;
+}
+
+.fieldCore span:nth-child(2) {
+  inset: 18%;
+  opacity: 0.66;
+}
+
+.fieldCore span::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -4px;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 0 18px rgba(255, 255, 255, 0.42);
+  transform: translateX(-50%);
+}
+
+.fieldCore i {
+  width: 46px;
+  height: 46px;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 45% 38%, #ffffff 0 14%, rgba(255, 255, 255, 0.32) 15% 36%, transparent 62%),
+    rgba(255, 255, 255, 0.06);
+  box-shadow:
+    0 0 52px rgba(255, 255, 255, 0.16),
+    inset 0 0 22px rgba(255, 255, 255, 0.1);
+}
+
+.fieldNodes {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.fieldNodes span {
+  position: absolute;
+  display: inline-grid;
+  place-items: center;
+  min-width: 74px;
+  min-height: 34px;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 0.68rem;
+  font-weight: 850;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  will-change: transform;
+}
+
+.fieldNodes span:nth-child(1) {
+  left: 8%;
+  top: 24%;
+}
+
+.fieldNodes span:nth-child(2) {
+  right: 8%;
+  top: 34%;
+}
+
+.fieldNodes span:nth-child(3) {
+  left: 12%;
+  bottom: 26%;
+}
+
+.fieldNodes span:nth-child(4) {
+  right: 12%;
+  bottom: 18%;
+}
+
+.ticker {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 1.1rem;
+  z-index: 7;
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.58);
+  font-family: "Satoshi", "Avenir Next", "Helvetica Neue", sans-serif;
+  pointer-events: none;
+}
+
+.tickerTrack {
+  display: flex;
+  width: max-content;
+  gap: clamp(2.2rem, 7vw, 6.8rem);
+  padding-left: clamp(1rem, 4vw, 4.8rem);
+  will-change: transform;
+}
+
+.tickerTrack span {
+  position: relative;
+  font-size: clamp(0.72rem, 1.3vw, 0.9rem);
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.tickerTrack span::before {
+  content: "";
+  position: absolute;
+  left: calc(-1 * clamp(1.4rem, 4vw, 3.6rem));
+  top: 50%;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  transform: translateY(-50%);
+}
+
+.cursorTarget {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 9;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, 0.56) 0 2px, transparent 3px),
+    rgba(255, 255, 255, 0.04);
+  box-shadow:
+    0 0 18px rgba(255, 255, 255, 0.14),
+    inset 0 0 16px rgba(255, 255, 255, 0.04);
+  pointer-events: none;
+  mix-blend-mode: screen;
+  will-change: transform;
+}
+
+.cursorTarget::before,
+.cursorTarget::after {
+  content: "";
+  position: absolute;
+  inset: -9px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: inherit;
+  background: transparent;
+}
+
+.cursorTarget::after {
+  inset: -18px;
+  opacity: 0.34;
+}
+
+.cursorTarget span {
+  width: 5px;
+  height: 5px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.interactionCue {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(3.15rem, 5.8vw, 4.4rem);
+  z-index: 8;
+  display: grid;
+  justify-items: center;
+  gap: 0.32rem;
+  width: min(260px, calc(100vw - 2rem));
+  color: #ffffff;
+  font-family: "Satoshi", "Avenir Next", "Helvetica Neue", sans-serif;
+  text-align: center;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.cueTrack {
+  position: relative;
+  display: block;
+  width: 54px;
+  height: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  background: rgba(3, 4, 3, 0.32);
+  backdrop-filter: blur(16px);
+}
+
+.cueTrack i {
+  position: absolute;
+  left: 9px;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 0 18px rgba(255, 255, 255, 0.48);
+  transform: translateY(-50%);
+}
+
+.interactionCue strong {
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.interactionCue small {
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 0.76rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.loading {
+  padding: 0.7rem 0.95rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(3, 4, 3, 0.52);
+  color: rgba(245, 245, 240, 0.82);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  backdrop-filter: blur(14px);
+}
+
+.loadingShell {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 0.7rem 0.95rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(3, 4, 3, 0.52);
+  color: rgba(245, 245, 240, 0.82);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  backdrop-filter: blur(14px);
+}
+
+.introOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: transparent;
+  pointer-events: none;
+  animation: introOverlayExit 5.6s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+.introOverlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #000000;
+  z-index: 1;
+  clip-path: inset(0 0 0 0);
+  animation: introWindowReveal 5.6s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+.introLetters {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.12rem, 1vw, 0.5rem);
+  color: #ffffff;
+  font-family: "Satoshi", "Avenir Next", "Helvetica Neue", sans-serif;
+  font-size: clamp(4.5rem, 16vw, 15rem);
+  font-weight: 900;
+  letter-spacing: -0.14em;
+  line-height: 0.72;
+  mix-blend-mode: difference;
+}
+
+.introLetters span {
+  display: inline-block;
+  opacity: 0;
+  filter: blur(10px);
+  text-shadow: 0 0 32px rgba(255, 255, 255, 0.24);
+}
+
+.introLetterK {
+  animation: introLetterK 5.2s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+.introLetterJ {
+  animation: introLetterJ 5.2s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+.introOverlay::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 2;
+  width: 2px;
+  height: 2px;
+  border: 1px solid rgba(255, 255, 255, 0);
+  transform: translate(-50%, -50%) scale(0);
+  animation: introSquareReveal 5.6s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+@keyframes introLetterK {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 48vh, 0) scale(0.96);
+    filter: blur(12px);
+  }
+
+  16%,
+  42% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(0);
+  }
+
+  64% {
+    opacity: 1;
+    transform: translate3d(-34vw, 25vh, 0) scale(0.28);
+    filter: blur(0);
+  }
+
+  86%,
+  100% {
+    opacity: 0;
+    transform: translate3d(-44vw, 32vh, 0) scale(0.18);
+    filter: blur(8px);
+  }
+}
+
+@keyframes introLetterJ {
+  0%,
+  10% {
+    opacity: 0;
+    transform: translate3d(0, 48vh, 0) scale(0.96);
+    filter: blur(12px);
+  }
+
+  26%,
+  42% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(0);
+  }
+
+  64% {
+    opacity: 1;
+    transform: translate3d(34vw, 25vh, 0) scale(0.28);
+    filter: blur(0);
+  }
+
+  86%,
+  100% {
+    opacity: 0;
+    transform: translate3d(44vw, 32vh, 0) scale(0.18);
+    filter: blur(8px);
+  }
+}
+
+@keyframes introSquareReveal {
+  0%,
+  48% {
+    width: 2px;
+    height: 2px;
+    border-color: rgba(255, 255, 255, 0);
+    transform: translate(-50%, -50%) scale(0);
+  }
+
+  62% {
+    width: min(22vw, 240px);
+    height: min(22vw, 240px);
+    border-color: rgba(255, 255, 255, 0.88);
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  100% {
+    width: 160vmax;
+    height: 160vmax;
+    border-color: rgba(255, 255, 255, 0);
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes introWindowReveal {
+  0%,
+  50% {
+    clip-path: polygon(
+      0 0,
+      100% 0,
+      100% 100%,
+      0 100%,
+      0 0,
+      calc(50% - 1px) calc(50% - 1px),
+      calc(50% - 1px) calc(50% + 1px),
+      calc(50% + 1px) calc(50% + 1px),
+      calc(50% + 1px) calc(50% - 1px),
+      calc(50% - 1px) calc(50% - 1px)
+    );
+  }
+
+  62% {
+    clip-path: polygon(
+      0 0,
+      100% 0,
+      100% 100%,
+      0 100%,
+      0 0,
+      calc(50% - min(11vw, 120px)) calc(50% - min(11vw, 120px)),
+      calc(50% - min(11vw, 120px)) calc(50% + min(11vw, 120px)),
+      calc(50% + min(11vw, 120px)) calc(50% + min(11vw, 120px)),
+      calc(50% + min(11vw, 120px)) calc(50% - min(11vw, 120px)),
+      calc(50% - min(11vw, 120px)) calc(50% - min(11vw, 120px))
+    );
+  }
+
+  100% {
+    clip-path: polygon(
+      0 0,
+      100% 0,
+      100% 100%,
+      0 100%,
+      0 0,
+      -80vmax -80vmax,
+      -80vmax 180vmax,
+      180vmax 180vmax,
+      180vmax -80vmax,
+      -80vmax -80vmax
+    );
+  }
+}
+
+@keyframes introOverlayExit {
+  0%,
+  88% {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@media (max-width: 920px) {
+  .heroOverlay {
+    grid-template-columns: 1fr;
+    align-content: end;
+    padding-top: 6.4rem;
+  }
+
+  .fieldPanel {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .heroOverlay {
+    padding: 5.65rem 0.88rem 4.8rem;
+  }
+
+  .heroTitle {
+    font-size: clamp(2.75rem, 15.6vw, 5.3rem);
+    max-width: 8.8ch;
+    letter-spacing: -0.08em;
+  }
+
+  .heroText {
+    max-width: 22rem;
+    font-size: 0.95rem;
+  }
+
+  .heroActions {
+    width: min(100%, 24rem);
+  }
+
+  .primaryAction,
+  .secondaryAction {
+    flex: 1 1 100%;
+  }
+
+  .ticker {
+    bottom: 0.85rem;
+  }
+
+  .cursorTarget {
+    display: none;
+  }
+
+  .interactionCue {
+    bottom: 3.2rem;
+  }
+}

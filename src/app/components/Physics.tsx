@@ -6,32 +6,38 @@ import { motion, AnimatePresence } from "framer-motion";
 import { gsap } from "gsap";
 
 const COLORS = {
-  line: "#2DD4BF",
-  letter: "#FFFFFF",
-  letterShadow: "rgba(45, 212, 191, 0.35)",
-  background: "#06141F",
-  ball: "#0E2433",
-  ballStroke: "#2DD4BF",
-  button: "#1A1A1A",
+  line: "#f0f0f0",
+  letter: "#ffffff",
+  letterShadow: "rgba(255, 255, 255, 0.28)",
+  background: "#020202",
+  ball: "#141414",
+  ballStroke: "#efefef",
+  button: "#101010",
   buttonText: "#FFFFFF",
-  buttonBorder: "rgba(255, 255, 255, 0.1)",
-  particle: "#2DD4BF",
-  star: "#FDE68A",
-  comet: "#FB7185",
-  aurora: ["#2DD4BF", "#38BDF8", "#22D3EE", "#67E8F9"],
+  buttonBorder: "rgba(255, 255, 255, 0.16)",
+  particle: "#d6d6d6",
+  star: "#ffffff",
+  comet: "#d4d4d4",
+  aurora: ["#ffffff", "#e7e7e7", "#cccccc", "#a3a3a3"],
   rain: [
-    "#2DD4BF",
-    "#14B8A6",
-    "#38BDF8",
-    "#0EA5E9",
-    "#22D3EE",
-    "#67E8F9",
-    "#F59E0B",
-    "#FDBA74",
+    "#ffffff",
+    "#ededed",
+    "#d4d4d4",
+    "#bdbdbd",
+    "#a3a3a3",
+    "#8d8d8d",
+    "#727272",
+    "#5a5a5a",
   ],
 };
 
 const NAME = "Joseph Gutierrez";
+const FEATURE_PILLS = ["Creative Developer", "Physics Playground", "Drag to Disturb"];
+const ATMOSPHERE_STATS = [
+  { label: "Palette", value: "Monochrome Motion" },
+  { label: "Motion", value: "Matter.js + GSAP" },
+  { label: "Mood", value: "Editorial, still minimal" },
+];
 
 const isMobile = typeof window !== "undefined" && window.innerWidth < 600;
 const LETTER_WIDTH = isMobile ? 12 : 36;
@@ -395,7 +401,7 @@ const Physics: React.FC = () => {
           frictionAir: 0.02,
           density: 0.0008,
           render: {
-            fillStyle: `rgba(108, 99, 255, ${Math.random() * 0.25 + 0.1})`,
+            fillStyle: `rgba(255, 255, 255, ${Math.random() * 0.12 + 0.06})`,
             strokeStyle: COLORS.particle,
             lineWidth: 1.5,
           },
@@ -409,7 +415,7 @@ const Physics: React.FC = () => {
           frictionAir: 0.02,
           density: 0.0008,
           render: {
-            fillStyle: `rgba(168, 85, 247, ${Math.random() * 0.25 + 0.1})`,
+            fillStyle: `rgba(210, 210, 210, ${Math.random() * 0.12 + 0.06})`,
             strokeStyle:
               COLORS.aurora[Math.floor(Math.random() * COLORS.aurora.length)],
             lineWidth: 1.5,
@@ -1049,6 +1055,10 @@ const Physics: React.FC = () => {
     }
   };
 
+  const buttonBottomOffset = isMobile
+    ? Math.max(LINE_HEIGHT - 110, 28)
+    : Math.max(LINE_HEIGHT - 210, 40);
+
   return (
     <div
       ref={sceneRef}
@@ -1058,9 +1068,9 @@ const Physics: React.FC = () => {
         position: "relative",
         overflow: "hidden",
         background: `
-          radial-gradient(circle at 12% 82%, rgba(45, 212, 191, 0.2) 0%, transparent 52%),
-          radial-gradient(circle at 86% 16%, rgba(56, 189, 248, 0.16) 0%, transparent 44%),
-          radial-gradient(circle at 50% 12%, rgba(253, 186, 116, 0.1) 0%, transparent 30%),
+          radial-gradient(circle at 12% 82%, rgba(255, 255, 255, 0.1) 0%, transparent 52%),
+          radial-gradient(circle at 86% 16%, rgba(255, 255, 255, 0.08) 0%, transparent 44%),
+          radial-gradient(circle at 50% 12%, rgba(255, 255, 255, 0.06) 0%, transparent 30%),
           ${COLORS.background}
         `,
         boxSizing: "border-box",
@@ -1069,65 +1079,254 @@ const Physics: React.FC = () => {
         height: "100vh",
       }}
     >
-      <div
+      <motion.div
+        initial={{ opacity: 0, scale: 0.92, x: -40 }}
+        animate={{ opacity: 1, scale: 1, x: 0 }}
+        transition={{ duration: 1, ease: "easeOut" }}
         style={{
           position: "absolute",
-          width: isMobile ? "210px" : "380px",
-          height: isMobile ? "210px" : "380px",
-          top: isMobile ? "15%" : "18%",
-          left: isMobile ? "-70px" : "-120px",
+          width: isMobile ? "240px" : "420px",
+          height: isMobile ? "240px" : "420px",
+          top: isMobile ? "10%" : "8%",
+          left: isMobile ? "-90px" : "-120px",
           borderRadius: "58% 42% 61% 39% / 45% 59% 41% 55%",
           background:
-            "radial-gradient(circle, rgba(45, 212, 191, 0.22) 0%, rgba(45, 212, 191, 0.04) 70%, transparent 100%)",
-          filter: "blur(6px)",
+            "radial-gradient(circle, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.05) 42%, rgba(2, 2, 2, 0) 74%)",
+          filter: "blur(10px)",
           pointerEvents: "none",
           zIndex: 1,
         }}
       />
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9, x: 48 }}
+        animate={{ opacity: 1, scale: 1, x: 0 }}
+        transition={{ duration: 1.2, delay: 0.15, ease: "easeOut" }}
+        style={{
+          position: "absolute",
+          width: isMobile ? "220px" : "360px",
+          height: isMobile ? "220px" : "360px",
+          bottom: isMobile ? "10%" : "6%",
+          right: isMobile ? "-70px" : "-90px",
+          borderRadius: "46% 54% 42% 58% / 61% 38% 62% 39%",
+          background:
+            "radial-gradient(circle, rgba(230, 230, 230, 0.16) 0%, rgba(255, 255, 255, 0.04) 48%, rgba(2, 2, 2, 0) 76%)",
+          filter: "blur(10px)",
+          pointerEvents: "none",
+          zIndex: 1,
+        }}
+      />
+
       <div
         style={{
           position: "absolute",
-          width: isMobile ? "190px" : "320px",
-          height: isMobile ? "190px" : "320px",
-          bottom: isMobile ? "14%" : "12%",
-          right: isMobile ? "-50px" : "-90px",
-          borderRadius: "46% 54% 42% 58% / 61% 38% 62% 39%",
-          background:
-            "radial-gradient(circle, rgba(251, 146, 60, 0.18) 0%, rgba(251, 146, 60, 0.02) 72%, transparent 100%)",
-          filter: "blur(6px)",
+          inset: 0,
+          backgroundImage:
+            "linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px)",
+          backgroundSize: isMobile ? "36px 36px" : "64px 64px",
+          maskImage:
+            "linear-gradient(180deg, rgba(0, 0, 0, 0.6), transparent 85%)",
           pointerEvents: "none",
-          zIndex: 1,
+          zIndex: 0,
         }}
       />
+
+      <motion.div
+        initial={{ opacity: 0, y: 28 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.9, ease: "easeOut" }}
+        style={{
+          position: "absolute",
+          top: isMobile ? "24px" : "36px",
+          left: isMobile ? "18px" : "36px",
+          zIndex: 10,
+          width: isMobile ? "calc(100% - 36px)" : "min(460px, 42vw)",
+          padding: isMobile ? "18px" : "24px",
+          borderRadius: "28px",
+          border: "1px solid rgba(148, 163, 184, 0.22)",
+          background:
+            "linear-gradient(145deg, rgba(8, 15, 28, 0.78), rgba(11, 25, 43, 0.55))",
+          boxShadow:
+            "0 24px 80px rgba(2, 6, 23, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.08)",
+          backdropFilter: "blur(22px)",
+          WebkitBackdropFilter: "blur(22px)",
+        }}
+      >
+        <div
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "10px",
+            padding: "8px 14px",
+            borderRadius: "999px",
+            background: "rgba(255, 255, 255, 0.06)",
+            border: "1px solid rgba(255, 255, 255, 0.14)",
+            color: "#f1f5f9",
+            fontSize: "0.74rem",
+            letterSpacing: "0.16em",
+            textTransform: "uppercase",
+          }}
+        >
+          Interactive Name Study
+        </div>
+        <h1
+          style={{
+            margin: "16px 0 10px",
+            fontSize: isMobile ? "2rem" : "clamp(2.7rem, 4vw, 4.4rem)",
+            lineHeight: 0.95,
+            letterSpacing: "-0.05em",
+            color: "#f8fbff",
+            maxWidth: "9ch",
+          }}
+        >
+          Physics, framed like a proper landing page.
+        </h1>
+        <p
+          style={{
+            margin: 0,
+            color: "rgba(226, 232, 240, 0.78)",
+            lineHeight: 1.6,
+            fontSize: isMobile ? "0.95rem" : "1rem",
+            maxWidth: "32rem",
+          }}
+        >
+          A moody editorial hero built around drag, collision, and playful
+          disruption. The physics stays monochrome, while the rest of the page
+          does more of the visual heavy lifting through spacing, glassmorphism,
+          hierarchy, and motion.
+        </p>
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "10px",
+            marginTop: "18px",
+          }}
+        >
+          {FEATURE_PILLS.map((pill) => (
+            <span
+              key={pill}
+              style={{
+                padding: "9px 14px",
+                borderRadius: "999px",
+                background: "rgba(15, 23, 42, 0.56)",
+                border: "1px solid rgba(148, 163, 184, 0.18)",
+                color: "#e2e8f0",
+                fontSize: "0.86rem",
+              }}
+            >
+              {pill}
+            </span>
+          ))}
+        </div>
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 32 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, delay: 0.15, ease: "easeOut" }}
+        style={{
+          position: "absolute",
+          top: isMobile ? "auto" : "40px",
+          right: isMobile ? "18px" : "36px",
+          bottom: isMobile ? "160px" : "auto",
+          left: isMobile ? "18px" : "auto",
+          zIndex: 10,
+          width: isMobile ? "auto" : "min(320px, 28vw)",
+          padding: isMobile ? "16px" : "18px",
+          borderRadius: "24px",
+          border: "1px solid rgba(255, 255, 255, 0.12)",
+          background:
+            "linear-gradient(160deg, rgba(18, 18, 18, 0.74), rgba(11, 16, 26, 0.56))",
+          boxShadow:
+            "0 18px 60px rgba(2, 6, 23, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.06)",
+          backdropFilter: "blur(18px)",
+          WebkitBackdropFilter: "blur(18px)",
+        }}
+      >
+        <div
+          style={{
+            color: "rgba(255, 255, 255, 0.78)",
+            fontSize: "0.78rem",
+            textTransform: "uppercase",
+            letterSpacing: "0.15em",
+            marginBottom: "12px",
+          }}
+        >
+          Direction Notes
+        </div>
+        <div style={{ display: "grid", gap: "12px" }}>
+          {ATMOSPHERE_STATS.map((item) => (
+            <div
+              key={item.label}
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                gap: "16px",
+                paddingBottom: "12px",
+                borderBottom: "1px solid rgba(148, 163, 184, 0.12)",
+              }}
+            >
+              <span style={{ color: "rgba(226, 232, 240, 0.68)" }}>
+                {item.label}
+              </span>
+              <span style={{ color: "#f8fafc", textAlign: "right" }}>
+                {item.value}
+              </span>
+            </div>
+          ))}
+        </div>
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 18 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, delay: 0.3, ease: "easeOut" }}
+        style={{
+          position: "absolute",
+          left: isMobile ? "18px" : "36px",
+          bottom: isMobile ? "30px" : "36px",
+          zIndex: 10,
+          padding: isMobile ? "12px 14px" : "14px 16px",
+          borderRadius: "18px",
+          border: "1px solid rgba(255, 255, 255, 0.14)",
+          background: "rgba(7, 12, 22, 0.52)",
+          color: "rgba(241, 245, 249, 0.84)",
+          fontSize: isMobile ? "0.84rem" : "0.9rem",
+          maxWidth: isMobile ? "70vw" : "280px",
+          backdropFilter: "blur(14px)",
+          WebkitBackdropFilter: "blur(14px)",
+        }}
+      >
+        Drag the name, let the sphere crash through, then reset to watch the
+        composition settle into a new rhythm.
+      </motion.div>
 
       {/* Cute Atom Button */}
       <div
         style={{
           position: "absolute",
           left: "50%",
-          bottom: isMobile
-            ? `${LINE_HEIGHT - 120}px` // Better mobile button positioning
-            : `${LINE_HEIGHT - 200}px`, // Desktop button positioning
+          bottom: `${buttonBottomOffset}px`,
           zIndex: 10,
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
           transform: "translateX(-50%)",
         }}
-        >
+      >
           <button
             ref={buttonRef}
             onClick={handleResetWithWave}
             style={{
-              minWidth: 220,
+              minWidth: isMobile ? 210 : 248,
               minHeight: 66,
-              padding: "18px 34px",
+              padding: isMobile ? "16px 26px" : "18px 34px",
               fontSize: "0.95rem",
               fontWeight: "600",
               background:
-                "linear-gradient(120deg, rgba(12, 31, 47, 0.92) 0%, rgba(15, 54, 71, 0.92) 55%, rgba(30, 41, 59, 0.92) 100%)",
+                "linear-gradient(125deg, rgba(18, 18, 18, 0.95) 0%, rgba(38, 38, 38, 0.95) 55%, rgba(80, 80, 80, 0.9) 100%)",
               color: "#FFFFFF",
-              border: `1px solid rgba(45, 212, 191, 0.34)`,
+              border: `1px solid rgba(255, 255, 255, 0.18)`,
               borderRadius: "999px",
               cursor: "pointer",
               outline: "none",
@@ -1138,16 +1337,16 @@ const Physics: React.FC = () => {
               gap: "12px",
               overflow: "visible",
               boxShadow: `
-                0 16px 40px rgba(2, 8, 23, 0.55),
-                0 4px 14px rgba(15, 23, 42, 0.36),
-                inset 0 1px 0 rgba(255, 255, 255, 0.08)
+                0 18px 45px rgba(2, 8, 23, 0.52),
+                0 6px 22px rgba(255, 255, 255, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1)
               `,
               backdropFilter: "blur(20px)",
               WebkitBackdropFilter: "blur(20px)",
-              letterSpacing: "0.04em",
+              letterSpacing: "0.08em",
               textTransform: "uppercase",
-          }}
-        >
+            }}
+          >
           {/* Animated Atom Icon */}
           <div
             ref={atomRef}
@@ -1167,12 +1366,12 @@ const Physics: React.FC = () => {
                 height: "8px",
                 background: `
                   radial-gradient(circle, 
-                    rgba(45, 212, 191, 1) 0%, 
-                    rgba(14, 165, 233, 0.8) 100%
+                    rgba(255, 255, 255, 1) 0%, 
+                    rgba(190, 190, 190, 0.86) 100%
                   )
                 `,
                 borderRadius: "50%",
-                boxShadow: "0 0 12px rgba(45, 212, 191, 0.6)",
+                boxShadow: "0 0 14px rgba(255, 255, 255, 0.28)",
                 zIndex: 3,
               }}
             />
@@ -1188,7 +1387,7 @@ const Physics: React.FC = () => {
                   position: "absolute",
                   width: "20px",
                   height: "20px",
-                  border: "1px solid rgba(45, 212, 191, 0.3)",
+                  border: "1px solid rgba(226, 232, 240, 0.22)",
                   borderRadius: "50%",
                   transform: `rotate(${index * 60}deg)`,
                   transformOrigin: "center",
@@ -1205,19 +1404,19 @@ const Physics: React.FC = () => {
                     height: "4px",
                     background: `rgba(${
                       index === 0
-                        ? "45, 212, 191"
+                        ? "255, 255, 255"
                         : index === 1
-                        ? "14, 165, 233"
-                        : "251, 146, 60"
+                        ? "210, 210, 210"
+                        : "150, 150, 150"
                     }, 0.9)`,
                     borderRadius: "50%",
                     boxShadow: `0 0 8px rgba(${
                       index === 0
-                        ? "45, 212, 191"
+                        ? "255, 255, 255"
                         : index === 1
-                        ? "14, 165, 233"
-                        : "251, 146, 60"
-                    }, 0.6)`,
+                        ? "210, 210, 210"
+                        : "150, 150, 150"
+                    }, 0.38)`,
                   }}
                 />
               </div>
@@ -1227,11 +1426,10 @@ const Physics: React.FC = () => {
           {/* Text */}
           <span
             style={{
-              fontFamily:
-                "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
-              letterSpacing: "0.03em",
+              fontFamily: "var(--font-geist-sans), sans-serif",
+              letterSpacing: "0.1em",
               color: "#FFFFFF",
-              textShadow: "0 1px 2px rgba(0, 0, 0, 0.5)",
+              textShadow: "0 1px 2px rgba(0, 0, 0, 0.45)",
             }}
           >
             Reset Physics
@@ -1258,7 +1456,7 @@ const Physics: React.FC = () => {
                       position: "absolute",
                       width: "64px",
                       height: "64px",
-                      border: `2px solid rgba(45, 212, 191, 0.35)`,
+                      border: `2px solid rgba(255, 255, 255, 0.22)`,
                       borderRadius: "50%",
                       left: "-32px",
                       top: "-32px",
@@ -1297,7 +1495,7 @@ const Physics: React.FC = () => {
                 0 0 10px ${COLORS.letterShadow},
                 0 0 20px ${COLORS.letterShadow},
                 0 0 30px ${COLORS.letterShadow},
-                0 0 40px rgba(45, 212, 191, 0.12)
+                0 0 40px rgba(255, 255, 255, 0.1)
               `,
               transform: "translate(-50%, -50%)",
               userSelect: "none",
@@ -1306,7 +1504,7 @@ const Physics: React.FC = () => {
               pointerEvents: "none",
               fontSize: `${LETTER_HEIGHT}px`,
               lineHeight: 1,
-              filter: "drop-shadow(0 0 8px rgba(45, 212, 191, 0.4))",
+              filter: "drop-shadow(0 0 8px rgba(255, 255, 255, 0.24))",
             }}
           >
             {char === " " ? "\u00A0" : char}
@@ -1323,7 +1521,7 @@ const Physics: React.FC = () => {
           right: 0,
           bottom: 0,
           background: `
-            radial-gradient(circle at 50% 50%, rgba(45, 212, 191, 0.06) 0%, transparent 70%)
+            radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.06) 0%, transparent 64%)
           `,
           pointerEvents: "none",
           zIndex: 0,

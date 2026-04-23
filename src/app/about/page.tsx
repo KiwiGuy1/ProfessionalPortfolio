@@ -14,15 +14,15 @@ const inter = Inter({
 });
 
 const COLORS = {
-  background: "#06141F",
-  backgroundSoft: "#0A2233",
-  primary: "#F8FAFC",
-  secondary: "#9FB5C7",
-  accent: "#2DD4BF",
-  accentAlt: "#38BDF8",
-  border: "rgba(45, 212, 191, 0.22)",
-  card: "rgba(8, 33, 49, 0.72)",
-  chip: "rgba(56, 189, 248, 0.14)",
+  background: "#020202",
+  backgroundSoft: "#0b0b0b",
+  primary: "#f5f5f5",
+  secondary: "#b9b9b9",
+  accent: "#f0f0f0",
+  accentAlt: "#9d9d9d",
+  border: "rgba(255, 255, 255, 0.14)",
+  card: "rgba(255, 255, 255, 0.05)",
+  chip: "rgba(255, 255, 255, 0.06)",
 };
 
 const journey = [
@@ -151,8 +151,8 @@ export default function About() {
         .about-root {
           min-height: 100vh;
           background:
-            radial-gradient(circle at 14% 18%, rgba(45, 212, 191, 0.16) 0%, transparent 40%),
-            radial-gradient(circle at 86% 10%, rgba(56, 189, 248, 0.14) 0%, transparent 38%),
+            radial-gradient(circle at 14% 18%, rgba(255, 255, 255, 0.08) 0%, transparent 40%),
+            radial-gradient(circle at 86% 10%, rgba(255, 255, 255, 0.05) 0%, transparent 38%),
             ${COLORS.background};
           color: ${COLORS.primary};
           padding: 96px 1rem 4.5rem;
@@ -279,7 +279,7 @@ export default function About() {
 
         .company {
           margin: 0.2rem 0 0;
-          color: ${COLORS.accent};
+          color: #dddddd;
           font-size: 0.92rem;
         }
 

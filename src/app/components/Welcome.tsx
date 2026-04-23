@@ -24,14 +24,11 @@ export default function Welcome({ onComplete }: WelcomeProps) {
   const codeLineRef = useRef(null);
   const gridRef = useRef(null);
 
-  // Disable scrolling when component mounts
   useEffect(() => {
-    // Prevent scrolling on document body
     const originalStyle = window.getComputedStyle(document.body).overflow;
     document.body.style.overflow = "hidden";
     document.documentElement.style.overflow = "hidden";
 
-    // Also prevent touch scrolling on mobile
     const preventTouchMove = (e: TouchEvent) => {
       e.preventDefault();
     };
@@ -47,7 +44,6 @@ export default function Welcome({ onComplete }: WelcomeProps) {
       passive: false,
     });
 
-    // Cleanup function to restore scrolling
     return () => {
       document.body.style.overflow = originalStyle;
       document.documentElement.style.overflow = "auto";
@@ -57,14 +53,13 @@ export default function Welcome({ onComplete }: WelcomeProps) {
   }, []);
 
   useGSAP(() => {
-    // Create subtle geometric particles
-    const particles = [];
-    const shapes = ["▪", "▫", "●", "○", "◆", "◇", "▲", "△"];
+    const particles: HTMLDivElement[] = [];
+    const shapes = ["■", "□", "●", "○", "◆", "◇", "▲", "△"];
     const particleColors = [
-      "rgba(34, 211, 238, 0.38)",
-      "rgba(56, 189, 248, 0.32)",
+      "rgba(255, 255, 255, 0.30)",
+      "rgba(214, 214, 214, 0.24)",
       "rgba(255, 255, 255, 0.15)",
-      "rgba(148, 163, 184, 0.24)",
+      "rgba(130, 130, 130, 0.22)",
     ];
 
     for (let i = 0; i < 15; i++) {
@@ -87,11 +82,9 @@ export default function Welcome({ onComplete }: WelcomeProps) {
       particles.push(particle);
     }
 
-    // Professional welcome animation sequence
     const welcomeTl = gsap.timeline({
       onComplete: () => {
         setTimeout(() => {
-          // Smooth exit animation
           gsap.to(welcomeRef.current, {
             scale: 1.05,
             opacity: 0,
@@ -103,7 +96,6 @@ export default function Welcome({ onComplete }: WelcomeProps) {
       },
     });
 
-    // Sophisticated entrance animations
     welcomeTl
       .from(gridRef.current, {
         opacity: 0,
@@ -162,7 +154,6 @@ export default function Welcome({ onComplete }: WelcomeProps) {
         "-=0.2"
       );
 
-    // Subtle floating animation for particles
     particles.forEach((particle, i) => {
       gsap.to(particle, {
         y: "random(-50, 50)",
@@ -175,7 +166,6 @@ export default function Welcome({ onComplete }: WelcomeProps) {
       });
     });
 
-    // Animate geometric elements
     gsap.to(".geo-element", {
       rotation: 360,
       duration: 20,
@@ -187,7 +177,6 @@ export default function Welcome({ onComplete }: WelcomeProps) {
       },
     });
 
-    // Pulse animation for accent lines
     gsap.to(".accent-line", {
       scaleX: "random(0.8, 1.2)",
       opacity: "random(0.2, 0.6)",
@@ -198,7 +187,6 @@ export default function Welcome({ onComplete }: WelcomeProps) {
       stagger: 0.5,
     });
 
-    // Typing cursor animation
     gsap.to(".cursor", {
       opacity: 0,
       duration: 1,
@@ -213,75 +201,64 @@ export default function Welcome({ onComplete }: WelcomeProps) {
       ref={welcomeRef}
       className={`fixed inset-0 z-[9999] flex items-center justify-center ${inter.className}`}
       style={{
-        background:
-          "radial-gradient(ellipse at center, #0F172A 0%, #020617 72%)",
+        background: "radial-gradient(ellipse at center, #111111 0%, #000000 72%)",
         overflow: "hidden",
         height: "100vh",
         width: "100vw",
         position: "fixed",
         top: 0,
         left: 0,
-        touchAction: "none", // Prevents touch scrolling
-        WebkitOverflowScrolling: "touch", // iOS specific
+        touchAction: "none",
+        WebkitOverflowScrolling: "touch",
       }}
     >
-      {/* Subtle Grid Background */}
       <div
         ref={gridRef}
         className="absolute inset-0 opacity-5"
         style={{
           backgroundImage: `
-            linear-gradient(rgba(45, 212, 191, 0.11) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(45, 212, 191, 0.11) 1px, transparent 1px)
+            linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px)
           `,
           backgroundSize: "50px 50px",
         }}
       />
 
-      {/* Particles Container */}
       <div
         ref={particlesRef}
         className="absolute inset-0 pointer-events-none"
       />
 
-      {/* Minimalist Geometric Elements */}
       <div className="absolute inset-0">
-        {/* Accent Lines */}
-        <div className="accent-line absolute top-1/4 left-1/4 w-16 h-0.5 bg-gradient-to-r from-cyan-400 to-transparent opacity-30"></div>
-        <div className="accent-line absolute top-1/3 right-1/3 w-12 h-0.5 bg-gradient-to-l from-sky-400 to-transparent opacity-25 rotate-45"></div>
-        <div className="accent-line absolute bottom-1/3 left-1/5 w-20 h-0.5 bg-gradient-to-r from-teal-400 to-transparent opacity-20"></div>
-        <div className="accent-line absolute bottom-1/4 right-1/4 w-14 h-0.5 bg-gradient-to-l from-cyan-300 to-transparent opacity-30 -rotate-45"></div>
+        <div className="accent-line absolute top-1/4 left-1/4 h-0.5 w-16 bg-gradient-to-r from-white to-transparent opacity-30" />
+        <div className="accent-line absolute top-1/3 right-1/3 h-0.5 w-12 rotate-45 bg-gradient-to-l from-zinc-300 to-transparent opacity-25" />
+        <div className="accent-line absolute bottom-1/3 left-1/5 h-0.5 w-20 bg-gradient-to-r from-zinc-400 to-transparent opacity-20" />
+        <div className="accent-line absolute right-1/4 bottom-1/4 h-0.5 w-14 -rotate-45 bg-gradient-to-l from-zinc-200 to-transparent opacity-30" />
 
-        {/* Geometric Elements */}
-        <div className="geo-element absolute top-1/6 left-1/6 w-3 h-3 border border-cyan-400 opacity-20 rotate-45"></div>
-        <div className="geo-element absolute top-1/5 right-1/5 w-2 h-2 bg-sky-400 opacity-25 rounded-full"></div>
-        <div className="geo-element absolute bottom-1/4 left-1/3 w-4 h-4 border border-teal-300 opacity-15"></div>
-        <div className="geo-element absolute bottom-1/6 right-1/6 w-3 h-3 bg-cyan-300 opacity-20"></div>
-        <div className="geo-element absolute top-1/2 left-1/12 w-2 h-8 bg-gradient-to-b from-cyan-400 to-transparent opacity-20"></div>
-        <div className="geo-element absolute top-1/3 right-1/12 w-2 h-6 bg-gradient-to-t from-sky-400 to-transparent opacity-15"></div>
+        <div className="geo-element absolute top-1/6 left-1/6 h-3 w-3 rotate-45 border border-white opacity-20" />
+        <div className="geo-element absolute top-1/5 right-1/5 h-2 w-2 rounded-full bg-zinc-300 opacity-25" />
+        <div className="geo-element absolute bottom-1/4 left-1/3 h-4 w-4 border border-zinc-400 opacity-15" />
+        <div className="geo-element absolute right-1/6 bottom-1/6 h-3 w-3 bg-zinc-200 opacity-20" />
+        <div className="geo-element absolute top-1/2 left-1/12 h-8 w-2 bg-gradient-to-b from-white to-transparent opacity-20" />
+        <div className="geo-element absolute top-1/3 right-1/12 h-6 w-2 bg-gradient-to-t from-zinc-300 to-transparent opacity-15" />
       </div>
 
-      {/* Main Content */}
-      <div className="text-center z-10 max-w-4xl mx-auto px-4 sm:px-8">
-        {/* Minimalist Logo */}
-        <div ref={logoRef} className="mb-8 sm:mb-12 flex justify-center">
+      <div className="z-10 mx-auto max-w-4xl px-4 text-center sm:px-8">
+        <div ref={logoRef} className="mb-8 flex justify-center sm:mb-12">
           <div
-            className="w-16 h-16 sm:w-20 sm:h-20 border-2 border-cyan-400 rounded-lg flex items-center justify-center"
+            className="flex h-16 w-16 items-center justify-center rounded-lg border-2 border-white sm:h-20 sm:w-20"
             style={{
-              background: "rgba(34, 211, 238, 0.1)",
-              boxShadow: "0 0 40px rgba(34, 211, 238, 0.22)",
+              background: "rgba(255, 255, 255, 0.06)",
+              boxShadow: "0 0 40px rgba(255, 255, 255, 0.12)",
             }}
           >
-            <span className="text-xl sm:text-2xl font-bold text-cyan-300">
-              JG
-            </span>
+            <span className="text-xl font-bold text-white sm:text-2xl">JG</span>
           </div>
         </div>
 
-        {/* Name */}
         <h1
           ref={nameRef}
-          className="text-3xl sm:text-4xl md:text-6xl font-light text-white mb-3 sm:mb-4 tracking-wide px-2"
+          className="mb-3 px-2 text-3xl font-light tracking-wide text-white sm:mb-4 sm:text-4xl md:text-6xl"
           style={{
             background: "linear-gradient(135deg, #FFFFFF 0%, #A8A8A8 100%)",
             WebkitBackgroundClip: "text",
@@ -291,10 +268,9 @@ export default function Welcome({ onComplete }: WelcomeProps) {
           Joseph Gutierrez
         </h1>
 
-        {/* Title */}
         <h2
           ref={titleRef}
-          className="text-lg sm:text-xl md:text-2xl text-cyan-300 font-medium mb-4 sm:mb-6 tracking-widest uppercase px-2"
+          className="mb-4 px-2 text-lg font-medium uppercase tracking-widest text-zinc-200 sm:mb-6 sm:text-xl md:text-2xl"
           style={{
             letterSpacing: "0.2em",
           }}
@@ -302,59 +278,56 @@ export default function Welcome({ onComplete }: WelcomeProps) {
           Full-Stack Developer
         </h2>
 
-        {/* Subtitle */}
         <p
           ref={subtitleRef}
-          className="text-sm sm:text-base md:text-lg text-gray-400 font-light mb-8 sm:mb-12 max-w-2xl mx-auto leading-relaxed px-4"
+          className="mx-auto mb-8 max-w-2xl px-4 text-sm font-light leading-relaxed text-gray-400 sm:mb-12 sm:text-base md:text-lg"
           style={{
             letterSpacing: "0.05em",
           }}
         >
           Building scalable applications with modern technologies
           <br />
-          <span className="text-cyan-200">React • Node.js • TypeScript</span>
+          <span className="text-zinc-300">React • Node.js • TypeScript</span>
         </p>
 
-        {/* Code Line */}
         <div
           ref={codeLineRef}
-          className="text-xs sm:text-sm md:text-base text-gray-500 font-mono mb-12 sm:mb-16 max-w-lg mx-auto px-4"
+          className="mx-auto mb-12 max-w-lg px-4 text-xs text-gray-500 sm:mb-16 sm:text-sm md:text-base"
           style={{
             fontFamily: "'SF Mono', 'Monaco', 'Cascadia Code', monospace",
             lineHeight: "1.6",
           }}
         >
-          <span className="text-cyan-300">const</span>{" "}
+          <span className="text-zinc-200">const</span>{" "}
           <span className="text-white">developer</span>{" "}
           <span className="text-gray-400">=</span>{" "}
-          <span className="text-green-400">&#123;</span>
+          <span className="text-zinc-300">&#123;</span>
           <br />
-          <span className="ml-4 text-blue-400">passionate</span>
+          <span className="ml-4 text-zinc-200">passionate</span>
           <span className="text-gray-400">:</span>{" "}
-          <span className="text-yellow-400">true</span>
+          <span className="text-white">true</span>
           <span className="text-gray-400">,</span>
           <br />
-          <span className="ml-4 text-blue-400">creative</span>
+          <span className="ml-4 text-zinc-200">creative</span>
           <span className="text-gray-400">:</span>{" "}
-          <span className="text-yellow-400">true</span>
+          <span className="text-white">true</span>
           <br />
-          <span className="text-green-400">&#125;</span>
-          <span className="cursor text-cyan-300">|</span>
+          <span className="text-zinc-300">&#125;</span>
+          <span className="cursor text-zinc-100">|</span>
         </div>
 
-        {/* Loading indicator */}
-        <div className="mt-6 sm:mt-8 px-4">
-          <div className="w-48 sm:w-64 h-px bg-gray-800 mx-auto overflow-hidden">
+        <div className="mt-6 px-4 sm:mt-8">
+          <div className="mx-auto h-px w-48 overflow-hidden bg-gray-800 sm:w-64">
             <div
               className="h-full animate-pulse"
               style={{
                 background:
-                  "linear-gradient(90deg, transparent 0%, #22D3EE 50%, transparent 100%)",
+                  "linear-gradient(90deg, transparent 0%, #ffffff 50%, transparent 100%)",
                 animation: "loading 2s ease-in-out infinite",
               }}
-            ></div>
+            />
           </div>
-          <p className="text-gray-500 mt-4 sm:mt-6 text-xs tracking-[0.3em] uppercase font-medium">
+          <p className="mt-4 text-xs font-medium uppercase tracking-[0.3em] text-gray-500 sm:mt-6">
             Loading Portfolio
           </p>
         </div>
