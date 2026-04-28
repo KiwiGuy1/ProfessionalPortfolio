@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Center, Html } from "@react-three/drei";
+import { Html } from "@react-three/drei";
 import {
   DepthOfField,
   EffectComposer,
@@ -16,12 +16,15 @@ import {
 import { BlendFunction } from "postprocessing";
 import {
   Bone,
+  Box3,
   Color,
   Material,
+  Mesh,
   MeshStandardMaterial,
   Object3D,
   ShaderMaterial,
   Vector2,
+  Vector3,
 } from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { SkeletonUtils } from "three-stdlib";
@@ -136,9 +139,10 @@ function KiwiModel({ controls }: { controls: SceneControls }) {
   const [loadError, setLoadError] = useState(false);
   const isMobile = width < 700;
   const isShortViewport = height < 680;
+  const targetModelHeight = isMobile ? 1.62 : isShortViewport ? 1.72 : 1.92;
   const modelY =
-    (isMobile ? -1.1 : isShortViewport ? -1.55 : -2) + controls.modelYOffset;
-  const modelScale = isMobile ? 2.25 : isShortViewport ? 2.65 : 2.85;
+    (isMobile ? 0.06 : isShortViewport ? -0.02 : -0.08) +
+    controls.modelYOffset;
 
   useEffect(() => {
     let isMounted = true;
@@ -210,6 +214,47 @@ function KiwiModel({ controls }: { controls: SceneControls }) {
     return clonedModel;
   }, [sourceScene]);
 
+  const modelFrame = useMemo(() => {
+    if (!clonedScene) {
+      return {
+        center: new Vector3(),
+        scale: 1,
+      };
+    }
+
+    const box = new Box3();
+
+    clonedScene.traverse((child) => {
+      if (!(child instanceof Mesh)) return;
+
+      child.updateWorldMatrix(true, false);
+      const geometry = child.geometry;
+
+      if (!geometry.boundingBox) {
+        geometry.computeBoundingBox();
+      }
+
+      if (geometry.boundingBox) {
+        box.union(geometry.boundingBox.clone().applyMatrix4(child.matrixWorld));
+      }
+    });
+
+    const size = box.getSize(new Vector3());
+    const center = box.getCenter(new Vector3());
+
+    if (box.isEmpty() || size.y <= 0) {
+      return {
+        center: new Vector3(),
+        scale: 1,
+      };
+    }
+
+    return {
+      center,
+      scale: targetModelHeight / size.y,
+    };
+  }, [clonedScene, targetModelHeight]);
+
   useEffect(() => {
     if (!clonedScene) return;
 
@@ -249,11 +294,16 @@ function KiwiModel({ controls }: { controls: SceneControls }) {
 
   return (
     <group position={[0, modelY, 0]} rotation={[0, 0.08, 0]}>
-      <Center>
-        <group scale={modelScale}>
-          <primitive object={clonedScene as Object3D} />
-        </group>
-      </Center>
+      <group scale={modelFrame.scale}>
+        <primitive
+          object={clonedScene as Object3D}
+          position={[
+            -modelFrame.center.x,
+            -modelFrame.center.y,
+            -modelFrame.center.z,
+          ]}
+        />
+      </group>
     </group>
   );
 }
@@ -336,12 +386,12 @@ function CinematicBackdrop({ controls }: { controls: SceneControls }) {
 }
 
 function Scene({ controls }: { controls: SceneControls }) {
-  const cameraPosition: [number, number, number] = [0, 0.28, 3.05];
+  const cameraPosition: [number, number, number] = [0, 0.08, 4.2];
 
   return (
     <Canvas
       style={{ width: "100%", height: "100%", display: "block" }}
-      camera={{ position: cameraPosition, fov: 31 }}
+      camera={{ position: cameraPosition, fov: 36 }}
       dpr={[1, 1.5]}
       gl={{ antialias: true, alpha: true }}
     >
