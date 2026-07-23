@@ -86,8 +86,8 @@ export default function HomePage() {
         )
         .fromTo(
           "[data-home-title]",
-          { autoAlpha: 0, y: 38, filter: "blur(12px)" },
-          { autoAlpha: 1, y: 0, filter: "blur(0px)", duration: 1 },
+          { autoAlpha: 0, y: 32 },
+          { autoAlpha: 1, y: 0, duration: 0.82 },
           "-=0.28",
         )
         .fromTo(
@@ -155,7 +155,9 @@ export default function HomePage() {
       });
 
       const cursorTarget = gsap.utils.selector(pageRef)("[data-cursor-target]");
-      const interactionCue = gsap.utils.selector(pageRef)("[data-interaction-cue]");
+      const interactionCue = gsap.utils.selector(pageRef)(
+        "[data-interaction-cue]",
+      );
       const moveCursorX = gsap.quickTo(cursorTarget, "x", {
         duration: 0.45,
         ease: "power3.out",
@@ -191,7 +193,8 @@ export default function HomePage() {
           passive: true,
         });
 
-        return () => window.removeEventListener("pointermove", handlePointerMove);
+        return () =>
+          window.removeEventListener("pointermove", handlePointerMove);
       });
 
       gsap.set(cursorTarget, {
@@ -208,7 +211,6 @@ export default function HomePage() {
         repeat: -1,
         yoyo: true,
       });
-
     },
     { scope: pageRef },
   );
@@ -295,8 +297,8 @@ export default function HomePage() {
 
           <div className={styles.heroDetails}>
             <p className={styles.heroText} data-home-copy>
-              I craft fast, expressive web experiences that feel polished from the
-              first interaction to the final deploy.
+              I craft fast, expressive web experiences that feel polished from
+              the first interaction to the final deploy.
             </p>
 
             <div className={styles.heroActions}>
