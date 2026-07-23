@@ -1,9 +1,15 @@
 .introOverlay {
+  --intro-window-radius: clamp(56px, 16vmin, 120px);
+  --intro-square-size: calc(var(--intro-window-radius) * 2);
   position: fixed;
   inset: 0;
   z-index: 30;
   display: grid;
   place-items: center;
+  width: 100vw;
+  width: 100dvw;
+  height: 100vh;
+  height: 100dvh;
   overflow: hidden;
   background: transparent;
   pointer-events: none;
@@ -14,9 +20,12 @@
   content: "";
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
   background: #000000;
   z-index: 1;
   clip-path: inset(0 0 0 0);
+  transform: translateZ(0);
   animation: introWindowReveal 5.6s cubic-bezier(0.76, 0, 0.24, 1) forwards;
 }
 
@@ -63,6 +72,7 @@
   height: 2px;
   border: 1px solid rgba(255, 255, 255, 0);
   transform: translate(-50%, -50%) scale(0);
+  transform-origin: center;
   animation: introSquareReveal 5.6s cubic-bezier(0.76, 0, 0.24, 1) forwards;
 }
 
@@ -133,8 +143,8 @@
   }
 
   62% {
-    width: min(22vw, 240px);
-    height: min(22vw, 240px);
+    width: var(--intro-square-size);
+    height: var(--intro-square-size);
     border-color: rgba(255, 122, 24, 0.94);
     transform: translate(-50%, -50%) scale(1);
   }
@@ -171,11 +181,11 @@
       100% 100%,
       0 100%,
       0 0,
-      calc(50% - min(11vw, 120px)) calc(50% - min(11vw, 120px)),
-      calc(50% - min(11vw, 120px)) calc(50% + min(11vw, 120px)),
-      calc(50% + min(11vw, 120px)) calc(50% + min(11vw, 120px)),
-      calc(50% + min(11vw, 120px)) calc(50% - min(11vw, 120px)),
-      calc(50% - min(11vw, 120px)) calc(50% - min(11vw, 120px))
+      calc(50% - var(--intro-window-radius)) calc(50% - var(--intro-window-radius)),
+      calc(50% - var(--intro-window-radius)) calc(50% + var(--intro-window-radius)),
+      calc(50% + var(--intro-window-radius)) calc(50% + var(--intro-window-radius)),
+      calc(50% + var(--intro-window-radius)) calc(50% - var(--intro-window-radius)),
+      calc(50% - var(--intro-window-radius)) calc(50% - var(--intro-window-radius))
     );
   }
 
