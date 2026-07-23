@@ -19,6 +19,12 @@
   pointer-events: none;
 }
 
+.sceneLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
 .motionField::before,
 .motionField::after {
   content: "";
@@ -102,6 +108,11 @@
 
 .heroCopy {
   width: min(680px, 100%);
+}
+
+.heroIntro,
+.heroDetails {
+  display: block;
 }
 
 .kicker {
@@ -491,6 +502,10 @@
   letter-spacing: -0.01em;
 }
 
+.mobileScrollCue {
+  display: none;
+}
+
 .loading {
   padding: 0.7rem 0.95rem;
   border: 1px solid rgba(255, 255, 255, 0.16);
@@ -537,20 +552,63 @@
 }
 
 @media (max-width: 640px) {
+  .page {
+    height: auto;
+    min-height: 170svh;
+    overflow-x: hidden;
+    overflow-y: visible;
+  }
+
+  .sceneLayer {
+    position: fixed !important;
+    inset: 0;
+    z-index: 1;
+    width: 100vw;
+    height: 100svh;
+  }
+
+  .motionField {
+    position: fixed;
+  }
+
   .heroOverlay {
-    padding: 7.5rem 0.88rem 4.8rem;
+    position: relative;
+    inset: auto;
+    min-height: 170svh;
+    display: block;
+    padding: 6.8rem 0.88rem 4.8rem;
+  }
+
+  .heroCopy {
+    width: min(100%, 18rem);
+  }
+
+  .kicker {
+    margin-bottom: 0.5rem;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
   }
 
   .heroTitle {
-    font-size: clamp(2.2rem, 12.5vw, 4.1rem);
-    max-width: 11.5ch;
-    line-height: 0.88;
-    letter-spacing: -0.06em;
+    font-size: clamp(1.56rem, 7.7vw, 2.35rem);
+    max-width: 12ch;
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+  }
+
+  .heroDetails {
+    margin-top: 62svh;
   }
 
   .heroText {
-    max-width: 22rem;
-    font-size: 0.95rem;
+    max-width: 17.5rem;
+    margin-top: 0.8rem;
+    font-size: 0.76rem;
+    line-height: 1.45;
+  }
+
+  .heroActions {
+    margin-top: 0.95rem;
   }
 
   .heroActions {
@@ -560,9 +618,14 @@
   .primaryAction,
   .secondaryAction {
     flex: 1 1 100%;
+    min-height: 40px;
+    padding: 0.68rem 0.9rem;
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
   }
 
   .ticker {
+    position: fixed;
     bottom: 0.85rem;
   }
 
@@ -571,6 +634,52 @@
   }
 
   .interactionCue {
-    bottom: 3.2rem;
+    display: none;
+  }
+
+  .mobileScrollCue {
+    position: fixed;
+    left: 50%;
+    bottom: 3.1rem;
+    z-index: 8;
+    display: grid;
+    justify-items: center;
+    gap: 0.35rem;
+    color: rgba(255, 255, 255, 0.72);
+    font-family: "Satoshi", "Avenir Next", "Helvetica Neue", sans-serif;
+    font-size: 0.62rem;
+    font-weight: 900;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    opacity: 0;
+    transform: translateX(-50%);
+    transition: opacity 0.28s ease;
+    pointer-events: none;
+  }
+
+  .mobileScrollCueVisible {
+    opacity: 1;
+  }
+
+  .mobileScrollCue i {
+    width: 8px;
+    height: 8px;
+    border-right: 1px solid rgba(255, 154, 47, 0.9);
+    border-bottom: 1px solid rgba(255, 154, 47, 0.9);
+    transform: rotate(45deg);
+    animation: mobileScrollCue 1.1s ease-in-out infinite;
+  }
+}
+
+@keyframes mobileScrollCue {
+  0%,
+  100% {
+    opacity: 0.35;
+    translate: 0 -2px;
+  }
+
+  50% {
+    opacity: 1;
+    translate: 0 4px;
   }
 }

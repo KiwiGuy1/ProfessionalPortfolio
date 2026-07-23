@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import KJWelcomeScreen from "./KJWelcomeScreen";
@@ -19,7 +19,26 @@ const tickerItems = [
 export default function HomePage() {
   const pageRef = useRef<HTMLElement>(null);
   const cursorMovedRef = useRef(false);
+  const lastScrollYRef = useRef(0);
   const [showIntro, setShowIntro] = useState(true);
+  const [showScrollCue, setShowScrollCue] = useState(true);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      const scrollingDown = currentScrollY > lastScrollYRef.current;
+
+      setShowScrollCue(!scrollingDown || currentScrollY < 12);
+      lastScrollYRef.current = currentScrollY;
+    };
+
+    lastScrollYRef.current = window.scrollY;
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   useGSAP(
     () => {
@@ -195,7 +214,9 @@ export default function HomePage() {
 
   return (
     <main ref={pageRef} className={styles.page}>
-      <ModelScene />
+      <div className={styles.sceneLayer}>
+        <ModelScene />
+      </div>
 
       <div className={styles.motionField} aria-hidden="true">
         <div className={styles.signalBeam} data-signal-beam />
@@ -215,34 +236,38 @@ export default function HomePage() {
         aria-label="Portfolio introduction"
       >
         <div className={styles.heroCopy}>
-          <p className={styles.kicker} data-home-kicker>
-            Independent web developer
-          </p>
+          <div className={styles.heroIntro}>
+            <p className={styles.kicker} data-home-kicker>
+              Independent web developer
+            </p>
 
-          <h1 className={styles.heroTitle} data-home-title>
-            Building sharp interfaces with motion, code, and character.
-          </h1>
+            <h1 className={styles.heroTitle} data-home-title>
+              Building sharp interfaces with motion, code, and character.
+            </h1>
+          </div>
 
-          <p className={styles.heroText} data-home-copy>
-            I craft fast, expressive web experiences that feel polished from the
-            first interaction to the final deploy.
-          </p>
+          <div className={styles.heroDetails}>
+            <p className={styles.heroText} data-home-copy>
+              I craft fast, expressive web experiences that feel polished from the
+              first interaction to the final deploy.
+            </p>
 
-          <div className={styles.heroActions}>
-            <Link
-              href="/projects"
-              className={styles.primaryAction}
-              data-home-action
-            >
-              View Work
-            </Link>
-            <Link
-              href="/contact"
-              className={styles.secondaryAction}
-              data-home-action
-            >
-              Start a Project
-            </Link>
+            <div className={styles.heroActions}>
+              <Link
+                href="/projects"
+                className={styles.primaryAction}
+                data-home-action
+              >
+                View Work
+              </Link>
+              <Link
+                href="/contact"
+                className={styles.secondaryAction}
+                data-home-action
+              >
+                Start a Project
+              </Link>
+            </div>
           </div>
         </div>
 
@@ -287,6 +312,16 @@ export default function HomePage() {
             <span key={`${item}-${index}`}>{item}</span>
           ))}
         </div>
+      </div>
+
+      <div
+        className={`${styles.mobileScrollCue} ${
+          showScrollCue ? styles.mobileScrollCueVisible : ""
+        }`}
+        aria-hidden="true"
+      >
+        <span>Scroll</span>
+        <i />
       </div>
 
       {showIntro ? (
