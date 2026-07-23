@@ -11,8 +11,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 70vw;
-  max-width: 900px;
+  width: min(92vw, 760px);
+  max-width: calc(100vw - 2rem);
   min-height: 64px;
   color: #f5f5f5;
   font-size: 2rem;

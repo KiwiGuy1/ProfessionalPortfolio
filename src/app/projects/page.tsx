@@ -16,14 +16,14 @@ const inter = Inter({
 });
 
 const COLORS = {
-  background: "#020202",
+  background: "#030201",
   primary: "#f5f5f5",
-  secondary: "#b9b9b9",
-  accent: "#f0f0f0",
-  border: "rgba(255, 255, 255, 0.14)",
-  card: "rgba(255, 255, 255, 0.05)",
-  surface: "rgba(255, 255, 255, 0.06)",
-  gradient: "linear-gradient(135deg, #ffffff 0%, #d7d7d7 55%, #8d8d8d 100%)",
+  secondary: "rgba(255, 255, 255, 0.72)",
+  accent: "#ff9a2f",
+  border: "rgba(255, 122, 24, 0.24)",
+  card: "rgba(255, 122, 24, 0.06)",
+  surface: "rgba(255, 122, 24, 0.08)",
+  gradient: "linear-gradient(135deg, #ffb15c 0%, #ff9a2f 48%, #ff6a00 100%)",
 };
 
 const projects = [
@@ -80,8 +80,8 @@ export default function ProjectsPage() {
   const handleCardEnter = useCallback((e: React.MouseEvent<HTMLElement>) => {
     gsap.to(e.currentTarget, {
       y: -4,
-      borderColor: "rgba(255, 255, 255, 0.28)",
-      boxShadow: "0 18px 34px rgba(255, 255, 255, 0.08)",
+      borderColor: "rgba(255, 154, 47, 0.48)",
+      boxShadow: "0 18px 42px rgba(0, 0, 0, 0.28), 0 0 34px rgba(255, 122, 24, 0.16)",
       duration: 0.25,
       ease: "power2.out",
     });
@@ -166,11 +166,12 @@ export default function ProjectsPage() {
         .projects-root {
           min-height: 100vh;
           background:
-            radial-gradient(circle at 12% 16%, rgba(255, 255, 255, 0.08) 0%, transparent 39%),
-            radial-gradient(circle at 88% 11%, rgba(255, 255, 255, 0.05) 0%, transparent 41%),
+            radial-gradient(circle at 12% 16%, rgba(255, 122, 24, 0.18) 0%, transparent 39%),
+            radial-gradient(circle at 88% 11%, rgba(255, 154, 47, 0.1) 0%, transparent 41%),
+            linear-gradient(180deg, #030201 0%, #0d0602 48%, #000000 100%),
             ${COLORS.background};
           color: ${COLORS.primary};
-          padding: 96px 1rem 4.5rem;
+          padding: clamp(7.25rem, 10vw, 8.5rem) 1rem 4.5rem;
         }
 
         .shell {
@@ -222,6 +223,7 @@ export default function ProjectsPage() {
           backdrop-filter: blur(14px);
           overflow: hidden;
           transition: border-color 0.2s ease;
+          box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
         }
 
         .project-media {
@@ -255,7 +257,7 @@ export default function ProjectsPage() {
 
         .subtitle {
           margin: 0;
-          color: #e1e1e1;
+          color: rgba(255, 177, 92, 0.86);
           font-size: 0.98rem;
         }
 
@@ -279,7 +281,7 @@ export default function ProjectsPage() {
           background: ${COLORS.surface};
           padding: 0.3rem 0.66rem;
           font-size: 0.74rem;
-          color: #e8e8e8;
+          color: rgba(255, 244, 232, 0.88);
         }
 
         .link-row {
@@ -321,7 +323,7 @@ export default function ProjectsPage() {
 
         @media (max-width: 640px) {
           .projects-root {
-            padding-top: 88px;
+            padding-top: 7rem;
           }
 
           .link-row a {

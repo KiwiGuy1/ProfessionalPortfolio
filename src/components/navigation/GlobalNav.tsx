@@ -7,7 +7,6 @@ import "./global-nav.css";
 
 const navItems = [
   { text: "Home", link: "/", color: "#ff9a2f" },
-  { text: "Physics", link: "/physics", color: "#ff8a1c" },
   { text: "Projects", link: "/projects", color: "#ff7a18" },
   { text: "About", link: "/about", color: "#ff6a00" },
   { text: "Contact", link: "/contact", color: "#ffb15c" },
@@ -206,14 +205,14 @@ export default function GlobalNav({
           boxShadow:
             "0 4px 24px rgba(0, 0, 0, 0.34), 0 0 28px rgba(255, 122, 24, 0.1)",
           position: "fixed",
-          top: 0,
+          top: isMobile ? "0.5rem" : 0,
           left: 0,
           right: 0,
           zIndex: 50,
           pointerEvents: "auto",
         }}
       >
-        <div className="flex items-center justify-between px-6 py-4">
+        <div className="flex items-center justify-between gap-6 px-6 py-4">
           {/* KIWI Logo */}
           <motion.div
             className="text-2xl font-bold cursor-pointer"
@@ -223,6 +222,8 @@ export default function GlobalNav({
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",
               filter: "drop-shadow(0 0 10px rgba(255, 122, 24, 0.38))",
+              flexShrink: 0,
+              marginRight: isMobile ? 0 : "0.75rem",
             }}
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 400, damping: 17 }}
@@ -233,7 +234,10 @@ export default function GlobalNav({
 
           {/* Desktop Atomic Navigation */}
           {!isMobile && (
-            <nav className="flex items-center space-x-6">
+            <nav
+              className="flex items-center"
+              style={{ gap: "clamp(0.55rem, 1.4vw, 1.2rem)" }}
+            >
               {navItems.map((item, index) => {
                 const active = isActive(item.link);
 
@@ -411,7 +415,9 @@ export default function GlobalNav({
           {isMobile && (
             <motion.button
               onClick={toggleNav}
-              className="relative w-12 h-12 flex items-center justify-center"
+              aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
+              aria-expanded={isOpen}
+              className="relative flex items-center justify-center gap-2 rounded-full"
               whileTap={{ scale: 0.95 }}
               style={{
                 background: `
@@ -420,8 +426,11 @@ export default function GlobalNav({
                     rgba(255, 122, 24, 0.05) 100%
                   )
                 `,
-                borderRadius: "50%",
                 border: "1px solid rgba(255, 122, 24, 0.34)",
+                minHeight: "48px",
+                padding: "0 0.85rem 0 0.72rem",
+                boxShadow:
+                  "0 0 22px rgba(255, 122, 24, 0.16), inset 0 1px 0 rgba(255, 177, 92, 0.12)",
               }}
             >
               <div
@@ -487,6 +496,18 @@ export default function GlobalNav({
                   </div>
                 ))}
               </div>
+              <span
+                style={{
+                  color: "#fff4e8",
+                  fontSize: "0.72rem",
+                  fontWeight: 800,
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  textShadow: "0 0 10px rgba(255, 122, 24, 0.35)",
+                }}
+              >
+                Menu
+              </span>
             </motion.button>
           )}
         </div>
@@ -518,7 +539,7 @@ export default function GlobalNav({
             <div className="absolute inset-0 flex items-center justify-center">
               {navItems.map((item, index) => {
                 const angle = (index * 360) / navItems.length - 90;
-                const radius = 120;
+                const radius = navItems.length <= 4 ? 112 : 120;
                 const x = Math.cos((angle * Math.PI) / 180) * radius;
                 const y = Math.sin((angle * Math.PI) / 180) * radius;
                 const active = isActive(item.link);

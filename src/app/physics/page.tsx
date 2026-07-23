@@ -1,5 +1,5 @@
-import Physics from "@/components/physics/Physics";
+import { redirect } from "next/navigation";
 
 export default function PhysicsPage() {
-  return <Physics />;
+  redirect("/");
 }

@@ -21,18 +21,18 @@ const inter = Inter({
 });
 
 const COLORS = {
-  background: "#020202",
+  background: "#030201",
   primary: "#f5f5f5",
-  secondary: "#b9b9b9",
-  accent: "#f0f0f0",
-  accentAlt: "#8f8f8f",
-  border: "rgba(255, 255, 255, 0.14)",
-  card: "rgba(255, 255, 255, 0.05)",
-  field: "rgba(255, 255, 255, 0.06)",
-  successBg: "rgba(255, 255, 255, 0.1)",
+  secondary: "rgba(255, 255, 255, 0.72)",
+  accent: "#ff9a2f",
+  accentAlt: "#ff6a00",
+  border: "rgba(255, 122, 24, 0.24)",
+  card: "rgba(255, 122, 24, 0.06)",
+  field: "rgba(255, 122, 24, 0.08)",
+  successBg: "rgba(34, 197, 94, 0.12)",
   successText: "#ffffff",
-  errorBg: "rgba(255, 255, 255, 0.08)",
-  errorText: "#d0d0d0",
+  errorBg: "rgba(239, 68, 68, 0.12)",
+  errorText: "#ffd9d9",
 };
 
 interface FormData {
@@ -42,8 +42,8 @@ interface FormData {
 }
 
 const focusStyle = (el: HTMLInputElement | HTMLTextAreaElement) => {
-  el.style.borderColor = "rgba(255, 255, 255, 0.32)";
-  el.style.boxShadow = "0 0 0 3px rgba(255, 255, 255, 0.08)";
+  el.style.borderColor = "rgba(255, 154, 47, 0.58)";
+  el.style.boxShadow = "0 0 0 3px rgba(255, 122, 24, 0.12)";
 };
 
 const blurStyle = (el: HTMLInputElement | HTMLTextAreaElement) => {
@@ -240,11 +240,12 @@ export default function ContactPage() {
         .contact-root {
           min-height: 100vh;
           background:
-            radial-gradient(circle at 12% 20%, rgba(255, 255, 255, 0.08) 0%, transparent 38%),
-            radial-gradient(circle at 90% 10%, rgba(255, 255, 255, 0.05) 0%, transparent 42%),
+            radial-gradient(circle at 12% 20%, rgba(255, 122, 24, 0.18) 0%, transparent 38%),
+            radial-gradient(circle at 90% 10%, rgba(255, 154, 47, 0.1) 0%, transparent 42%),
+            linear-gradient(180deg, #030201 0%, #0d0602 48%, #000000 100%),
             ${COLORS.background};
           color: ${COLORS.primary};
-          padding: 96px 1rem 4.5rem;
+          padding: clamp(7.25rem, 10vw, 8.5rem) 1rem 4.5rem;
         }
 
         .shell {
@@ -294,6 +295,7 @@ export default function ContactPage() {
           border: 1px solid ${COLORS.border};
           background: ${COLORS.card};
           backdrop-filter: blur(14px);
+          box-shadow: 0 24px 70px rgba(0, 0, 0, 0.34), 0 0 34px rgba(255, 122, 24, 0.08);
         }
 
         .info-shell {
@@ -383,7 +385,7 @@ export default function ContactPage() {
 
         input::placeholder,
         textarea::placeholder {
-          color: #8f8f8f;
+          color: rgba(255, 255, 255, 0.42);
         }
 
         button {
@@ -425,7 +427,7 @@ export default function ContactPage() {
 
         @media (max-width: 640px) {
           .contact-root {
-            padding-top: 88px;
+            padding-top: 7rem;
           }
 
           button {

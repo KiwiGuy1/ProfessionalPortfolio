@@ -14,15 +14,15 @@ const inter = Inter({
 });
 
 const COLORS = {
-  background: "#020202",
-  backgroundSoft: "#0b0b0b",
+  background: "#030201",
+  backgroundSoft: "#0e0702",
   primary: "#f5f5f5",
-  secondary: "#b9b9b9",
-  accent: "#f0f0f0",
-  accentAlt: "#9d9d9d",
-  border: "rgba(255, 255, 255, 0.14)",
-  card: "rgba(255, 255, 255, 0.05)",
-  chip: "rgba(255, 255, 255, 0.06)",
+  secondary: "rgba(255, 255, 255, 0.72)",
+  accent: "#ff9a2f",
+  accentAlt: "#ff6a00",
+  border: "rgba(255, 122, 24, 0.24)",
+  card: "rgba(255, 122, 24, 0.06)",
+  chip: "rgba(255, 122, 24, 0.08)",
 };
 
 const journey = [
@@ -151,11 +151,12 @@ export default function About() {
         .about-root {
           min-height: 100vh;
           background:
-            radial-gradient(circle at 14% 18%, rgba(255, 255, 255, 0.08) 0%, transparent 40%),
-            radial-gradient(circle at 86% 10%, rgba(255, 255, 255, 0.05) 0%, transparent 38%),
+            radial-gradient(circle at 14% 18%, rgba(255, 122, 24, 0.18) 0%, transparent 40%),
+            radial-gradient(circle at 86% 10%, rgba(255, 154, 47, 0.1) 0%, transparent 38%),
+            linear-gradient(180deg, #030201 0%, #0d0602 48%, #000000 100%),
             ${COLORS.background};
           color: ${COLORS.primary};
-          padding: 96px 1rem 4.5rem;
+          padding: clamp(7.25rem, 10vw, 8.5rem) 1rem 4.5rem;
         }
 
         .section-shell {
@@ -199,6 +200,7 @@ export default function About() {
           background: ${COLORS.card};
           backdrop-filter: blur(14px);
           border-radius: 1.4rem;
+          box-shadow: 0 24px 70px rgba(0, 0, 0, 0.34), 0 0 34px rgba(255, 122, 24, 0.08);
         }
 
         .about-card {
@@ -279,7 +281,7 @@ export default function About() {
 
         .company {
           margin: 0.2rem 0 0;
-          color: #dddddd;
+          color: rgba(255, 177, 92, 0.86);
           font-size: 0.92rem;
         }
 
@@ -308,7 +310,7 @@ export default function About() {
 
         @media (max-width: 640px) {
           .about-root {
-            padding-top: 88px;
+            padding-top: 7rem;
           }
 
           .timeline-top {

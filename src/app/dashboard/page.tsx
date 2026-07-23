@@ -47,7 +47,7 @@ export default function Dashboard() {
   if (status === "loading") {
     return (
       <div className="grid min-h-screen place-items-center bg-black text-slate-100">
-        <p className="text-slate-300">Loading dashboard...</p>
+        <p className="text-orange-200/80">Loading dashboard...</p>
       </div>
     );
   }
@@ -55,22 +55,22 @@ export default function Dashboard() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-black text-slate-100">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(255,255,255,0.12),transparent_35%),radial-gradient(circle_at_85%_15%,rgba(255,255,255,0.08),transparent_35%),linear-gradient(180deg,#020202_0%,#0d0d0d_100%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(255,122,24,0.18),transparent_35%),radial-gradient(circle_at_85%_15%,rgba(255,154,47,0.1),transparent_35%),linear-gradient(180deg,#030201_0%,#0d0602_48%,#000000_100%)]" />
 
-      <header className="relative border-b border-white/10 bg-black/80 backdrop-blur-xl">
+      <header className="relative border-b border-orange-400/15 bg-black/80 backdrop-blur-xl">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-6 sm:px-6 lg:px-8">
           <div>
             <h1 className="text-3xl font-bold tracking-wide text-white">
               CMS Dashboard
             </h1>
-            <p className="mt-1 text-zinc-300/80">
+            <p className="mt-1 text-orange-100/70">
               Logged in as {session.user?.email}
             </p>
           </div>
           <button
             onClick={handleSignOut}
             disabled={signingOut}
-            className="rounded-xl border border-white/15 bg-white/10 px-4 py-2 font-medium text-zinc-100 transition hover:bg-white/12 disabled:cursor-not-allowed disabled:opacity-70"
+            className="rounded-xl border border-orange-400/20 bg-orange-500/10 px-4 py-2 font-medium text-zinc-100 transition hover:bg-orange-500/15 disabled:cursor-not-allowed disabled:opacity-70"
           >
             {signingOut ? "Signing Out..." : "Sign Out"}
           </button>
@@ -78,7 +78,7 @@ export default function Dashboard() {
       </header>
 
       <main className="relative mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="rounded-2xl border border-white/12 bg-white/5 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.55)] sm:p-8">
+        <div className="rounded-2xl border border-orange-400/20 bg-orange-500/[0.06] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.55),0_0_42px_rgba(255,122,24,0.1)] sm:p-8">
           <h2 className="mb-6 text-2xl font-bold text-white">
             Contact Messages
           </h2>
@@ -95,7 +95,7 @@ export default function Dashboard() {
               {messages.map((msg) => (
                 <div
                   key={msg.id}
-                  className="rounded-xl border border-white/10 bg-black/40 p-6 shadow-md transition hover:border-white/20"
+                  className="rounded-xl border border-orange-400/15 bg-black/40 p-6 shadow-md transition hover:border-orange-300/35"
                 >
                   <div className="flex justify-between items-start mb-4">
                     <div>
