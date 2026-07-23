@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import GlobalNav from "./components/GlobalNav";
+import GlobalNav from "@/components/navigation/GlobalNav";
 import { Bebas_Neue } from "next/font/google";
 
 const ANIMATION_DURATION = 0.5; // seconds

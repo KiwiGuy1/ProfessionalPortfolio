@@ -29,7 +29,7 @@ import {
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { SkeletonUtils } from "three-stdlib";
 import { KIWI_MODEL_PATHS } from "@/lib/modelAssets";
-import styles from "./model-viewer.module.css";
+import styles from "./home-page.module.css";
 
 type SceneControls = {
   glowY: number;

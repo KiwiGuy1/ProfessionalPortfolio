@@ -39,7 +39,9 @@ const glbHeaders = [
 ];
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  turbopack: {
+    root: process.cwd(),
+  },
   headers: () => [
     ...["model", "model12", "model6", "mode1l"].map((modelName) => ({
       source: `/${modelName}.glb`,

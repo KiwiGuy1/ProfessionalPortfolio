@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import KJWelcomeScreen from "./KJWelcomeScreen";
 import ModelScene from "./ModelScene";
-import styles from "./model-viewer.module.css";
+import styles from "./home-page.module.css";
 
 const fieldNodes = ["Motion", "Systems", "3D", "UI"];
 const tickerItems = [
@@ -15,20 +16,10 @@ const tickerItems = [
   "Full-stack builds",
 ];
 
-export default function ModelViewer() {
+export default function HomePage() {
   const pageRef = useRef<HTMLElement>(null);
   const cursorMovedRef = useRef(false);
   const [showIntro, setShowIntro] = useState(true);
-
-  useEffect(() => {
-    const introTimer = window.setTimeout(() => {
-      setShowIntro(false);
-    }, 5600);
-
-    return () => {
-      window.clearTimeout(introTimer);
-    };
-  }, []);
 
   useGSAP(
     () => {
@@ -171,15 +162,17 @@ export default function ModelViewer() {
       ease: "power3.out",
     });
 
-    field.querySelectorAll<HTMLElement>("[data-field-node]").forEach((node, index) => {
-      const pull = 18 - index * 2.5;
-      gsap.to(node, {
-        x: (x - 0.5) * pull,
-        y: (y - 0.5) * pull,
-        duration: 0.42,
-        ease: "power3.out",
+    field
+      .querySelectorAll<HTMLElement>("[data-field-node]")
+      .forEach((node, index) => {
+        const pull = 18 - index * 2.5;
+        gsap.to(node, {
+          x: (x - 0.5) * pull,
+          y: (y - 0.5) * pull,
+          duration: 0.42,
+          ease: "power3.out",
+        });
       });
-    });
   };
 
   const resetField = (event: React.PointerEvent<HTMLElement>) => {
@@ -209,11 +202,18 @@ export default function ModelViewer() {
         <div className={styles.signalBeamSoft} data-signal-beam />
       </div>
 
-      <div className={styles.cursorTarget} data-cursor-target aria-hidden="true">
+      <div
+        className={styles.cursorTarget}
+        data-cursor-target
+        aria-hidden="true"
+      >
         <span />
       </div>
 
-      <section className={styles.heroOverlay} aria-label="Portfolio introduction">
+      <section
+        className={styles.heroOverlay}
+        aria-label="Portfolio introduction"
+      >
         <div className={styles.heroCopy}>
           <p className={styles.kicker} data-home-kicker>
             Independent web developer
@@ -224,15 +224,23 @@ export default function ModelViewer() {
           </h1>
 
           <p className={styles.heroText} data-home-copy>
-            I craft fast, expressive web experiences that feel polished from
-            the first interaction to the final deploy.
+            I craft fast, expressive web experiences that feel polished from the
+            first interaction to the final deploy.
           </p>
 
           <div className={styles.heroActions}>
-            <Link href="/projects" className={styles.primaryAction} data-home-action>
+            <Link
+              href="/projects"
+              className={styles.primaryAction}
+              data-home-action
+            >
               View Work
             </Link>
-            <Link href="/contact" className={styles.secondaryAction} data-home-action>
+            <Link
+              href="/contact"
+              className={styles.secondaryAction}
+              data-home-action
+            >
               Start a Project
             </Link>
           </div>
@@ -262,7 +270,6 @@ export default function ModelViewer() {
               </span>
             ))}
           </div>
-
         </aside>
       </section>
 
@@ -283,12 +290,7 @@ export default function ModelViewer() {
       </div>
 
       {showIntro ? (
-        <div className={styles.introOverlay} aria-hidden="true">
-          <div className={styles.introLetters}>
-            <span className={styles.introLetterK}>K</span>
-            <span className={styles.introLetterJ}>J</span>
-          </div>
-        </div>
+        <KJWelcomeScreen onComplete={() => setShowIntro(false)} />
       ) : null}
     </main>
   );

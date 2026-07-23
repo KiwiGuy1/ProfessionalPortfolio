@@ -1,0 +1,209 @@
+.introOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: transparent;
+  pointer-events: none;
+  animation: introOverlayExit 5.6s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+.introOverlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #000000;
+  z-index: 1;
+  clip-path: inset(0 0 0 0);
+  animation: introWindowReveal 5.6s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+.introLetters {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.12rem, 1vw, 0.5rem);
+  color: #ffffff;
+  font-family: "Satoshi", "Avenir Next", "Helvetica Neue", sans-serif;
+  font-size: clamp(4.5rem, 16vw, 15rem);
+  font-weight: 900;
+  letter-spacing: -0.14em;
+  line-height: 0.72;
+  mix-blend-mode: difference;
+}
+
+.introLetters span {
+  display: inline-block;
+  opacity: 0;
+  filter: blur(10px);
+  text-shadow:
+    0 0 32px rgba(255, 122, 24, 0.42),
+    0 0 64px rgba(255, 106, 0, 0.18);
+}
+
+.introLetterK {
+  animation: introLetterK 5.2s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+.introLetterJ {
+  animation: introLetterJ 5.2s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+.introOverlay::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 2;
+  width: 2px;
+  height: 2px;
+  border: 1px solid rgba(255, 255, 255, 0);
+  transform: translate(-50%, -50%) scale(0);
+  animation: introSquareReveal 5.6s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+@keyframes introLetterK {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 48vh, 0) scale(0.96);
+    filter: blur(12px);
+  }
+
+  16%,
+  42% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(0);
+  }
+
+  64% {
+    opacity: 1;
+    transform: translate3d(-34vw, 25vh, 0) scale(0.28);
+    filter: blur(0);
+  }
+
+  86%,
+  100% {
+    opacity: 0;
+    transform: translate3d(-44vw, 32vh, 0) scale(0.18);
+    filter: blur(8px);
+  }
+}
+
+@keyframes introLetterJ {
+  0%,
+  10% {
+    opacity: 0;
+    transform: translate3d(0, 48vh, 0) scale(0.96);
+    filter: blur(12px);
+  }
+
+  26%,
+  42% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(0);
+  }
+
+  64% {
+    opacity: 1;
+    transform: translate3d(34vw, 25vh, 0) scale(0.28);
+    filter: blur(0);
+  }
+
+  86%,
+  100% {
+    opacity: 0;
+    transform: translate3d(44vw, 32vh, 0) scale(0.18);
+    filter: blur(8px);
+  }
+}
+
+@keyframes introSquareReveal {
+  0%,
+  48% {
+    width: 2px;
+    height: 2px;
+    border-color: rgba(255, 255, 255, 0);
+    transform: translate(-50%, -50%) scale(0);
+  }
+
+  62% {
+    width: min(22vw, 240px);
+    height: min(22vw, 240px);
+    border-color: rgba(255, 122, 24, 0.94);
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  100% {
+    width: 160vmax;
+    height: 160vmax;
+    border-color: rgba(255, 255, 255, 0);
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes introWindowReveal {
+  0%,
+  50% {
+    clip-path: polygon(
+      0 0,
+      100% 0,
+      100% 100%,
+      0 100%,
+      0 0,
+      calc(50% - 1px) calc(50% - 1px),
+      calc(50% - 1px) calc(50% + 1px),
+      calc(50% + 1px) calc(50% + 1px),
+      calc(50% + 1px) calc(50% - 1px),
+      calc(50% - 1px) calc(50% - 1px)
+    );
+  }
+
+  62% {
+    clip-path: polygon(
+      0 0,
+      100% 0,
+      100% 100%,
+      0 100%,
+      0 0,
+      calc(50% - min(11vw, 120px)) calc(50% - min(11vw, 120px)),
+      calc(50% - min(11vw, 120px)) calc(50% + min(11vw, 120px)),
+      calc(50% + min(11vw, 120px)) calc(50% + min(11vw, 120px)),
+      calc(50% + min(11vw, 120px)) calc(50% - min(11vw, 120px)),
+      calc(50% - min(11vw, 120px)) calc(50% - min(11vw, 120px))
+    );
+  }
+
+  100% {
+    clip-path: polygon(
+      0 0,
+      100% 0,
+      100% 100%,
+      0 100%,
+      0 0,
+      -80vmax -80vmax,
+      -80vmax 180vmax,
+      180vmax 180vmax,
+      180vmax -80vmax,
+      -80vmax -80vmax
+    );
+  }
+}
+
+@keyframes introOverlayExit {
+  0%,
+  88% {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}

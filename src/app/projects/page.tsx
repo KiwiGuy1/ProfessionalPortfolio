@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useCallback } from "react";
+import { useCallback, useRef } from "react";
 import Image from "next/image";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -20,7 +20,6 @@ const COLORS = {
   primary: "#f5f5f5",
   secondary: "#b9b9b9",
   accent: "#f0f0f0",
-  accentAlt: "#8f8f8f",
   border: "rgba(255, 255, 255, 0.14)",
   card: "rgba(255, 255, 255, 0.05)",
   surface: "rgba(255, 255, 255, 0.06)",
@@ -29,86 +28,48 @@ const COLORS = {
 
 const projects = [
   {
-    id: 1,
     title: "ShopSight",
-    subtitle: "E-Commerce Analytics Dashboard",
+    subtitle: "E-commerce analytics dashboard",
     description:
-      "A full-stack analytics platform with realtime charts, product insights, and behavior tracking for online stores.",
-    tech: ["React", "Node.js", "MongoDB", "Chart.js", "Express", "CSS3"],
-    role: "Full-Stack Developer",
-    duration: "3 months",
+      "A focused analytics platform for tracking store performance, product activity, and customer behavior.",
+    tech: ["React", "Node.js", "MongoDB", "Chart.js"],
+    role: "Full-stack development",
     image: "/img/ecom.png",
     githubUrl: "https://github.com/KiwiGuy1",
-    demoUrl: "#",
+    liveUrl: "#",
   },
-];
-
-const upcomingProjects = [
   {
-    title: "TaskFlow Pro",
+    title: "JM Drywall & Painting",
+    subtitle: "Local service business website",
     description:
-      "Team collaboration platform with realtime updates and project tracking.",
-    tech: ["Next.js", "TypeScript", "PostgreSQL"],
-    status: "In Development",
-  },
-  {
-    title: "FinanceTracker",
-    description: "Budgeting and personal finance insights app with progress goals.",
-    tech: ["React Native", "Firebase", "Redux"],
-    status: "Planning",
-  },
-  {
-    title: "AI Weather Assistant",
-    description:
-      "Weather experience with ML-driven recommendations and custom alerts.",
-    tech: ["Vue", "Python", "TensorFlow"],
-    status: "Research",
+      "A clean bilingual website for drywall, texture, and painting services with polished project visuals and contact flow.",
+    tech: ["Next.js", "TypeScript", "Responsive UI", "Contact API"],
+    role: "Website design and build",
+    image: "/img/jm-drywall-painting.jpg",
+    githubUrl: "https://github.com/KiwiGuy1",
+    liveUrl: "https://jmdrywallpainting.com",
   },
 ];
 
 export default function ProjectsPage() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const featuredProjectRef = useRef<HTMLDivElement>(null);
-  const ctaButtonRef = useRef<HTMLButtonElement>(null);
-  const featuredProject = projects[0];
 
   useGSAP(
     () => {
       gsap.from(".projects-hero", {
-        y: 42,
+        y: 38,
         opacity: 0,
-        duration: 0.9,
+        duration: 0.85,
         ease: "power3.out",
       });
 
-      gsap.from(".stats-item", {
-        y: 35,
+      gsap.from(".project-card", {
+        y: 42,
         opacity: 0,
-        duration: 0.7,
-        stagger: 0.09,
-        scrollTrigger: {
-          trigger: ".stats-grid",
-          start: "top 86%",
-        },
-      });
-
-      gsap.from(".featured-card", {
-        y: 52,
-        opacity: 0,
-        duration: 0.95,
-        scrollTrigger: {
-          trigger: ".featured-wrap",
-          start: "top 82%",
-        },
-      });
-
-      gsap.from(".upcoming-card", {
-        y: 45,
-        opacity: 0,
-        duration: 0.8,
+        duration: 0.78,
         stagger: 0.12,
         scrollTrigger: {
-          trigger: ".upcoming-grid",
+          trigger: ".projects-grid",
           start: "top 84%",
         },
       });
@@ -116,9 +77,8 @@ export default function ProjectsPage() {
     { scope: containerRef }
   );
 
-  const handleFeaturedMouseEnter = useCallback(() => {
-    if (!featuredProjectRef.current) return;
-    gsap.to(featuredProjectRef.current, {
+  const handleCardEnter = useCallback((e: React.MouseEvent<HTMLElement>) => {
+    gsap.to(e.currentTarget, {
       y: -4,
       borderColor: "rgba(255, 255, 255, 0.28)",
       boxShadow: "0 18px 34px rgba(255, 255, 255, 0.08)",
@@ -127,49 +87,12 @@ export default function ProjectsPage() {
     });
   }, []);
 
-  const handleFeaturedMouseLeave = useCallback(() => {
-    if (!featuredProjectRef.current) return;
-    gsap.to(featuredProjectRef.current, {
+  const handleCardLeave = useCallback((e: React.MouseEvent<HTMLElement>) => {
+    gsap.to(e.currentTarget, {
       y: 0,
       borderColor: COLORS.border,
       boxShadow: "none",
       duration: 0.25,
-      ease: "power2.out",
-    });
-  }, []);
-
-  const handleCardEnter = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    gsap.to(e.currentTarget, {
-      y: -3,
-      borderColor: "rgba(255, 255, 255, 0.24)",
-      duration: 0.2,
-      ease: "power2.out",
-    });
-  }, []);
-
-  const handleCardLeave = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    gsap.to(e.currentTarget, {
-      y: 0,
-      borderColor: COLORS.border,
-      duration: 0.2,
-      ease: "power2.out",
-    });
-  }, []);
-
-  const handleCtaEnter = useCallback(() => {
-    if (!ctaButtonRef.current) return;
-    gsap.to(ctaButtonRef.current, {
-      scale: 1.03,
-      duration: 0.2,
-      ease: "power2.out",
-    });
-  }, []);
-
-  const handleCtaLeave = useCallback(() => {
-    if (!ctaButtonRef.current) return;
-    gsap.to(ctaButtonRef.current, {
-      scale: 1,
-      duration: 0.2,
       ease: "power2.out",
     });
   }, []);
@@ -181,97 +104,35 @@ export default function ProjectsPage() {
           <p className="eyebrow">Projects</p>
           <h1>Selected Work</h1>
           <p>
-            A look at products I&apos;ve designed and developed, with a focus on
-            practical interfaces, clean architecture, and measurable outcomes.
+            Simple, polished builds with practical interfaces and clean execution.
           </p>
         </section>
 
-        <section className="shell stats-grid">
-          {[
-            ["1", "Featured Project"],
-            ["6+", "Tech Stack Tools"],
-            ["3", "Upcoming Builds"],
-            ["100%", "Execution Focus"],
-          ].map(([value, label]) => (
-            <article key={label} className="stats-item card">
-              <p className="value">{value}</p>
-              <p className="label">{label}</p>
-            </article>
-          ))}
-        </section>
-
-        <section className="shell featured-wrap">
-          <h2>Featured Project</h2>
-
-          {featuredProject && (
+        <section className="shell projects-grid" aria-label="Selected projects">
+          {projects.map((project) => (
             <article
-              ref={featuredProjectRef}
-              className="featured-card card"
-              onMouseEnter={handleFeaturedMouseEnter}
-              onMouseLeave={handleFeaturedMouseLeave}
+              key={project.title}
+              className="project-card"
+              onMouseEnter={handleCardEnter}
+              onMouseLeave={handleCardLeave}
             >
               <div className="project-media">
-                {featuredProject.image ? (
-                  <Image
-                    src={featuredProject.image}
-                    alt={featuredProject.title}
-                    fill
-                    priority
-                    sizes="(max-width: 920px) 100vw, 48vw"
-                    style={{ objectFit: "cover" }}
-                  />
-                ) : (
-                  <div className="fallback">{featuredProject.title}</div>
-                )}
+                <Image
+                  src={project.image}
+                  alt={project.title}
+                  fill
+                  priority={project.title === "ShopSight"}
+                  sizes="(max-width: 860px) 100vw, 50vw"
+                  style={{ objectFit: "cover" }}
+                />
               </div>
 
               <div className="project-copy">
-                <div className="meta-row">
-                  <span className="badge badge-accent">{featuredProject.role}</span>
-                  <span className="badge">{featuredProject.duration}</span>
-                </div>
+                <span className="badge">{project.role}</span>
+                <h2>{project.title}</h2>
+                <p className="subtitle">{project.subtitle}</p>
+                <p className="description">{project.description}</p>
 
-                <h3>{featuredProject.title}</h3>
-                <p className="subtitle">{featuredProject.subtitle}</p>
-                <p className="description">{featuredProject.description}</p>
-
-                <div className="tech-row">
-                  {featuredProject.tech.map((tech) => (
-                    <span key={tech} className="tech-pill">
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-
-                <div className="link-row">
-                  <a href={featuredProject.githubUrl} target="_blank" rel="noopener noreferrer">
-                    View Code
-                  </a>
-                  <a href={featuredProject.demoUrl} className="primary-link">
-                    Live Demo
-                  </a>
-                </div>
-              </div>
-            </article>
-          )}
-        </section>
-
-        <section className="shell upcoming-wrap">
-          <h2>What&apos;s Next</h2>
-
-          <div className="upcoming-grid">
-            {upcomingProjects.map((project) => (
-              <article
-                key={project.title}
-                className="upcoming-card card"
-                onMouseEnter={handleCardEnter}
-                onMouseLeave={handleCardLeave}
-              >
-                <div className="status-row">
-                  <h3>{project.title}</h3>
-                  <span className="status">{project.status}</span>
-                </div>
-                <p>{project.description}</p>
                 <div className="tech-row">
                   {project.tech.map((tech) => (
                     <span key={tech} className="tech-pill">
@@ -279,22 +140,25 @@ export default function ProjectsPage() {
                     </span>
                   ))}
                 </div>
-              </article>
-            ))}
-          </div>
-        </section>
 
-        <section className="shell cta-wrap">
-          <div className="cta-card">
-            <h2>Need a Product Partner?</h2>
-            <p>
-              I&apos;m available for selective freelance projects and collaborative
-              product work.
-            </p>
-            <button ref={ctaButtonRef} onMouseEnter={handleCtaEnter} onMouseLeave={handleCtaLeave}>
-              Get In Touch
-            </button>
-          </div>
+                <div className="link-row">
+                  {project.liveUrl !== "#" && (
+                    <a
+                      href={project.liveUrl}
+                      className="primary-link"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      View Site
+                    </a>
+                  )}
+                  <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
+                    View Code
+                  </a>
+                </div>
+              </div>
+            </article>
+          ))}
         </section>
       </main>
 
@@ -310,13 +174,13 @@ export default function ProjectsPage() {
         }
 
         .shell {
-          width: min(1160px, 100%);
+          width: min(1120px, 100%);
           margin: 0 auto;
         }
 
         .projects-hero {
           text-align: center;
-          margin-bottom: 1.8rem;
+          margin-bottom: 2rem;
         }
 
         .eyebrow {
@@ -339,126 +203,71 @@ export default function ProjectsPage() {
 
         .projects-hero > p {
           margin: 1rem auto 0;
-          max-width: 770px;
+          max-width: 620px;
           color: ${COLORS.secondary};
-          line-height: 1.74;
-          font-size: clamp(0.98rem, 2.5vw, 1.18rem);
+          line-height: 1.7;
+          font-size: clamp(0.98rem, 2.5vw, 1.13rem);
         }
 
-        .card {
+        .projects-grid {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 1rem;
+        }
+
+        .project-card {
           border: 1px solid ${COLORS.border};
-          border-radius: 1.2rem;
+          border-radius: 1rem;
           background: ${COLORS.card};
           backdrop-filter: blur(14px);
-        }
-
-        .stats-grid {
-          display: grid;
-          grid-template-columns: repeat(4, minmax(0, 1fr));
-          gap: 0.75rem;
-          margin-bottom: 1.8rem;
-        }
-
-        .stats-item {
-          padding: 0.95rem;
-          text-align: center;
-        }
-
-        .value {
-          margin: 0;
-          color: ${COLORS.accent};
-          font-size: 1.45rem;
-          font-weight: 700;
-        }
-
-        .label {
-          margin: 0.25rem 0 0;
-          color: ${COLORS.secondary};
-          font-size: 0.8rem;
-          letter-spacing: 0.02em;
-        }
-
-        h2 {
-          margin: 0 0 0.9rem;
-          font-size: clamp(1.4rem, 4vw, 2rem);
-        }
-
-        .featured-wrap {
-          margin-bottom: 1.8rem;
-        }
-
-        .featured-card {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 1.15rem;
-          padding: 1rem;
+          overflow: hidden;
           transition: border-color 0.2s ease;
         }
 
         .project-media {
           position: relative;
-          min-height: 270px;
-          border-radius: 1rem;
-          overflow: hidden;
-          background: ${COLORS.gradient};
-        }
-
-        .fallback {
-          display: grid;
-          place-items: center;
-          width: 100%;
-          height: 100%;
-          font-weight: 700;
+          min-height: 280px;
+          background: ${COLORS.surface};
         }
 
         .project-copy {
           display: grid;
-          align-content: start;
-          gap: 0.7rem;
-          padding: 0.2rem 0.25rem 0.1rem;
-        }
-
-        .meta-row {
-          display: flex;
-          gap: 0.5rem;
-          flex-wrap: wrap;
+          gap: 0.72rem;
+          padding: 1rem;
         }
 
         .badge {
+          width: fit-content;
           border: 1px solid ${COLORS.border};
           border-radius: 999px;
           background: ${COLORS.surface};
-          color: ${COLORS.secondary};
-          padding: 0.26rem 0.65rem;
-          font-size: 0.74rem;
-          font-weight: 500;
-        }
-
-        .badge-accent {
           color: ${COLORS.accent};
-          background: rgba(255, 255, 255, 0.08);
+          padding: 0.28rem 0.68rem;
+          font-size: 0.74rem;
+          font-weight: 600;
         }
 
-        h3 {
+        h2 {
           margin: 0;
-          font-size: clamp(1.22rem, 3vw, 1.85rem);
-          line-height: 1.25;
+          font-size: clamp(1.3rem, 3vw, 1.85rem);
+          line-height: 1.18;
         }
 
         .subtitle {
           margin: 0;
           color: #e1e1e1;
-          font-size: 1rem;
+          font-size: 0.98rem;
         }
 
         .description {
           margin: 0;
           color: ${COLORS.secondary};
-          line-height: 1.7;
-          font-size: 0.95rem;
+          line-height: 1.68;
+          font-size: 0.94rem;
         }
 
-        .tech-row {
+        .tech-row,
+        .link-row {
           display: flex;
           flex-wrap: wrap;
           gap: 0.45rem;
@@ -468,16 +277,13 @@ export default function ProjectsPage() {
           border-radius: 999px;
           border: 1px solid ${COLORS.border};
           background: ${COLORS.surface};
-          padding: 0.3rem 0.68rem;
-          font-size: 0.75rem;
+          padding: 0.3rem 0.66rem;
+          font-size: 0.74rem;
           color: #e8e8e8;
         }
 
         .link-row {
-          display: flex;
-          gap: 0.55rem;
-          flex-wrap: wrap;
-          margin-top: 0.2rem;
+          margin-top: 0.12rem;
         }
 
         .link-row a {
@@ -486,7 +292,7 @@ export default function ProjectsPage() {
           background: ${COLORS.surface};
           color: ${COLORS.primary};
           text-decoration: none;
-          padding: 0.6rem 1rem;
+          padding: 0.62rem 1rem;
           font-size: 0.86rem;
           font-weight: 600;
           transition: transform 0.2s ease, filter 0.2s ease;
@@ -503,115 +309,19 @@ export default function ProjectsPage() {
           color: #050505 !important;
         }
 
-        .upcoming-wrap {
-          margin-bottom: 1.8rem;
-        }
-
-        .upcoming-grid {
-          display: grid;
-          gap: 0.75rem;
-          grid-template-columns: repeat(3, minmax(0, 1fr));
-        }
-
-        .upcoming-card {
-          padding: 0.95rem;
-          transition: border-color 0.2s ease;
-        }
-
-        .status-row {
-          display: flex;
-          justify-content: space-between;
-          gap: 0.8rem;
-          align-items: flex-start;
-          margin-bottom: 0.65rem;
-        }
-
-        .status {
-          border-radius: 999px;
-          background: rgba(255, 255, 255, 0.08);
-          color: ${COLORS.primary};
-          font-size: 0.72rem;
-          font-weight: 600;
-          padding: 0.28rem 0.58rem;
-          white-space: nowrap;
-        }
-
-        .upcoming-card p {
-          margin: 0 0 0.75rem;
-          color: ${COLORS.secondary};
-          font-size: 0.93rem;
-          line-height: 1.62;
-        }
-
-        .cta-wrap {
-          text-align: center;
-        }
-
-        .cta-card {
-          border-radius: 1.25rem;
-          background: ${COLORS.gradient};
-          padding: clamp(1.25rem, 4vw, 2rem) clamp(1rem, 4vw, 1.8rem);
-          color: #050505;
-        }
-
-        .cta-card h2 {
-          margin: 0 0 0.55rem;
-        }
-
-        .cta-card p {
-          margin: 0 auto 0.95rem;
-          max-width: 680px;
-          font-size: 0.98rem;
-          line-height: 1.65;
-          opacity: 0.92;
-        }
-
-        .cta-card button {
-          border: none;
-          border-radius: 999px;
-          background: #111111;
-          color: ${COLORS.primary};
-          font-size: 0.9rem;
-          font-weight: 600;
-          padding: 0.68rem 1.2rem;
-          cursor: pointer;
-        }
-
-        @media (max-width: 1040px) {
-          .upcoming-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-          }
-        }
-
-        @media (max-width: 920px) {
-          .featured-card {
+        @media (max-width: 860px) {
+          .projects-grid {
             grid-template-columns: 1fr;
           }
 
           .project-media {
-            min-height: 230px;
-          }
-
-          .stats-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
+            min-height: 240px;
           }
         }
 
         @media (max-width: 640px) {
           .projects-root {
             padding-top: 88px;
-          }
-
-          .upcoming-grid {
-            grid-template-columns: 1fr;
-          }
-
-          .status-row {
-            flex-direction: column;
-          }
-
-          .status {
-            width: fit-content;
           }
 
           .link-row a {

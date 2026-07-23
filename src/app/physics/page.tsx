@@ -1,4 +1,4 @@
-import Physics from "../components/Physics";
+import Physics from "@/components/physics/Physics";
 
 export default function PhysicsPage() {
   return <Physics />;
