@@ -517,7 +517,7 @@ export default function GlobalNav({
             {/* Orbital Navigation Items */}
             <div className="absolute inset-0 flex items-center justify-center">
               {navItems.map((item, index) => {
-                const angle = index * 90 - 45;
+                const angle = (index * 360) / navItems.length - 90;
                 const radius = 120;
                 const x = Math.cos((angle * Math.PI) / 180) * radius;
                 const y = Math.sin((angle * Math.PI) / 180) * radius;

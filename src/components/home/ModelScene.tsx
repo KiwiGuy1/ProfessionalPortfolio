@@ -141,7 +141,7 @@ function KiwiModel({ controls }: { controls: SceneControls }) {
   const isShortViewport = height < 680;
   const targetModelHeight = isMobile ? 1.62 : isShortViewport ? 1.72 : 1.92;
   const modelY =
-    (isMobile ? 0.06 : isShortViewport ? -0.02 : -0.08) +
+    (isMobile ? -0.28 : isShortViewport ? -0.02 : -0.08) +
     controls.modelYOffset;
 
   useEffect(() => {
