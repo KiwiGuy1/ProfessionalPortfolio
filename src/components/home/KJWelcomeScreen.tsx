@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import styles from "./kj-welcome-screen.module.css";
 
-const ANIMATION_DURATION_MS = 5600;
+const ANIMATION_DURATION_MS = 3200;
 
 interface KJWelcomeScreenProps {
   onComplete?: () => void;

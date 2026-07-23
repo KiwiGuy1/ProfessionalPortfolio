@@ -1,32 +1,29 @@
 .introOverlay {
-  --intro-window-radius: clamp(56px, 16vmin, 120px);
-  --intro-square-size: calc(var(--intro-window-radius) * 2);
   position: fixed;
   inset: 0;
   z-index: 30;
   display: grid;
   place-items: center;
-  width: 100vw;
-  width: 100dvw;
-  height: 100vh;
-  height: 100dvh;
   overflow: hidden;
-  background: transparent;
+  background: #000000;
   pointer-events: none;
-  animation: introOverlayExit 5.6s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+  animation: introOverlayExit 3.2s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+  will-change: opacity;
 }
 
 .introOverlay::before {
   content: "";
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  background: #000000;
+  left: 50%;
+  top: 50%;
   z-index: 1;
-  clip-path: inset(0 0 0 0);
-  transform: translateZ(0);
-  animation: introWindowReveal 5.6s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+  width: clamp(112px, 32vmin, 240px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(255, 122, 24, 0.9);
+  transform: translate3d(-50%, -50%, 0) scale(0);
+  opacity: 0;
+  animation: introSquareReveal 3.2s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+  will-change: opacity, transform;
 }
 
 .introLetters {
@@ -42,172 +39,104 @@
   font-weight: 900;
   letter-spacing: -0.14em;
   line-height: 0.72;
-  mix-blend-mode: difference;
 }
 
 .introLetters span {
   display: inline-block;
   opacity: 0;
-  filter: blur(10px);
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  will-change: opacity, transform;
   text-shadow:
     0 0 32px rgba(255, 122, 24, 0.42),
     0 0 64px rgba(255, 106, 0, 0.18);
 }
 
 .introLetterK {
-  animation: introLetterK 5.2s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+  animation: introLetterK 3s cubic-bezier(0.76, 0, 0.24, 1) forwards;
 }
 
 .introLetterJ {
-  animation: introLetterJ 5.2s cubic-bezier(0.76, 0, 0.24, 1) forwards;
-}
-
-.introOverlay::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  z-index: 2;
-  width: 2px;
-  height: 2px;
-  border: 1px solid rgba(255, 255, 255, 0);
-  transform: translate(-50%, -50%) scale(0);
-  transform-origin: center;
-  animation: introSquareReveal 5.6s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+  animation: introLetterJ 3s cubic-bezier(0.76, 0, 0.24, 1) forwards;
 }
 
 @keyframes introLetterK {
   0% {
     opacity: 0;
-    transform: translate3d(0, 48vh, 0) scale(0.96);
-    filter: blur(12px);
+    transform: translate3d(0, 42vh, 0) scale(0.96);
   }
 
-  16%,
-  42% {
+  14% {
     opacity: 1;
     transform: translate3d(0, 0, 0) scale(1);
-    filter: blur(0);
   }
 
-  64% {
+  28% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  58% {
     opacity: 1;
     transform: translate3d(-34vw, 25vh, 0) scale(0.28);
-    filter: blur(0);
   }
 
-  86%,
+  82%,
   100% {
     opacity: 0;
     transform: translate3d(-44vw, 32vh, 0) scale(0.18);
-    filter: blur(8px);
   }
 }
 
 @keyframes introLetterJ {
-  0%,
-  10% {
+  0% {
     opacity: 0;
-    transform: translate3d(0, 48vh, 0) scale(0.96);
-    filter: blur(12px);
+    transform: translate3d(0, 42vh, 0) scale(0.96);
   }
 
-  26%,
-  42% {
+  16% {
     opacity: 1;
     transform: translate3d(0, 0, 0) scale(1);
-    filter: blur(0);
   }
 
-  64% {
+  30% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  58% {
     opacity: 1;
     transform: translate3d(34vw, 25vh, 0) scale(0.28);
-    filter: blur(0);
   }
 
-  86%,
+  82%,
   100% {
     opacity: 0;
     transform: translate3d(44vw, 32vh, 0) scale(0.18);
-    filter: blur(8px);
   }
 }
 
 @keyframes introSquareReveal {
   0%,
-  48% {
-    width: 2px;
-    height: 2px;
-    border-color: rgba(255, 255, 255, 0);
-    transform: translate(-50%, -50%) scale(0);
+  34% {
+    opacity: 0;
+    transform: translate3d(-50%, -50%, 0) scale(0);
   }
 
-  62% {
-    width: var(--intro-square-size);
-    height: var(--intro-square-size);
-    border-color: rgba(255, 122, 24, 0.94);
-    transform: translate(-50%, -50%) scale(1);
+  52% {
+    opacity: 1;
+    transform: translate3d(-50%, -50%, 0) scale(1);
   }
 
   100% {
-    width: 160vmax;
-    height: 160vmax;
-    border-color: rgba(255, 255, 255, 0);
-    transform: translate(-50%, -50%) scale(1);
-  }
-}
-
-@keyframes introWindowReveal {
-  0%,
-  50% {
-    clip-path: polygon(
-      0 0,
-      100% 0,
-      100% 100%,
-      0 100%,
-      0 0,
-      calc(50% - 1px) calc(50% - 1px),
-      calc(50% - 1px) calc(50% + 1px),
-      calc(50% + 1px) calc(50% + 1px),
-      calc(50% + 1px) calc(50% - 1px),
-      calc(50% - 1px) calc(50% - 1px)
-    );
-  }
-
-  62% {
-    clip-path: polygon(
-      0 0,
-      100% 0,
-      100% 100%,
-      0 100%,
-      0 0,
-      calc(50% - var(--intro-window-radius)) calc(50% - var(--intro-window-radius)),
-      calc(50% - var(--intro-window-radius)) calc(50% + var(--intro-window-radius)),
-      calc(50% + var(--intro-window-radius)) calc(50% + var(--intro-window-radius)),
-      calc(50% + var(--intro-window-radius)) calc(50% - var(--intro-window-radius)),
-      calc(50% - var(--intro-window-radius)) calc(50% - var(--intro-window-radius))
-    );
-  }
-
-  100% {
-    clip-path: polygon(
-      0 0,
-      100% 0,
-      100% 100%,
-      0 100%,
-      0 0,
-      -80vmax -80vmax,
-      -80vmax 180vmax,
-      180vmax 180vmax,
-      180vmax -80vmax,
-      -80vmax -80vmax
-    );
+    opacity: 0;
+    transform: translate3d(-50%, -50%, 0) scale(9);
   }
 }
 
 @keyframes introOverlayExit {
   0%,
-  88% {
+  84% {
     opacity: 1;
     visibility: visible;
   }

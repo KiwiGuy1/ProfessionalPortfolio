@@ -74,7 +74,6 @@ export default function HomePage() {
       );
 
       const timeline = gsap.timeline({
-        delay: 5.15,
         defaults: { duration: 0.72, ease: "power3.out", force3D: true },
       });
 
