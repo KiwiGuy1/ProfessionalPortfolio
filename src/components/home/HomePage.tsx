@@ -19,50 +19,81 @@ const tickerItems = [
 export default function HomePage() {
   const pageRef = useRef<HTMLElement>(null);
   const cursorMovedRef = useRef(false);
+  const frameRef = useRef<number | null>(null);
   const lastScrollYRef = useRef(0);
+  const showScrollCueRef = useRef(true);
   const [showIntro, setShowIntro] = useState(true);
   const [showScrollCue, setShowScrollCue] = useState(true);
 
   useEffect(() => {
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      const scrollingDown = currentScrollY > lastScrollYRef.current;
+      if (frameRef.current !== null) return;
 
-      setShowScrollCue(!scrollingDown || currentScrollY < 12);
-      lastScrollYRef.current = currentScrollY;
+      frameRef.current = window.requestAnimationFrame(() => {
+        const currentScrollY = window.scrollY;
+        const scrollingDown = currentScrollY > lastScrollYRef.current;
+        const shouldShowScrollCue = !scrollingDown || currentScrollY < 12;
+
+        if (showScrollCueRef.current !== shouldShowScrollCue) {
+          showScrollCueRef.current = shouldShowScrollCue;
+          setShowScrollCue(shouldShowScrollCue);
+        }
+
+        lastScrollYRef.current = currentScrollY;
+        frameRef.current = null;
+      });
     };
 
     lastScrollYRef.current = window.scrollY;
     window.addEventListener("scroll", handleScroll, { passive: true });
 
     return () => {
+      if (frameRef.current !== null) {
+        window.cancelAnimationFrame(frameRef.current);
+      }
+
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
   useGSAP(
-    () => {
+    (context) => {
+      gsap.set(
+        [
+          "[data-home-kicker]",
+          "[data-home-title]",
+          "[data-home-copy]",
+          "[data-home-action]",
+          "[data-home-hud]",
+        ],
+        {
+          autoAlpha: 0,
+          force3D: true,
+          willChange: "opacity, transform",
+        },
+      );
+
       const timeline = gsap.timeline({
         delay: 5.15,
-        defaults: { ease: "power3.out" },
+        defaults: { duration: 0.72, ease: "power3.out", force3D: true },
       });
 
       timeline
         .fromTo(
           "[data-home-kicker]",
           { autoAlpha: 0, y: 16 },
-          { autoAlpha: 1, y: 0, duration: 0.7 },
+          { autoAlpha: 1, y: 0 },
         )
         .fromTo(
           "[data-home-title]",
-          { autoAlpha: 0, y: 44, filter: "blur(16px)" },
-          { autoAlpha: 1, y: 0, filter: "blur(0px)", duration: 1.1 },
+          { autoAlpha: 0, y: 38, filter: "blur(12px)" },
+          { autoAlpha: 1, y: 0, filter: "blur(0px)", duration: 1 },
           "-=0.28",
         )
         .fromTo(
           "[data-home-copy]",
           { autoAlpha: 0, y: 20 },
-          { autoAlpha: 1, y: 0, duration: 0.75 },
+          { autoAlpha: 1, y: 0 },
           "-=0.52",
         )
         .fromTo(
@@ -77,6 +108,17 @@ export default function HomePage() {
           { autoAlpha: 1, y: 0, duration: 0.65, stagger: 0.08 },
           "-=0.48",
         );
+
+      timeline.set(
+        [
+          "[data-home-kicker]",
+          "[data-home-title]",
+          "[data-home-copy]",
+          "[data-home-action]",
+          "[data-home-hud]",
+        ],
+        { clearProps: "willChange" },
+      );
 
       gsap.to("[data-signal-beam]", {
         yPercent: 34,
@@ -112,11 +154,13 @@ export default function HomePage() {
         stagger: 0.16,
       });
 
-      const moveCursorX = gsap.quickTo("[data-cursor-target]", "x", {
+      const cursorTarget = gsap.utils.selector(pageRef)("[data-cursor-target]");
+      const interactionCue = gsap.utils.selector(pageRef)("[data-interaction-cue]");
+      const moveCursorX = gsap.quickTo(cursorTarget, "x", {
         duration: 0.45,
         ease: "power3.out",
       });
-      const moveCursorY = gsap.quickTo("[data-cursor-target]", "y", {
+      const moveCursorY = gsap.quickTo(cursorTarget, "y", {
         duration: 0.45,
         ease: "power3.out",
       });
@@ -128,13 +172,13 @@ export default function HomePage() {
         if (cursorMovedRef.current) return;
         cursorMovedRef.current = true;
 
-        gsap.to("[data-cursor-target]", {
+        gsap.to(cursorTarget, {
           autoAlpha: 1,
           scale: 1,
           duration: 0.45,
           ease: "power3.out",
         });
-        gsap.to("[data-interaction-cue]", {
+        gsap.to(interactionCue, {
           autoAlpha: 0,
           y: -10,
           duration: 0.45,
@@ -142,9 +186,15 @@ export default function HomePage() {
         });
       };
 
-      window.addEventListener("pointermove", handlePointerMove);
+      context.add(() => {
+        window.addEventListener("pointermove", handlePointerMove, {
+          passive: true,
+        });
 
-      gsap.set("[data-cursor-target]", {
+        return () => window.removeEventListener("pointermove", handlePointerMove);
+      });
+
+      gsap.set(cursorTarget, {
         autoAlpha: 0,
         scale: 0.72,
         xPercent: -50,
@@ -159,9 +209,6 @@ export default function HomePage() {
         yoyo: true,
       });
 
-      return () => {
-        window.removeEventListener("pointermove", handlePointerMove);
-      };
     },
     { scope: pageRef },
   );
